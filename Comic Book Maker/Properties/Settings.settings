@@ -1,0 +1,81 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="Comic_Book_Maker.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="create_from_folders" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="create_from_archives" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="rar_path" Type="System.String" Scope="User">
+      <Value Profile="(Default)">C:\Program Files\WinRAR\Rar.exe</Value>
+    </Setting>
+    <Setting Name="convert_comics" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="clean_files_enable" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="clean_files_string" Type="System.String" Scope="User">
+      <Value Profile="(Default)">zzz*.*</Value>
+    </Setting>
+    <Setting Name="clean_files_limit_enable" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="clean_files_limit_n" Type="System.Decimal" Scope="User">
+      <Value Profile="(Default)">4</Value>
+    </Setting>
+    <Setting Name="remove_folders" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="remove_folders_smart" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="multi_core_enable" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="multi_core_n_max" Type="System.Decimal" Scope="User">
+      <Value Profile="(Default)">4</Value>
+    </Setting>
+    <Setting Name="close_after_complete" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="delete_input_files" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="file_exist_suffix" Type="System.String" Scope="User">
+      <Value Profile="(Default)"> (\n)</Value>
+    </Setting>
+    <Setting Name="output_type_selection" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">0</Value>
+    </Setting>
+    <Setting Name="column_width_input" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">340</Value>
+    </Setting>
+    <Setting Name="column_width_type" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">50</Value>
+    </Setting>
+    <Setting Name="column_width_output" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">320</Value>
+    </Setting>
+    <Setting Name="column_width_state" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">50</Value>
+    </Setting>
+    <Setting Name="file_exist_selection" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">0</Value>
+    </Setting>
+    <Setting Name="form_location" Type="System.Drawing.Point" Scope="User">
+      <Value Profile="(Default)">100, 100</Value>
+    </Setting>
+    <Setting Name="form_size" Type="System.Drawing.Size" Scope="User">
+      <Value Profile="(Default)">1100, 550</Value>
+    </Setting>
+    <Setting Name="output_path" Type="System.String" Scope="User">
+      <Value Profile="(Default)">C:\Users\Gabriel\Desktop\Out\</Value>
+    </Setting>
+    <Setting Name="specifiy_ouput_folder" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>
