@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Diagnostics;   //for processes
-using System.IO;            //fo file access
+using System.IO;            //for file access
 using System.Windows.Forms;
 
 namespace Comic_Book_Maker
@@ -356,249 +356,232 @@ namespace Comic_Book_Maker
         private int steps(ref double t)
         {
             Stopwatch crono = Stopwatch.StartNew();
-            //int i;
-            //const int nStep = 5;
+            int i;
+            const int nStep = 5;
 
             //reset status for each file
-            //for (i = 0; i < dataGridView1.Rows.Count; i++)
-            //    dataGridView1.Rows[i].Cells[4].Value = "";
-            int j;
-            for (j = 0; j < dataGridView1.Rows.Count; j++)
-                dataGridView1.Rows[j].Cells[4].Value = "";
+            for (i = 0; i < dataGridView1.Rows.Count; i++)
+                dataGridView1.Rows[i].Cells[4].Value = "";
 
             //reset statusBar
             toolStripProgressBar1.Value = 0;
-            toolStripProgressBar1.Maximum = 5 * dataGridView1.Rows.Count;
+            toolStripProgressBar1.Maximum = nStep * dataGridView1.Rows.Count;
             showStatus("Working");
 
-            //for (i = 0; i < dataGridView1.Rows.Count; i++)
-            System.Threading.Tasks.Parallel.For(0, dataGridView1.Rows.Count - 1, i =>
-              {
-                  if ((bool)dataGridView1.Rows[i].Cells[0].Value)
-                  {
-                      string inPath, inType, outPath, tempPath = "", outType;
-                      stepErr err;
+            for (i = 0; i < dataGridView1.Rows.Count; i++)
+            {
+                if ((bool)dataGridView1.Rows[i].Cells[0].Value)
+                {
+                    string inPath, inType, outPath, tempPath, outType;
+                    stepErr err = stepErr.None;
 
-                      inPath = (string)dataGridView1.Rows[i].Cells[1].Value;
-                      inType = (string)dataGridView1.Rows[i].Cells[2].Value;
-                      outPath = (string)dataGridView1.Rows[i].Cells[3].Value;
-                      outType = comboBoxOutputType.Text.ToLower();
+                    inPath = (string)dataGridView1.Rows[i].Cells[1].Value;
+                    inType = (string)dataGridView1.Rows[i].Cells[2].Value;
+                    outPath = (string)dataGridView1.Rows[i].Cells[3].Value;
+                    outType = comboBoxOutputType.Text.ToLower();
 
+                    //*********************************************************
                     //step 1: extract
-                    //dataGridView1.Rows[i].Cells[4].Value = "Decompressing";
-                    err = step1_Extract(inPath, inType, ref tempPath);
-                    //toolStripProgressBar1.Value = nStep * i + 1;
+                    //*********************************************************
+                    dataGridView1.Rows[i].Cells[4].Value = "Decompressing";
+                    tempPath = Path.Combine(/*HACK: need to restore real temp dir path *//* Path.GetTempPath()*/ "C:\\Users\\Gabriel\\Desktop\\temp", "CBM_" + Path.GetFileNameWithoutExtension(inPath));
 
+                    if (inType == FolderStr)
+                    {
+                        // if inPath is a folder copy folder to tempPath (using VisualBasic function)
+                        Microsoft.VisualBasic.FileIO.FileSystem.CopyDirectory(inPath, tempPath, true);
+                    }
+                    else
+                    {
+                        // if inPath is a comic/archive extract it to tempPath
+
+                        //if tempPath exists, try to delete
+                        if (Directory.Exists(tempPath))
+                        {
+                            try
+                            {
+                                Directory.Delete(tempPath, true);
+                            }
+                            catch
+                            {
+                            }
+                        }
+                        //if still exist, search for unexisting directory
+                        if (Directory.Exists(tempPath))
+                        {
+                            string tempPath0 = tempPath;
+                            int j = 1;
+                            while (Directory.Exists(tempPath) && j <= 1000)
+                            {
+                                tempPath = tempPath0 + "_" + j.ToString();
+                                j++;
+                            }
+                        }
+                        //if still exist, return error
+                        if (Directory.Exists(tempPath))
+                            return (1);
+
+                        //create tempPath
+                        Directory.CreateDirectory(tempPath);
+
+                        /// 7-Zip basic parameters to extract with full path:
+                        ///     7z.exe x {archive} {switches}
+                        /// Swithes:
+                        ///     -ao{mode}       overwrite mode (a=all)
+                        ///     -o{outdir}      set output directory
+                        Process pr7z = new Process();
+                        pr7z.StartInfo = new ProcessStartInfo();
+                        pr7z.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+                        pr7z.StartInfo.FileName = "7z.exe";
+                        pr7z.StartInfo.Arguments = "x " + quote(inPath) + " -o" + quote(tempPath) + " -aoa";
+                        pr7z.Start();
+                        pr7z.WaitForExit();
+                    }
+                    toolStripProgressBar1.Value = nStep * i + 1;
+
+
+                    //*********************************************************
                     //step 2: clean
+                    //*********************************************************
                     if (err == stepErr.None)
-                      {
+                    {
                         //dataGridView1.Rows[i].Cells[4].Value = "Cleaning";
-                        err = step2_Clean(tempPath);
-                      }
-                    //toolStripProgressBar1.Value = nStep * i + 2;
+                    }
+                    toolStripProgressBar1.Value = nStep * i + 2;
 
+
+                    //*********************************************************
                     //step 3: compress
+                    //*********************************************************
                     if (err == stepErr.None)
-                      {
-                        //dataGridView1.Rows[i].Cells[4].Value = "Compressing";
-                        err = step3_Compress(tempPath, outPath, outType);
-                      }
-                    //toolStripProgressBar1.Value = nStep * i + 3;
+                    {
+                        dataGridView1.Rows[i].Cells[4].Value = "Compressing";
 
+                        // compress tempPath (folder) to outPath (comic file of type outType)
+                        // delete outPath if exists previously
+
+                        if (File.Exists(outPath))
+                        {
+                            if (comboBoxFileExistAction.SelectedIndex == 0)         //Overwrite
+                                File.Delete(outPath);
+                            else if (comboBoxFileExistAction.SelectedIndex == 1)    //Skip
+                                return (5);
+                            else if (comboBoxFileExistAction.SelectedIndex == 2)    //Rename
+                                updateOutputNames();
+                        }
+
+                        if (outType == "cbz")
+                        {
+                            /// 7-Zip basic parameters to Compress:
+                            ///     7z.exe a {archive} {files|@listfiles} {switches}
+                            /// Swithes:
+                            ///     -bb{level}      output log level (0=none..3)
+                            ///     -mx={level}     compression level (0=none,1,3,5,7,9)
+                            ///     -mt={mode}      multithreading mode (on,off)
+                            ///     -r              enable recurse directory for wildcards
+                            ///     -t{type}        set type of archive (7z,zip)
+                            ///     -x!{wildcard}   exclude files
+
+                            Process pr7z = new Process();
+                            pr7z.StartInfo = new ProcessStartInfo();
+                            pr7z.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+                            pr7z.StartInfo.FileName = "7z.exe";
+                            pr7z.StartInfo.Arguments = "a -mx=0 -tzip -r -mmt=off -bb1 " + quote(outPath) + " " + quote(Path.Combine(tempPath, "*.*"));
+                            pr7z.Start();
+                            pr7z.WaitForExit();
+                        }
+                        else if (outType == "cb7")
+                        {
+                            Process pr7z = new Process();
+                            pr7z.StartInfo = new ProcessStartInfo();
+                            pr7z.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+                            pr7z.StartInfo.FileName = "7z.exe";
+                            pr7z.StartInfo.Arguments = "a -mx0 -t7z -r -mmt=off " + quote(outPath) + " " + quote(Path.Combine(tempPath, "*.*"));
+                            pr7z.Start();
+                            pr7z.WaitForExit();
+                        }
+                        else if (outType == "cbr")
+                        {
+                            if (!File.Exists(textBoxRarPath.Text))
+                                return (6);
+
+                            /// RAR basic parameters to Compress:
+                            ///     rar.exe a {switches} {archive}  {files|@listfiles} 
+                            /// Switches:
+                            ///     -ed             do no add empty folders
+                            ///     -ep1            exclude base folder from names
+                            ///     -m{level}       compression level (0=none)
+                            ///     -ma{version}    specify archive version (4|5)
+                            ///     -ms{types}      file types to store
+                            ///     -mt{threads}    number of threads
+                            ///     -r              recurse subfolders
+                            ///     -r0             recurse subfolders for wildcards
+                            ///     -x{wildcard}    exclude specified file
+
+                            Process prRar = new Process();
+                            prRar.StartInfo = new ProcessStartInfo();
+                            prRar.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+                            prRar.StartInfo.FileName = textBoxRarPath.Text;
+                            prRar.StartInfo.Arguments = "a -ed -ep1 -m0 -ma4 -r -mt1 " + quote(outPath) + " " + quote(Path.Combine(tempPath, "*.*"));
+                            prRar.Start();
+                            prRar.WaitForExit();
+                        }
+
+                    }
+                    toolStripProgressBar1.Value = nStep * i + 3;
+
+
+                    //*********************************************************
                     //step 4: delete input
+                    //*********************************************************
                     if (err == stepErr.None)
-                      {
-                        //dataGridView1.Rows[i].Cells[4].Value = "Deleting input";
-                        err = step4_DeleteInput(inPath, outPath);
-                      }
-                    //toolStripProgressBar1.Value = nStep * i + 4;
+                    {
+                        dataGridView1.Rows[i].Cells[4].Value = "Deleting input";
+                        
+                        //delete inPath if option is enabled
+                        if (checkBoxDeleteInputFiles.Checked && (inPath != outPath))
+                        {
+                            //deletes to recycle bin, using VisualBasic functions
+                            //https://diptimayapatra.wordpress.com/2014/01/16/delete-file-to-recycle-bin-in-c/
 
+                            if (Directory.Exists(inPath))
+                                Microsoft.VisualBasic.FileIO.FileSystem.DeleteDirectory(inPath, Microsoft.VisualBasic.FileIO.UIOption.OnlyErrorDialogs, Microsoft.VisualBasic.FileIO.RecycleOption.SendToRecycleBin);
+                            else if (File.Exists(inPath))
+                                Microsoft.VisualBasic.FileIO.FileSystem.DeleteFile(inPath, Microsoft.VisualBasic.FileIO.UIOption.OnlyErrorDialogs, Microsoft.VisualBasic.FileIO.RecycleOption.SendToRecycleBin);
+                        }
+                    }
+                    toolStripProgressBar1.Value = nStep * i + 4;
+
+
+                    //*********************************************************
                     //step 5: delete temporal
-                    //dataGridView1.Rows[i].Cells[4].Value = "Deleting temp";
-                    err |= step5_DeleteTemp(tempPath);
-                    //toolStripProgressBar1.Value = nStep * i + 5;
+                    //*********************************************************
+                    dataGridView1.Rows[i].Cells[4].Value = "Deleting temp";
+                    
+                    //delete tempPath
+                    if (Directory.Exists(tempPath))
+                        Directory.Delete(tempPath, true);
 
+                    toolStripProgressBar1.Value = nStep * i + 5;
+
+
+                    //*********************************************************
                     //finished
-                    //if (err == stepErr.None)
-                    //    dataGridView1.Rows[i].Cells[4].Value = "Finished";
-                    //else if (err == stepErr.FileExistNoOverwrite)
-                    //    dataGridView1.Rows[i].Cells[4].Value = "Skipped: file exists";
-                    //else
-                    //    dataGridView1.Rows[i].Cells[4].Value = "Error: " + err.ToString();
+                    //*********************************************************
+                    if (err == stepErr.None)
+                        dataGridView1.Rows[i].Cells[4].Value = "Finished";
+                    else if (err == stepErr.FileExistNoOverwrite)
+                        dataGridView1.Rows[i].Cells[4].Value = "Skipped: file exists";
+                    else
+                        dataGridView1.Rows[i].Cells[4].Value = "Error: " + err.ToString();
                 }
-              });
+            }
 
             crono.Stop();
             t = crono.Elapsed.TotalSeconds;
 
             return (0);
         }
-        private stepErr step1_Extract(string inPath, string inType, ref string tempPath)
-        {
-            // if inPath is a folder copy directory to temporal folder
-            // if inPath is a comic/archive extract it to a temporal folder
-
-            tempPath = Path.Combine(/*HACK: need to restore real temp dir path *//* Path.GetTempPath()*/ "C:\\Users\\Gabriel\\Desktop\\temp", "CBM_" + Path.GetFileNameWithoutExtension(inPath));
-
-            if (inType == FolderStr)
-            {
-                //copy folder to tempPath (using VisualBasic function)
-                Microsoft.VisualBasic.FileIO.FileSystem.CopyDirectory(inPath, tempPath, true);
-            }
-            else
-            {
-                //if tempPath exists, try to delete
-                if (Directory.Exists(tempPath))
-                {
-                    try
-                    {
-                        Directory.Delete(tempPath, true);
-                    }
-                    catch
-                    {
-                    }
-                }
-                //if still exist, search for unexisting directory
-                if (Directory.Exists(tempPath))
-                {
-                    string tempPath0 = tempPath;
-                    int j = 1;
-                    while (Directory.Exists(tempPath) && j <= 1000)
-                    {
-                        tempPath = tempPath0 + "_" + j.ToString();
-                        j++;
-                    }
-                }
-                //if still exist, return error
-                if (Directory.Exists(tempPath))
-                    return (stepErr.CreatingTemp);
-
-                //create tempPath
-                Directory.CreateDirectory(tempPath);
-
-                /// 7-Zip basic parameters to extract with full path:
-                ///     7z.exe x {archive} {switches}
-                /// Swithes:
-                ///     -ao{mode}       overwrite mode (a=all)
-                ///     -o{outdir}      set output directory
-                Process pr7z = new Process();
-                pr7z.StartInfo = new ProcessStartInfo();
-                pr7z.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
-                pr7z.StartInfo.FileName = "7z.exe";
-                pr7z.StartInfo.Arguments = "x " + quote(inPath) + " -o" + quote(tempPath) + " -aoa";
-                pr7z.Start();
-                pr7z.WaitForExit();
-            }
-            return (0);
-        }
-        private stepErr step2_Clean(string tempPath)
-        {
-            _ = tempPath;
-            //TODO: implement clean function
-            return (0);
-        }
-        private stepErr step3_Compress(string tempPath, string outPath, string outType)
-        {
-            // compress tempPath (folder) to outPath (comic file of type outType)
-            // delet outPath if exists previously
-
-            if (File.Exists(outPath))
-            {
-                if (comboBoxFileExistAction.SelectedIndex == 0)         //Overwrite
-                    File.Delete(outPath);
-                else if (comboBoxFileExistAction.SelectedIndex == 1)    //Skip
-                    return (stepErr.FileExistNoOverwrite);
-                else if (comboBoxFileExistAction.SelectedIndex == 2)    //Rename
-                    updateOutputNames();
-            }
-
-            if (outType == "cbz")
-            {
-                /// 7-Zip basic parameters to Compress:
-                ///     7z.exe a {archive} {files|@listfiles} {switches}
-                /// Swithes:
-                ///     -bb{level}      output log level (0=none..3)
-                ///     -mx={level}     compression level (0=none,1,3,5,7,9)
-                ///     -mt={mode}      multithreading mode (on,off)
-                ///     -r              enable recurse directory for wildcards
-                ///     -t{type}        set type of archive (7z,zip)
-                ///     -x!{wildcard}   exclude files
-
-                Process pr7z = new Process();
-                pr7z.StartInfo = new ProcessStartInfo();
-                pr7z.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
-                pr7z.StartInfo.FileName = "7z.exe";
-                pr7z.StartInfo.Arguments = "a -mx=0 -tzip -r -mmt=off -bb1 " + quote(outPath) + " " + quote(Path.Combine(tempPath, "*.*"));
-                pr7z.Start();
-                pr7z.WaitForExit();
-            }
-            else if (outType == "cb7")
-            {
-                Process pr7z = new Process();
-                pr7z.StartInfo = new ProcessStartInfo();
-                pr7z.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
-                pr7z.StartInfo.FileName = "7z.exe";
-                pr7z.StartInfo.Arguments = "a -mx0 -t7z -r -mmt=off " + quote(outPath) + " " + quote(Path.Combine(tempPath, "*.*"));
-                pr7z.Start();
-                pr7z.WaitForExit();
-            }
-            else if (outType == "cbr")
-            {
-                if (!File.Exists(textBoxRarPath.Text))
-                    return (stepErr.MissingRar);
-
-                /// RAR basic parameters to Compress:
-                ///     rar.exe a {switches} {archive}  {files|@listfiles} 
-                /// Switches:
-                ///     -ed             do no add empty folders
-                ///     -ep1            exclude base folder from names
-                ///     -m{level}       compression level (0=none)
-                ///     -ma{version}    specify archive version (4|5)
-                ///     -ms{types}      file types to store
-                ///     -mt{threads}    number of threads
-                ///     -r              recurse subfolders
-                ///     -r0             recurse subfolders for wildcards
-                ///     -x{wildcard}    exclude specified file
-
-                Process prRar = new Process();
-                prRar.StartInfo = new ProcessStartInfo();
-                prRar.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
-                prRar.StartInfo.FileName = textBoxRarPath.Text;
-                prRar.StartInfo.Arguments = "a -ed -ep1 -m0 -ma4 -r -mt1 " + quote(outPath) + " " + quote(Path.Combine(tempPath, "*.*"));
-                prRar.Start();
-                prRar.WaitForExit();
-            }
-            return (0);
-        }
-        private stepErr step4_DeleteInput(string inPath, string outPath)
-        {
-            //delete inPath if option is enabled
-            if (checkBoxDeleteInputFiles.Checked && (inPath != outPath))
-            {
-                //deletes to recycle bin, using VisualBasic functions
-                //https://diptimayapatra.wordpress.com/2014/01/16/delete-file-to-recycle-bin-in-c/
-
-                if (Directory.Exists(inPath))
-                    Microsoft.VisualBasic.FileIO.FileSystem.DeleteDirectory(inPath, Microsoft.VisualBasic.FileIO.UIOption.OnlyErrorDialogs, Microsoft.VisualBasic.FileIO.RecycleOption.SendToRecycleBin);
-                else if (File.Exists(inPath))
-                    Microsoft.VisualBasic.FileIO.FileSystem.DeleteFile(inPath, Microsoft.VisualBasic.FileIO.UIOption.OnlyErrorDialogs, Microsoft.VisualBasic.FileIO.RecycleOption.SendToRecycleBin);
-            }
-            return (0);
-        }
-        private stepErr step5_DeleteTemp(string tempPath)
-        {
-            //delete tempPath
-            if (Directory.Exists(tempPath))
-                Directory.Delete(tempPath, true);
-            return (0);
-        }
-
-
-
-
-
-
-
 
     }
 }
