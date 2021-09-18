@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Diagnostics;   //for processes
-using System.IO;            //fo file access
+using System.IO;            //for file access
 using System.Windows.Forms;
 
 namespace Comic_Book_Maker
@@ -356,77 +356,73 @@ namespace Comic_Book_Maker
         private int steps(ref double t)
         {
             Stopwatch crono = Stopwatch.StartNew();
-            //int i;
-            //const int nStep = 5;
+            int i;
+            const int nStep = 5;
 
             //reset status for each file
-            //for (i = 0; i < dataGridView1.Rows.Count; i++)
-            //    dataGridView1.Rows[i].Cells[4].Value = "";
-            int j;
-            for (j = 0; j < dataGridView1.Rows.Count; j++)
-                dataGridView1.Rows[j].Cells[4].Value = "";
+            for (i = 0; i < dataGridView1.Rows.Count; i++)
+                dataGridView1.Rows[i].Cells[4].Value = "";
 
             //reset statusBar
             toolStripProgressBar1.Value = 0;
             toolStripProgressBar1.Maximum = 5 * dataGridView1.Rows.Count;
             showStatus("Working");
 
-            //for (i = 0; i < dataGridView1.Rows.Count; i++)
-            System.Threading.Tasks.Parallel.For(0, dataGridView1.Rows.Count - 1, i =>
-              {
-                  if ((bool)dataGridView1.Rows[i].Cells[0].Value)
-                  {
-                      string inPath, inType, outPath, tempPath = "", outType;
-                      stepErr err;
+            for (i = 0; i < dataGridView1.Rows.Count; i++)
+            {
+                if ((bool)dataGridView1.Rows[i].Cells[0].Value)
+                {
+                    string inPath, inType, outPath, tempPath = "", outType;
+                    stepErr err;
 
-                      inPath = (string)dataGridView1.Rows[i].Cells[1].Value;
-                      inType = (string)dataGridView1.Rows[i].Cells[2].Value;
-                      outPath = (string)dataGridView1.Rows[i].Cells[3].Value;
-                      outType = comboBoxOutputType.Text.ToLower();
+                    inPath = (string)dataGridView1.Rows[i].Cells[1].Value;
+                    inType = (string)dataGridView1.Rows[i].Cells[2].Value;
+                    outPath = (string)dataGridView1.Rows[i].Cells[3].Value;
+                    outType = comboBoxOutputType.Text.ToLower();
 
                     //step 1: extract
-                    //dataGridView1.Rows[i].Cells[4].Value = "Decompressing";
+                    dataGridView1.Rows[i].Cells[4].Value = "Decompressing";
                     err = step1_Extract(inPath, inType, ref tempPath);
-                    //toolStripProgressBar1.Value = nStep * i + 1;
+                    toolStripProgressBar1.Value = nStep * i + 1;
 
                     //step 2: clean
                     if (err == stepErr.None)
-                      {
-                        //dataGridView1.Rows[i].Cells[4].Value = "Cleaning";
+                    {
+                        dataGridView1.Rows[i].Cells[4].Value = "Cleaning";
                         err = step2_Clean(tempPath);
-                      }
-                    //toolStripProgressBar1.Value = nStep * i + 2;
+                    }
+                    toolStripProgressBar1.Value = nStep * i + 2;
 
                     //step 3: compress
                     if (err == stepErr.None)
-                      {
-                        //dataGridView1.Rows[i].Cells[4].Value = "Compressing";
+                    {
+                        dataGridView1.Rows[i].Cells[4].Value = "Compressing";
                         err = step3_Compress(tempPath, outPath, outType);
-                      }
-                    //toolStripProgressBar1.Value = nStep * i + 3;
+                    }
+                    toolStripProgressBar1.Value = nStep * i + 3;
 
                     //step 4: delete input
                     if (err == stepErr.None)
-                      {
-                        //dataGridView1.Rows[i].Cells[4].Value = "Deleting input";
+                    {
+                        dataGridView1.Rows[i].Cells[4].Value = "Deleting input";
                         err = step4_DeleteInput(inPath, outPath);
-                      }
-                    //toolStripProgressBar1.Value = nStep * i + 4;
+                    }
+                    toolStripProgressBar1.Value = nStep * i + 4;
 
                     //step 5: delete temporal
-                    //dataGridView1.Rows[i].Cells[4].Value = "Deleting temp";
+                    dataGridView1.Rows[i].Cells[4].Value = "Deleting temp";
                     err |= step5_DeleteTemp(tempPath);
-                    //toolStripProgressBar1.Value = nStep * i + 5;
+                    toolStripProgressBar1.Value = nStep * i + 5;
 
                     //finished
-                    //if (err == stepErr.None)
-                    //    dataGridView1.Rows[i].Cells[4].Value = "Finished";
-                    //else if (err == stepErr.FileExistNoOverwrite)
-                    //    dataGridView1.Rows[i].Cells[4].Value = "Skipped: file exists";
-                    //else
-                    //    dataGridView1.Rows[i].Cells[4].Value = "Error: " + err.ToString();
+                    if (err == stepErr.None)
+                        dataGridView1.Rows[i].Cells[4].Value = "Finished";
+                    else if (err == stepErr.FileExistNoOverwrite)
+                        dataGridView1.Rows[i].Cells[4].Value = "Skipped: file exists";
+                    else
+                        dataGridView1.Rows[i].Cells[4].Value = "Error: " + err.ToString();
                 }
-              });
+            }
 
             crono.Stop();
             t = crono.Elapsed.TotalSeconds;
