@@ -157,7 +157,7 @@ namespace Comic_Book_Maker.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("4")]
+        [global::System.Configuration.DefaultSettingValueAttribute("2")]
         public decimal multi_core_n_max {
             get {
                 return ((decimal)(this["multi_core_n_max"]));

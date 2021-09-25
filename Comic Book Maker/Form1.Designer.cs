@@ -43,7 +43,6 @@ namespace Comic_Book_Maker
             this.checkBoxCleanLimit = new System.Windows.Forms.CheckBox();
             this.labelRarPath = new System.Windows.Forms.Label();
             this.buttonRarPath = new System.Windows.Forms.Button();
-            this.labelNCore = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.buttonGo = new System.Windows.Forms.Button();
             this.comboBoxOutputType = new System.Windows.Forms.ComboBox();
@@ -55,7 +54,7 @@ namespace Comic_Book_Maker
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.tableLayoutPanel10 = new System.Windows.Forms.TableLayoutPanel();
-            this.textBoxSuffixPattern = new System.Windows.Forms.TextBox();
+            this.textBoxRenameSuffix = new System.Windows.Forms.TextBox();
             this.labelSuffix = new System.Windows.Forms.Label();
             this.comboBoxFileExistAction = new System.Windows.Forms.ComboBox();
             this.tableLayoutPanel7 = new System.Windows.Forms.TableLayoutPanel();
@@ -69,9 +68,7 @@ namespace Comic_Book_Maker
             this.checkBoxCreateFromArchive = new System.Windows.Forms.CheckBox();
             this.buttonRefresh = new System.Windows.Forms.Button();
             this.tableLayoutPanel4 = new System.Windows.Forms.TableLayoutPanel();
-            this.tableLayoutPanel8 = new System.Windows.Forms.TableLayoutPanel();
-            this.numericUpDownNCore = new System.Windows.Forms.NumericUpDown();
-            this.checkBoxMultiCore = new System.Windows.Forms.CheckBox();
+            this.checkBoxParelize = new System.Windows.Forms.CheckBox();
             this.checkBoxDeleteInputFiles = new System.Windows.Forms.CheckBox();
             this.checkBoxCloseAtComplete = new System.Windows.Forms.CheckBox();
             this.tableLayoutPanel9 = new System.Windows.Forms.TableLayoutPanel();
@@ -85,6 +82,7 @@ namespace Comic_Book_Maker
             this.ColumnType = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ColumnOutput = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ColumnState = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.ColumnError = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.groupBox2.SuspendLayout();
             this.tableLayoutPanel3.SuspendLayout();
             this.tableLayoutPanel5.SuspendLayout();
@@ -96,8 +94,6 @@ namespace Comic_Book_Maker
             this.tableLayoutPanel7.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
             this.tableLayoutPanel4.SuspendLayout();
-            this.tableLayoutPanel8.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownNCore)).BeginInit();
             this.tableLayoutPanel9.SuspendLayout();
             this.groupBox3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider1)).BeginInit();
@@ -109,7 +105,7 @@ namespace Comic_Book_Maker
             this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox2.AutoSize = true;
             this.groupBox2.Controls.Add(this.tableLayoutPanel3);
-            this.groupBox2.Location = new System.Drawing.Point(637, 205);
+            this.groupBox2.Location = new System.Drawing.Point(600, 205);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(325, 133);
             this.groupBox2.TabIndex = 3;
@@ -197,7 +193,7 @@ namespace Comic_Book_Maker
             this.checkBoxClean.TabIndex = 0;
             this.checkBoxClean.Text = "Clean files:";
             this.checkBoxClean.UseVisualStyleBackColor = true;
-            this.checkBoxClean.CheckedChanged += new System.EventHandler(this.checkBoxCleanFiles_CheckedChanged);
+            this.checkBoxClean.CheckedChanged += new System.EventHandler(this.checkBoxClean_CheckedChanged);
             // 
             // textBoxCleanFiles
             // 
@@ -231,6 +227,16 @@ namespace Comic_Book_Maker
             this.numericUpDownCleanLimit.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.numericUpDownCleanLimit.DataBindings.Add(new System.Windows.Forms.Binding("Value", global::Comic_Book_Maker.Properties.Settings.Default, "clean_files_limit_n", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.numericUpDownCleanLimit.Location = new System.Drawing.Point(182, 3);
+            this.numericUpDownCleanLimit.Maximum = new decimal(new int[] {
+            99,
+            0,
+            0,
+            0});
+            this.numericUpDownCleanLimit.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
             this.numericUpDownCleanLimit.Name = "numericUpDownCleanLimit";
             this.numericUpDownCleanLimit.Size = new System.Drawing.Size(42, 20);
             this.numericUpDownCleanLimit.TabIndex = 4;
@@ -272,17 +278,6 @@ namespace Comic_Book_Maker
             this.buttonRarPath.Text = "...";
             this.buttonRarPath.UseVisualStyleBackColor = true;
             this.buttonRarPath.Click += new System.EventHandler(this.buttonRarPath_Click);
-            // 
-            // labelNCore
-            // 
-            this.labelNCore.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.labelNCore.AutoSize = true;
-            this.labelNCore.Location = new System.Drawing.Point(3, 6);
-            this.labelNCore.Name = "labelNCore";
-            this.labelNCore.Padding = new System.Windows.Forms.Padding(20, 0, 0, 0);
-            this.labelNCore.Size = new System.Drawing.Size(135, 13);
-            this.labelNCore.TabIndex = 3;
-            this.labelNCore.Text = "Maximum cores to use:";
             // 
             // label2
             // 
@@ -343,7 +338,7 @@ namespace Comic_Book_Maker
             this.toolStripStatusLabel1});
             this.statusStrip1.Location = new System.Drawing.Point(0, 489);
             this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Size = new System.Drawing.Size(974, 22);
+            this.statusStrip1.Size = new System.Drawing.Size(937, 22);
             this.statusStrip1.TabIndex = 7;
             this.statusStrip1.Text = "statusStrip1";
             // 
@@ -376,7 +371,7 @@ namespace Comic_Book_Maker
             this.tableLayoutPanel1.Controls.Add(this.checkBoxCreateFromArchive, 0, 1);
             this.tableLayoutPanel1.Controls.Add(this.buttonGo, 1, 0);
             this.tableLayoutPanel1.Controls.Add(this.buttonRefresh, 1, 4);
-            this.tableLayoutPanel1.Location = new System.Drawing.Point(635, 9);
+            this.tableLayoutPanel1.Location = new System.Drawing.Point(598, 9);
             this.tableLayoutPanel1.Margin = new System.Windows.Forms.Padding(0);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 7;
@@ -400,7 +395,7 @@ namespace Comic_Book_Maker
             this.tableLayoutPanel10.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tableLayoutPanel10.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tableLayoutPanel10.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 80F));
-            this.tableLayoutPanel10.Controls.Add(this.textBoxSuffixPattern, 3, 0);
+            this.tableLayoutPanel10.Controls.Add(this.textBoxRenameSuffix, 3, 0);
             this.tableLayoutPanel10.Controls.Add(this.labelSuffix, 2, 0);
             this.tableLayoutPanel10.Controls.Add(this.label2, 0, 0);
             this.tableLayoutPanel10.Controls.Add(this.comboBoxFileExistAction, 1, 0);
@@ -412,18 +407,18 @@ namespace Comic_Book_Maker
             this.tableLayoutPanel10.Size = new System.Drawing.Size(284, 27);
             this.tableLayoutPanel10.TabIndex = 14;
             // 
-            // textBoxSuffixPattern
+            // textBoxRenameSuffix
             // 
-            this.textBoxSuffixPattern.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.textBoxSuffixPattern.DataBindings.Add(new System.Windows.Forms.Binding("Text", global::Comic_Book_Maker.Properties.Settings.Default, "file_exist_suffix", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.textBoxSuffixPattern.Location = new System.Drawing.Point(207, 3);
-            this.textBoxSuffixPattern.Name = "textBoxSuffixPattern";
-            this.textBoxSuffixPattern.Size = new System.Drawing.Size(47, 20);
-            this.textBoxSuffixPattern.TabIndex = 1;
-            this.textBoxSuffixPattern.Text = global::Comic_Book_Maker.Properties.Settings.Default.file_exist_suffix;
-            this.textBoxSuffixPattern.EnabledChanged += new System.EventHandler(this.textBoxFileExistSuffixPattern_TextChanged);
-            this.textBoxSuffixPattern.TextChanged += new System.EventHandler(this.textBoxFileExistSuffixPattern_TextChanged);
-            this.textBoxSuffixPattern.VisibleChanged += new System.EventHandler(this.textBoxFileExistSuffixPattern_TextChanged);
+            this.textBoxRenameSuffix.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.textBoxRenameSuffix.DataBindings.Add(new System.Windows.Forms.Binding("Text", global::Comic_Book_Maker.Properties.Settings.Default, "file_exist_suffix", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.textBoxRenameSuffix.Location = new System.Drawing.Point(207, 3);
+            this.textBoxRenameSuffix.Name = "textBoxRenameSuffix";
+            this.textBoxRenameSuffix.Size = new System.Drawing.Size(47, 20);
+            this.textBoxRenameSuffix.TabIndex = 1;
+            this.textBoxRenameSuffix.Text = global::Comic_Book_Maker.Properties.Settings.Default.file_exist_suffix;
+            this.textBoxRenameSuffix.EnabledChanged += new System.EventHandler(this.textBoxtextBoxRenameSuffix_TextChanged);
+            this.textBoxRenameSuffix.TextChanged += new System.EventHandler(this.textBoxtextBoxRenameSuffix_TextChanged);
+            this.textBoxRenameSuffix.VisibleChanged += new System.EventHandler(this.textBoxtextBoxRenameSuffix_TextChanged);
             // 
             // labelSuffix
             // 
@@ -598,64 +593,35 @@ namespace Comic_Book_Maker
             this.tableLayoutPanel4.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.tableLayoutPanel4.ColumnCount = 1;
             this.tableLayoutPanel4.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel4.Controls.Add(this.tableLayoutPanel8, 0, 1);
-            this.tableLayoutPanel4.Controls.Add(this.checkBoxMultiCore, 0, 0);
-            this.tableLayoutPanel4.Controls.Add(this.checkBoxDeleteInputFiles, 0, 3);
-            this.tableLayoutPanel4.Controls.Add(this.checkBoxCloseAtComplete, 0, 2);
-            this.tableLayoutPanel4.Controls.Add(this.tableLayoutPanel9, 0, 4);
+            this.tableLayoutPanel4.Controls.Add(this.checkBoxParelize, 0, 0);
+            this.tableLayoutPanel4.Controls.Add(this.checkBoxDeleteInputFiles, 0, 2);
+            this.tableLayoutPanel4.Controls.Add(this.checkBoxCloseAtComplete, 0, 1);
+            this.tableLayoutPanel4.Controls.Add(this.tableLayoutPanel9, 0, 3);
             this.tableLayoutPanel4.Location = new System.Drawing.Point(9, 19);
             this.tableLayoutPanel4.Margin = new System.Windows.Forms.Padding(0);
             this.tableLayoutPanel4.Name = "tableLayoutPanel4";
-            this.tableLayoutPanel4.RowCount = 5;
-            this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 16.66667F));
-            this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 16.66667F));
-            this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 16.66667F));
-            this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 16.66667F));
-            this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 16.66667F));
-            this.tableLayoutPanel4.Size = new System.Drawing.Size(313, 130);
+            this.tableLayoutPanel4.RowCount = 4;
+            this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tableLayoutPanel4.Size = new System.Drawing.Size(313, 95);
             this.tableLayoutPanel4.TabIndex = 11;
             // 
-            // tableLayoutPanel8
+            // checkBoxParelize
             // 
-            this.tableLayoutPanel8.AutoSize = true;
-            this.tableLayoutPanel8.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.tableLayoutPanel8.ColumnCount = 2;
-            this.tableLayoutPanel8.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tableLayoutPanel8.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tableLayoutPanel8.Controls.Add(this.labelNCore, 0, 0);
-            this.tableLayoutPanel8.Controls.Add(this.numericUpDownNCore, 1, 0);
-            this.tableLayoutPanel8.Location = new System.Drawing.Point(0, 25);
-            this.tableLayoutPanel8.Margin = new System.Windows.Forms.Padding(0);
-            this.tableLayoutPanel8.Name = "tableLayoutPanel8";
-            this.tableLayoutPanel8.RowCount = 1;
-            this.tableLayoutPanel8.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel8.Size = new System.Drawing.Size(189, 25);
-            this.tableLayoutPanel8.TabIndex = 13;
-            // 
-            // numericUpDownNCore
-            // 
-            this.numericUpDownNCore.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.numericUpDownNCore.DataBindings.Add(new System.Windows.Forms.Binding("Value", global::Comic_Book_Maker.Properties.Settings.Default, "multi_core_n_max", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.numericUpDownNCore.Location = new System.Drawing.Point(144, 3);
-            this.numericUpDownNCore.Name = "numericUpDownNCore";
-            this.numericUpDownNCore.Size = new System.Drawing.Size(42, 20);
-            this.numericUpDownNCore.TabIndex = 2;
-            this.numericUpDownNCore.Value = global::Comic_Book_Maker.Properties.Settings.Default.multi_core_n_max;
-            // 
-            // checkBoxMultiCore
-            // 
-            this.checkBoxMultiCore.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.checkBoxMultiCore.AutoSize = true;
-            this.checkBoxMultiCore.Checked = global::Comic_Book_Maker.Properties.Settings.Default.multi_core_enable;
-            this.checkBoxMultiCore.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBoxMultiCore.DataBindings.Add(new System.Windows.Forms.Binding("Checked", global::Comic_Book_Maker.Properties.Settings.Default, "multi_core_enable", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.checkBoxMultiCore.Location = new System.Drawing.Point(3, 4);
-            this.checkBoxMultiCore.Name = "checkBoxMultiCore";
-            this.checkBoxMultiCore.Size = new System.Drawing.Size(147, 17);
-            this.checkBoxMultiCore.TabIndex = 0;
-            this.checkBoxMultiCore.Text = "Use multi-core processing";
-            this.checkBoxMultiCore.UseVisualStyleBackColor = true;
-            this.checkBoxMultiCore.CheckedChanged += new System.EventHandler(this.checkBoxMultiCore_CheckedChanged);
+            this.checkBoxParelize.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.checkBoxParelize.AutoSize = true;
+            this.checkBoxParelize.Checked = global::Comic_Book_Maker.Properties.Settings.Default.multi_core_enable;
+            this.checkBoxParelize.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBoxParelize.DataBindings.Add(new System.Windows.Forms.Binding("Checked", global::Comic_Book_Maker.Properties.Settings.Default, "multi_core_enable", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.checkBoxParelize.Location = new System.Drawing.Point(3, 3);
+            this.checkBoxParelize.Name = "checkBoxParelize";
+            this.checkBoxParelize.Size = new System.Drawing.Size(147, 17);
+            this.checkBoxParelize.TabIndex = 0;
+            this.checkBoxParelize.Text = "Use multi-core processing";
+            this.checkBoxParelize.UseVisualStyleBackColor = true;
             // 
             // checkBoxDeleteInputFiles
             // 
@@ -663,7 +629,7 @@ namespace Comic_Book_Maker
             this.checkBoxDeleteInputFiles.AutoSize = true;
             this.checkBoxDeleteInputFiles.Checked = global::Comic_Book_Maker.Properties.Settings.Default.delete_input_files;
             this.checkBoxDeleteInputFiles.DataBindings.Add(new System.Windows.Forms.Binding("Checked", global::Comic_Book_Maker.Properties.Settings.Default, "delete_input_files", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.checkBoxDeleteInputFiles.Location = new System.Drawing.Point(3, 79);
+            this.checkBoxDeleteInputFiles.Location = new System.Drawing.Point(3, 49);
             this.checkBoxDeleteInputFiles.Name = "checkBoxDeleteInputFiles";
             this.checkBoxDeleteInputFiles.Size = new System.Drawing.Size(296, 17);
             this.checkBoxDeleteInputFiles.TabIndex = 0;
@@ -676,7 +642,7 @@ namespace Comic_Book_Maker
             this.checkBoxCloseAtComplete.AutoSize = true;
             this.checkBoxCloseAtComplete.Checked = global::Comic_Book_Maker.Properties.Settings.Default.close_after_complete;
             this.checkBoxCloseAtComplete.DataBindings.Add(new System.Windows.Forms.Binding("Checked", global::Comic_Book_Maker.Properties.Settings.Default, "close_after_complete", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.checkBoxCloseAtComplete.Location = new System.Drawing.Point(3, 54);
+            this.checkBoxCloseAtComplete.Location = new System.Drawing.Point(3, 26);
             this.checkBoxCloseAtComplete.Name = "checkBoxCloseAtComplete";
             this.checkBoxCloseAtComplete.Size = new System.Drawing.Size(190, 17);
             this.checkBoxCloseAtComplete.TabIndex = 0;
@@ -694,7 +660,7 @@ namespace Comic_Book_Maker
             this.tableLayoutPanel9.Controls.Add(this.buttonRarPath, 2, 0);
             this.tableLayoutPanel9.Controls.Add(this.labelRarPath, 0, 0);
             this.tableLayoutPanel9.Controls.Add(this.textBoxRarPath, 1, 0);
-            this.tableLayoutPanel9.Location = new System.Drawing.Point(0, 102);
+            this.tableLayoutPanel9.Location = new System.Drawing.Point(0, 69);
             this.tableLayoutPanel9.Margin = new System.Windows.Forms.Padding(0);
             this.tableLayoutPanel9.Name = "tableLayoutPanel9";
             this.tableLayoutPanel9.RowCount = 1;
@@ -721,9 +687,9 @@ namespace Comic_Book_Maker
             this.groupBox3.AutoSize = true;
             this.groupBox3.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.groupBox3.Controls.Add(this.tableLayoutPanel4);
-            this.groupBox3.Location = new System.Drawing.Point(637, 344);
+            this.groupBox3.Location = new System.Drawing.Point(600, 344);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(325, 165);
+            this.groupBox3.Size = new System.Drawing.Size(325, 130);
             this.groupBox3.TabIndex = 12;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Options";
@@ -751,7 +717,8 @@ namespace Comic_Book_Maker
             this.ColumnInput,
             this.ColumnType,
             this.ColumnOutput,
-            this.ColumnState});
+            this.ColumnState,
+            this.ColumnError});
             this.dataGridView1.GridColor = System.Drawing.SystemColors.ControlLight;
             this.dataGridView1.Location = new System.Drawing.Point(12, 9);
             this.dataGridView1.Name = "dataGridView1";
@@ -760,10 +727,11 @@ namespace Comic_Book_Maker
             this.dataGridView1.RowHeadersWidth = 23;
             this.dataGridView1.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
             this.dataGridView1.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dataGridView1.Size = new System.Drawing.Size(619, 475);
+            this.dataGridView1.Size = new System.Drawing.Size(582, 475);
             this.dataGridView1.TabIndex = 13;
             this.dataGridView1.ColumnHeaderMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dataGridView1_ColumnHeaderMouseClick);
             this.dataGridView1.DragDrop += new System.Windows.Forms.DragEventHandler(this.dataGridView1_DragDrop);
+            this.dataGridView1.DragOver += new System.Windows.Forms.DragEventHandler(this.dataGridView1_DragOver);
             this.dataGridView1.KeyDown += new System.Windows.Forms.KeyEventHandler(this.dataGridView1_KeyDown);
             // 
             // ColumnSelect
@@ -785,13 +753,13 @@ namespace Comic_Book_Maker
             this.ColumnType.HeaderText = "Type";
             this.ColumnType.Name = "ColumnType";
             this.ColumnType.ReadOnly = true;
-            this.ColumnType.Width = 56;
+            this.ColumnType.Width = global::Comic_Book_Maker.Properties.Settings.Default.column_width_type;
             // 
             // ColumnOutput
             // 
             this.ColumnOutput.HeaderText = "Output";
             this.ColumnOutput.Name = "ColumnOutput";
-            this.ColumnOutput.Width = global::Comic_Book_Maker.Properties.Settings.Default.column_width_output;
+            this.ColumnOutput.Width = global::Comic_Book_Maker.Properties.Settings.Default.column_width_input;
             // 
             // ColumnState
             // 
@@ -800,13 +768,19 @@ namespace Comic_Book_Maker
             this.ColumnState.ReadOnly = true;
             this.ColumnState.Width = global::Comic_Book_Maker.Properties.Settings.Default.column_width_state;
             // 
+            // ColumnError
+            // 
+            this.ColumnError.HeaderText = "Error";
+            this.ColumnError.Name = "ColumnError";
+            this.ColumnError.Visible = false;
+            // 
             // formMain
             // 
             this.AcceptButton = this.buttonGo;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.buttonExit;
-            this.ClientSize = new System.Drawing.Size(974, 511);
+            this.ClientSize = new System.Drawing.Size(937, 511);
             this.Controls.Add(this.dataGridView1);
             this.Controls.Add(this.tableLayoutPanel1);
             this.Controls.Add(this.groupBox3);
@@ -840,9 +814,6 @@ namespace Comic_Book_Maker
             this.tableLayoutPanel2.PerformLayout();
             this.tableLayoutPanel4.ResumeLayout(false);
             this.tableLayoutPanel4.PerformLayout();
-            this.tableLayoutPanel8.ResumeLayout(false);
-            this.tableLayoutPanel8.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownNCore)).EndInit();
             this.tableLayoutPanel9.ResumeLayout(false);
             this.tableLayoutPanel9.PerformLayout();
             this.groupBox3.ResumeLayout(false);
@@ -859,9 +830,8 @@ namespace Comic_Book_Maker
         private System.Windows.Forms.CheckBox checkBoxCreateFromArchive;
         private System.Windows.Forms.CheckBox checkBoxCreateFromFolder;
         private System.Windows.Forms.GroupBox groupBox2;
-        private System.Windows.Forms.TextBox textBoxSuffixPattern;
+        private System.Windows.Forms.TextBox textBoxRenameSuffix;
         private System.Windows.Forms.NumericUpDown numericUpDownCleanLimit;
-        private System.Windows.Forms.NumericUpDown numericUpDownNCore;
         private System.Windows.Forms.TextBox textBoxCleanFiles;
         private System.Windows.Forms.CheckBox checkBoxRemoveFoldersSmart;
         private System.Windows.Forms.CheckBox checkBoxCleanLimit;
@@ -869,14 +839,13 @@ namespace Comic_Book_Maker
         private System.Windows.Forms.CheckBox checkBoxClean;
         private System.Windows.Forms.CheckBox checkBoxDeleteInputFiles;
         private System.Windows.Forms.CheckBox checkBoxCloseAtComplete;
-        private System.Windows.Forms.CheckBox checkBoxMultiCore;
+        private System.Windows.Forms.CheckBox checkBoxParelize;
         private System.Windows.Forms.Button buttonGo;
         private System.Windows.Forms.TextBox textBoxRarPath;
         private System.Windows.Forms.Label labelRarPath;
         private System.Windows.Forms.Button buttonRarPath;
         private System.Windows.Forms.ToolTip toolTip1;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.Label labelNCore;
         private System.Windows.Forms.OpenFileDialog openFileDialog1;
         private System.Windows.Forms.StatusStrip statusStrip1;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
@@ -889,7 +858,6 @@ namespace Comic_Book_Maker
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel5;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel6;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel4;
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel8;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel9;
         private System.Windows.Forms.GroupBox groupBox3;
         private System.Windows.Forms.ComboBox comboBoxFileExistAction;
@@ -909,6 +877,7 @@ namespace Comic_Book_Maker
         private System.Windows.Forms.DataGridViewTextBoxColumn ColumnType;
         private System.Windows.Forms.DataGridViewTextBoxColumn ColumnOutput;
         private System.Windows.Forms.DataGridViewTextBoxColumn ColumnState;
+        private System.Windows.Forms.DataGridViewTextBoxColumn ColumnError;
     }
 }
 

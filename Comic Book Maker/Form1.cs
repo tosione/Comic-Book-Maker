@@ -1,12 +1,30 @@
 ﻿using System;
 using System.Diagnostics;   //for processes
 using System.IO;            //for file access
+using System.Linq;          //for DataGridViewRowCollection.Cast()
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Comic_Book_Maker
 {
     public partial class formMain : Form
     {
+        //types
+        private enum prErr { None, NoInputFileFolder, CreatingTemp, Extracting, Cleaning, Compressing, DeletingTemp, DeletingInput }
+
+        //objects
+        private readonly Stopwatch crono = new Stopwatch();
+        private const string FolderStr = "Folder", ArchiveStr = "Archive", ComicStr = "Comic";
+        private const int nStep = 5;
+        private string outType = "";
+        private enum fEA { Overwrite, Skip, Rename };
+        private fEA fileExistAction = fEA.Overwrite;
+        private delegate void endDelegate();
+        bool ErrorRarPath = false;
+        bool ErrorRenameSuffix = false;
+
+        //initialization
         public formMain(string[] args1)
         {
             InitializeComponent();
@@ -18,21 +36,18 @@ namespace Comic_Book_Maker
 
             //if command line arguments are given
             if (args1.Length > 0)
-                populateGrid(args1, false);
+                populateGrid(args1, true);
 
             //configure initial sorting of dataGridView1;
             dataGridView1.Sort(dataGridView1.Columns[1], System.ComponentModel.ListSortDirection.Ascending);
 
+            showThread("Main");
         }
 
         //TODO: add shell menu entry
         //TODO: finish command line arguments
-
-        //types
-        enum stepErr { None, CreatingTemp, Extracting, Cleaning, Compressing, FileExistNoOverwrite, MissingRar, DeletingTemp, DeletingInput }
-
-        //objects
-        private const string FolderStr = "Folder", ArchiveStr = "Archive", ComicStr = "Comic";
+        //TODO: check errors not used (exctracting, cleaning, compressing, deleting temp, deleting input)
+        //TODO: make easy show row error 
 
         //event handlers
         private void form1_FormClosed(object sender, FormClosedEventArgs e)
@@ -50,9 +65,9 @@ namespace Comic_Book_Maker
             Comic_Book_Maker.Properties.Settings.Default.Save();
             ;
         }
-        private void dataGridView1_DragEnter(object sender, DragEventArgs e)
+        private void dataGridView1_DragOver(object sender, DragEventArgs e)
         {
-            // If the data is a file or a bitmap, display the copy cursor.
+            // If the data is a file or a bitmap.
             if (e.Data.GetDataPresent(DataFormats.FileDrop))
             {
                 if ((ModifierKeys & Keys.Control) != 0)
@@ -70,8 +85,10 @@ namespace Comic_Book_Maker
             // Handle FileDrop data.
             if (e.Data.GetDataPresent(DataFormats.FileDrop))
             {
-                // Assign the file names to a string array, in case the user has selected multiple files.
-                populateGrid((string[])e.Data.GetData(DataFormats.FileDrop), false);
+                if (e.Effect == DragDropEffects.Move)
+                    populateGrid((string[])e.Data.GetData(DataFormats.FileDrop), true);
+                else if (e.Effect == DragDropEffects.Copy)
+                    populateGrid((string[])e.Data.GetData(DataFormats.FileDrop), false);
             }
         }
         private void checkBoxCreateFromFolder_CheckedChanged(object sender, EventArgs e)
@@ -95,47 +112,19 @@ namespace Comic_Book_Maker
         }
         private void comboBoxOutputType_SelectedIndexChanged(object sender, EventArgs e)
         {
-            updateOutputNames();
+            outType = comboBoxOutputType.Text.ToLower();
 
-            bool isRar = comboBoxOutputType.Text == "CBR";
+            bool isRar = (outType == "cbr");
             textBoxRarPath.Enabled = isRar;
             labelRarPath.Enabled = isRar;
             buttonRarPath.Enabled = isRar;
+
+            updateOutputNames();
         }
         private void buttonGo_Click(object sender, EventArgs e)
         {
-            double t = 0;
-            int errorN = steps(ref t);
-
-            //update statusbar
-            switch (errorN)
-            {
-                case 0:
-                    showStatus("Finished", t);
-                    break;
-                case 1:
-                    showError("Rar.exe not found");
-                    break;
-                case 2:
-                    showError("Unable to create temporal directory");
-                    break;
-                default:
-                    showError("Undefined error, call agent Mulder");
-                    break;
-            }
-
-            //close if selected
-            if (checkBoxCloseAtComplete.Checked)
-            {
-                //show countdown
-                System.Threading.Thread.Sleep(1000);
-                for (int i = 5; i > 0; i--)
-                {
-                    showStatus("Closing in " + i.ToString() + " s");
-                    System.Threading.Thread.Sleep(1000);
-                }
-                Close();
-            }
+            updateOutputNames();
+            processAllRows();
         }
         private void buttonExit_Click(object sender, EventArgs e)
         {
@@ -145,7 +134,7 @@ namespace Comic_Book_Maker
         {
             updateOutputNames();
         }
-        private void checkBoxCleanFiles_CheckedChanged(object sender, EventArgs e)
+        private void checkBoxClean_CheckedChanged(object sender, EventArgs e)
         {
             textBoxCleanFiles.Enabled = checkBoxClean.Checked;
             checkBoxCleanLimit.Enabled = checkBoxClean.Checked;
@@ -159,15 +148,13 @@ namespace Comic_Book_Maker
         {
             checkBoxRemoveFoldersSmart.Enabled = checkBoxRemoveFolders.Checked;
         }
-        private void checkBoxMultiCore_CheckedChanged(object sender, EventArgs e)
-        {
-            numericUpDownNCore.Enabled = checkBoxMultiCore.Checked;
-            labelNCore.Enabled = checkBoxMultiCore.Checked;
-        }
         private void comboBoxFileExistAction_SelectedValueChanged(object sender, EventArgs e)
         {
-            textBoxSuffixPattern.Visible = (comboBoxFileExistAction.SelectedIndex == 2);  //2=Rename
-            labelSuffix.Visible = (comboBoxFileExistAction.SelectedIndex == 2);
+            fileExistAction = (fEA)comboBoxFileExistAction.SelectedIndex;
+
+            textBoxRenameSuffix.Visible = (fileExistAction == fEA.Rename);
+            labelSuffix.Visible = (fileExistAction == fEA.Rename);
+
             updateOutputNames();
         }
         private void buttonOutputPath_Click(object sender, EventArgs e)
@@ -198,17 +185,22 @@ namespace Comic_Book_Maker
         }
         private void textBoxRarPath_Changed(object sender, EventArgs e)
         {
-            if (textBoxRarPath.Enabled && !File.Exists(textBoxRarPath.Text))
+            ErrorRarPath = textBoxRarPath.Enabled && !File.Exists(textBoxRarPath.Text);
+            if (ErrorRarPath)
                 errorProvider1.SetError(textBoxRarPath, "Rar.exe not found");
             else
                 errorProvider1.SetError(textBoxRarPath, "");
+            buttonGo.Enabled = !ErrorRarPath && !ErrorRenameSuffix;
         }
-        private void textBoxFileExistSuffixPattern_TextChanged(object sender, EventArgs e)
+        private void textBoxtextBoxRenameSuffix_TextChanged(object sender, EventArgs e)
         {
-            if (textBoxSuffixPattern.Enabled && !textBoxSuffixPattern.Text.Contains("\\n"))
-                errorProvider1.SetError(textBoxSuffixPattern, "Suffix pattern doesn't contains \\n");
+            ErrorRenameSuffix = textBoxRenameSuffix.Enabled && !textBoxRenameSuffix.Text.Contains("\\n");
+            if (ErrorRenameSuffix)
+                errorProvider1.SetError(textBoxRenameSuffix, "Suffix pattern doesn't contains \\n");
             else
-                errorProvider1.SetError(textBoxSuffixPattern, "");
+                errorProvider1.SetError(textBoxRenameSuffix, "");
+            buttonGo.Enabled = !ErrorRarPath && !ErrorRenameSuffix;
+
             updateOutputNames();
         }
         private void dataGridView1_KeyDown(object sender, KeyEventArgs e)
@@ -239,12 +231,12 @@ namespace Comic_Book_Maker
         private string quote(string s)
         {
             // Adds quotes around string for paths with spaces
-            return ("\"" + s + "\"");
+            return "\"" + s + "\"";
         }
-        private void showError(string s)
+        private void showError(string s, double t)
         {
             toolStripStatusLabel1.ForeColor = System.Drawing.Color.Red;
-            toolStripStatusLabel1.Text = "Error:" + s;
+            toolStripStatusLabel1.Text = s + ": " + t.ToString("F2") + " s";
             statusStrip1.Refresh();
         }
         private void showStatus(string s)
@@ -259,329 +251,464 @@ namespace Comic_Book_Maker
             toolStripStatusLabel1.Text = s + ": " + t.ToString("F2") + " s";
             statusStrip1.Refresh();
         }
-
-        private void populateGrid(string[] files, bool addFiles)
+        private void showThread(string s)
         {
-            int i, j;
+            //show message with thread ID
+            Console.WriteLine(s + " (Thread ID = " + Thread.CurrentThread.ManagedThreadId.ToString() + ")");
+        }
+        private void populateGrid(string[] files, bool replace)
+        {
+            int i;
             string inPath;
-            if (!addFiles)
+
+            //clear dataGridView if needed 
+            if (replace)
                 dataGridView1.Rows.Clear();
 
-            try
+            for (i = 0; i <= files.GetUpperBound(0); i++)
             {
-                for (i = 0; i <= files.GetUpperBound(0); i++)
+                inPath = files[i];
+                bool duplicate = false;
+
+                //search if duplicate
+                foreach (DataGridViewRow row in dataGridView1.Rows)
                 {
-                    inPath = files[i];
+                    if ((string)row.Cells[1].Value == inPath)
+                        duplicate = true;
+                }
+
+                if (!duplicate)
+                {
+                    //Add to dataGridView1 depending on inType
                     if (Directory.Exists(inPath))
                     {
-                        j = dataGridView1.Rows.Count;
-                        dataGridView1.Rows.Add();
-                        dataGridView1.Rows[j].Cells[0].Value = true;
-                        dataGridView1.Rows[j].Cells[1].Value = inPath;
-                        dataGridView1.Rows[j].Cells[2].Value = FolderStr;
+                        object[] row = { true, inPath, FolderStr, "", "", prErr.None };
+                        dataGridView1.Rows.Add(row);
                     }
                     else if (File.Exists(inPath))
                     {
                         string ext = Path.GetExtension(inPath).ToLower();
                         if (ext == ".zip" || ext == ".7z" || ext == ".rar")
                         {
-                            j = dataGridView1.Rows.Count;
-                            dataGridView1.Rows.Add();
-                            dataGridView1.Rows[j].Cells[0].Value = true;
-                            dataGridView1.Rows[j].Cells[1].Value = inPath;
-                            dataGridView1.Rows[j].Cells[2].Value = ArchiveStr;
+                            object[] row = { true, inPath, ArchiveStr, "", "", prErr.None };
+                            dataGridView1.Rows.Add(row);
                         }
                         else if (ext == ".cbz" || ext == ".cb7" || ext == ".cbr")
                         {
-                            j = dataGridView1.Rows.Count;
-                            dataGridView1.Rows.Add();
-                            dataGridView1.Rows[j].Cells[0].Value = true;
-                            dataGridView1.Rows[j].Cells[1].Value = inPath;
-                            dataGridView1.Rows[j].Cells[2].Value = ComicStr;
+                            object[] row = { true, inPath, ComicStr, "", "", prErr.None };
+                            dataGridView1.Rows.Add(row);
                         }
                     }
                 }
             }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-                return;
-            }
+
             updateOutputNames();
+
+            if (dataGridView1.SortedColumn != null)
+            {
+                if (dataGridView1.SortOrder == SortOrder.Ascending)
+                    dataGridView1.Sort(dataGridView1.SortedColumn, System.ComponentModel.ListSortDirection.Ascending);
+                if (dataGridView1.SortOrder == SortOrder.Descending)
+                    dataGridView1.Sort(dataGridView1.SortedColumn, System.ComponentModel.ListSortDirection.Descending);
+            }
         }
         private void updateOutputNames()
         {
-            string inType, inPath, outPath, outExt, outDir;
-            for (int i = 0; i < dataGridView1.Rows.Count; i++)
+            string inType, inPath, outPath;
+
+            foreach (DataGridViewRow row in dataGridView1.Rows)
             {
+                //get input data
+                inPath = (string)row.Cells[1].Value;
+                inType = (string)row.Cells[2].Value;
 
-
-                inPath = (string)dataGridView1.Rows[i].Cells[1].Value;
-                inType = (string)dataGridView1.Rows[i].Cells[2].Value;
-
-
-                outDir = textBoxOutPath.Text;
-                outExt = comboBoxOutputType.Text.ToLower();
-
+                //construct outputPath
                 if (checkBoxUseOutPath.Checked)
-                    outPath = Path.Combine(outDir, Path.ChangeExtension(Path.GetFileName(inPath), outExt));
+                    outPath = Path.Combine(textBoxOutPath.Text, Path.ChangeExtension(Path.GetFileName(inPath), outType));
                 else
-                    outPath = Path.ChangeExtension(inPath, outExt);
+                    outPath = Path.ChangeExtension(inPath, outType);
 
-                if (File.Exists(outPath) && (comboBoxFileExistAction.SelectedIndex == 2)) //2 = rename
+                //if outPath already exists, create renamed name
+                if (File.Exists(outPath) && (fileExistAction == fEA.Rename))
                 {
+                    //test if pattern contains \n
                     string pattern;
-                    if (textBoxSuffixPattern.Text.Contains("\\n"))
-                        pattern = textBoxSuffixPattern.Text;
+                    if (textBoxRenameSuffix.Text.Contains("\\n"))
+                        pattern = textBoxRenameSuffix.Text;
                     else
-                        pattern = "_\\n";    //use another pattern
+                        pattern = "_\\n";
 
+                    //try pattern with numbers 1-100
                     string outPath0 = outPath;
                     int j = 1;
-                    while (File.Exists(outPath) && j <= 100)
+                    while (File.Exists(outPath) && j <= 1000)
                     {
                         outPath = Path.Combine(Path.GetDirectoryName(outPath0), Path.GetFileNameWithoutExtension(outPath0) + pattern.Replace("\\n", j.ToString()) + Path.GetExtension(outPath0));
                         j++;
                     }
+                    //if none found show warning
+                    if (j > 1000)
+                    {
+                        row.Cells[4].Value = "Renamed also exist";
+                        outPath = outPath0;
+                    }
                 }
 
-                dataGridView1.Rows[i].Cells[3].Value = outPath;
-                dataGridView1.Rows[i].Cells[0].Value = (inType == FolderStr && checkBoxCreateFromFolder.Checked) ||
-                                                       (inType == ArchiveStr && checkBoxCreateFromArchive.Checked) ||
-                                                       (inType == ComicStr && checkBoxCreateFromComic.Checked);
+                //if inPath dont exist show warning
+                if (!Directory.Exists(inPath) && !File.Exists(inPath))
+                {
+                    row.Cells[4].Value = "Input file doesn't exist";
+                }
+
+                row.Cells[3].Value = outPath;
+
+                //select row based on options
+                row.Cells[0].Value = (inType == FolderStr && checkBoxCreateFromFolder.Checked) ||
+                                    (inType == ArchiveStr && checkBoxCreateFromArchive.Checked) ||
+                                    (inType == ComicStr && checkBoxCreateFromComic.Checked);
+
+
             }
+            dataGridView1.Refresh();
         }
-
-        //steps functions
-        private int steps(ref double t)
+        private void processAllRows()
         {
-            Stopwatch crono = Stopwatch.StartNew();
-            int i;
-            const int nStep = 5;
-
-            //reset status for each file
-            for (i = 0; i < dataGridView1.Rows.Count; i++)
-                dataGridView1.Rows[i].Cells[4].Value = "";
+            showStatus("Working");
 
             //reset statusBar
             toolStripProgressBar1.Value = 0;
             toolStripProgressBar1.Maximum = nStep * dataGridView1.Rows.Count;
-            showStatus("Working");
 
-            for (i = 0; i < dataGridView1.Rows.Count; i++)
+            //disable buttons
+            buttonGo.Enabled = false;
+            buttonExit.Enabled = false;
+            buttonRefresh.Enabled = false;
+
+            //create outPath if it does not exist
+            if (!Directory.Exists(textBoxOutPath.Text))
+                Directory.CreateDirectory(textBoxOutPath.Text);
+
+            //reset status & errors for each file
+            foreach (DataGridViewRow Row in dataGridView1.Rows)
             {
-                if ((bool)dataGridView1.Rows[i].Cells[0].Value)
-                {
-                    string inPath, inType, outPath, tempPath, outType;
-                    stepErr err = stepErr.None;
-
-                    inPath = (string)dataGridView1.Rows[i].Cells[1].Value;
-                    inType = (string)dataGridView1.Rows[i].Cells[2].Value;
-                    outPath = (string)dataGridView1.Rows[i].Cells[3].Value;
-                    outType = comboBoxOutputType.Text.ToLower();
-
-                    //*********************************************************
-                    //step 1: extract
-                    //*********************************************************
-                    dataGridView1.Rows[i].Cells[4].Value = "Decompressing";
-                    tempPath = Path.Combine(/*HACK: need to restore real temp dir path *//* Path.GetTempPath()*/ "C:\\Users\\Gabriel\\Desktop\\temp", "CBM_" + Path.GetFileNameWithoutExtension(inPath));
-
-                    if (inType == FolderStr)
-                    {
-                        // if inPath is a folder copy folder to tempPath (using VisualBasic function)
-                        Microsoft.VisualBasic.FileIO.FileSystem.CopyDirectory(inPath, tempPath, true);
-                    }
-                    else
-                    {
-                        // if inPath is a comic/archive extract it to tempPath
-
-                        //if tempPath exists, try to delete
-                        if (Directory.Exists(tempPath))
-                        {
-                            try
-                            {
-                                Directory.Delete(tempPath, true);
-                            }
-                            catch
-                            {
-                            }
-                        }
-                        //if still exist, search for unexisting directory
-                        if (Directory.Exists(tempPath))
-                        {
-                            string tempPath0 = tempPath;
-                            int j = 1;
-                            while (Directory.Exists(tempPath) && j <= 1000)
-                            {
-                                tempPath = tempPath0 + "_" + j.ToString();
-                                j++;
-                            }
-                        }
-                        //if still exist, return error
-                        if (Directory.Exists(tempPath))
-                            return (1);
-
-                        //create tempPath
-                        Directory.CreateDirectory(tempPath);
-
-                        /// 7-Zip basic parameters to extract with full path:
-                        ///     7z.exe x {archive} {switches}
-                        /// Swithes:
-                        ///     -ao{mode}       overwrite mode (a=all)
-                        ///     -o{outdir}      set output directory
-                        Process pr7z = new Process();
-                        pr7z.StartInfo = new ProcessStartInfo();
-                        pr7z.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
-                        pr7z.StartInfo.FileName = "7z.exe";
-                        pr7z.StartInfo.Arguments = "x " + quote(inPath) + " -o" + quote(tempPath) + " -aoa";
-                        pr7z.Start();
-                        pr7z.WaitForExit();
-                    }
-                    toolStripProgressBar1.Value = nStep * i + 1;
-
-
-                    //*********************************************************
-                    //step 2: clean
-                    //*********************************************************
-                    if (err == stepErr.None)
-                    {
-                        //dataGridView1.Rows[i].Cells[4].Value = "Cleaning";
-                    }
-                    toolStripProgressBar1.Value = nStep * i + 2;
-
-
-                    //*********************************************************
-                    //step 3: compress
-                    //*********************************************************
-                    if (err == stepErr.None)
-                    {
-                        dataGridView1.Rows[i].Cells[4].Value = "Compressing";
-
-                        // compress tempPath (folder) to outPath (comic file of type outType)
-                        // delete outPath if exists previously
-
-                        if (File.Exists(outPath))
-                        {
-                            if (comboBoxFileExistAction.SelectedIndex == 0)         //Overwrite
-                                File.Delete(outPath);
-                            else if (comboBoxFileExistAction.SelectedIndex == 1)    //Skip
-                                return (5);
-                            else if (comboBoxFileExistAction.SelectedIndex == 2)    //Rename
-                                updateOutputNames();
-                        }
-
-                        if (outType == "cbz")
-                        {
-                            /// 7-Zip basic parameters to Compress:
-                            ///     7z.exe a {archive} {files|@listfiles} {switches}
-                            /// Swithes:
-                            ///     -bb{level}      output log level (0=none..3)
-                            ///     -mx={level}     compression level (0=none,1,3,5,7,9)
-                            ///     -mt={mode}      multithreading mode (on,off)
-                            ///     -r              enable recurse directory for wildcards
-                            ///     -t{type}        set type of archive (7z,zip)
-                            ///     -x!{wildcard}   exclude files
-
-                            Process pr7z = new Process();
-                            pr7z.StartInfo = new ProcessStartInfo();
-                            pr7z.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
-                            pr7z.StartInfo.FileName = "7z.exe";
-                            pr7z.StartInfo.Arguments = "a -mx=0 -tzip -r -mmt=off -bb1 " + quote(outPath) + " " + quote(Path.Combine(tempPath, "*.*"));
-                            pr7z.Start();
-                            pr7z.WaitForExit();
-                        }
-                        else if (outType == "cb7")
-                        {
-                            Process pr7z = new Process();
-                            pr7z.StartInfo = new ProcessStartInfo();
-                            pr7z.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
-                            pr7z.StartInfo.FileName = "7z.exe";
-                            pr7z.StartInfo.Arguments = "a -mx0 -t7z -r -mmt=off " + quote(outPath) + " " + quote(Path.Combine(tempPath, "*.*"));
-                            pr7z.Start();
-                            pr7z.WaitForExit();
-                        }
-                        else if (outType == "cbr")
-                        {
-                            if (!File.Exists(textBoxRarPath.Text))
-                                return (6);
-
-                            /// RAR basic parameters to Compress:
-                            ///     rar.exe a {switches} {archive}  {files|@listfiles} 
-                            /// Switches:
-                            ///     -ed             do no add empty folders
-                            ///     -ep1            exclude base folder from names
-                            ///     -m{level}       compression level (0=none)
-                            ///     -ma{version}    specify archive version (4|5)
-                            ///     -ms{types}      file types to store
-                            ///     -mt{threads}    number of threads
-                            ///     -r              recurse subfolders
-                            ///     -r0             recurse subfolders for wildcards
-                            ///     -x{wildcard}    exclude specified file
-
-                            Process prRar = new Process();
-                            prRar.StartInfo = new ProcessStartInfo();
-                            prRar.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
-                            prRar.StartInfo.FileName = textBoxRarPath.Text;
-                            prRar.StartInfo.Arguments = "a -ed -ep1 -m0 -ma4 -r -mt1 " + quote(outPath) + " " + quote(Path.Combine(tempPath, "*.*"));
-                            prRar.Start();
-                            prRar.WaitForExit();
-                        }
-
-                    }
-                    toolStripProgressBar1.Value = nStep * i + 3;
-
-
-                    //*********************************************************
-                    //step 4: delete input
-                    //*********************************************************
-                    if (err == stepErr.None)
-                    {
-                        dataGridView1.Rows[i].Cells[4].Value = "Deleting input";
-                        
-                        //delete inPath if option is enabled
-                        if (checkBoxDeleteInputFiles.Checked && (inPath != outPath))
-                        {
-                            //deletes to recycle bin, using VisualBasic functions
-                            //https://diptimayapatra.wordpress.com/2014/01/16/delete-file-to-recycle-bin-in-c/
-
-                            if (Directory.Exists(inPath))
-                                Microsoft.VisualBasic.FileIO.FileSystem.DeleteDirectory(inPath, Microsoft.VisualBasic.FileIO.UIOption.OnlyErrorDialogs, Microsoft.VisualBasic.FileIO.RecycleOption.SendToRecycleBin);
-                            else if (File.Exists(inPath))
-                                Microsoft.VisualBasic.FileIO.FileSystem.DeleteFile(inPath, Microsoft.VisualBasic.FileIO.UIOption.OnlyErrorDialogs, Microsoft.VisualBasic.FileIO.RecycleOption.SendToRecycleBin);
-                        }
-                    }
-                    toolStripProgressBar1.Value = nStep * i + 4;
-
-
-                    //*********************************************************
-                    //step 5: delete temporal
-                    //*********************************************************
-                    dataGridView1.Rows[i].Cells[4].Value = "Deleting temp";
-                    
-                    //delete tempPath
-                    if (Directory.Exists(tempPath))
-                        Directory.Delete(tempPath, true);
-
-                    toolStripProgressBar1.Value = nStep * i + 5;
-
-
-                    //*********************************************************
-                    //finished
-                    //*********************************************************
-                    if (err == stepErr.None)
-                        dataGridView1.Rows[i].Cells[4].Value = "Finished";
-                    else if (err == stepErr.FileExistNoOverwrite)
-                        dataGridView1.Rows[i].Cells[4].Value = "Skipped: file exists";
-                    else
-                        dataGridView1.Rows[i].Cells[4].Value = "Error: " + err.ToString();
-                }
+                Row.Cells[4].Value = "";
+                Row.Cells[5].Value = prErr.None;
             }
 
-            crono.Stop();
-            t = crono.Elapsed.TotalSeconds;
+            crono.Restart();     //crono will be stopped in processEnd()
 
-            return (0);
+            showThread("Entering ProcessAllRows");
+
+            //process rows
+            if (checkBoxParelize.Checked)
+            {
+                //parallel
+                Task task1 = Task.Run(() =>
+                {
+                    showThread("Parallel start");
+                    Parallel.ForEach(dataGridView1.Rows.Cast<DataGridViewRow>(), row => { processRow(row); });
+                });
+                task1.ContinueWith((antecedent) =>
+                {
+                    showThread("Continue With");
+                    this.Invoke(new endDelegate(processEnd));
+                });
+            }
+            else
+            {
+                //sequential
+                Task task1 = Task.Run(() =>
+                {
+                    showThread("Sequential start");
+                    foreach (DataGridViewRow row in dataGridView1.Rows) processRow(row);
+                });
+                task1.ContinueWith((antecedent) =>
+                {
+                    showThread("ContinueWith");
+                    this.Invoke(new endDelegate(processEnd));
+                });
+            }
+
+            showThread("Exiting ProcessAllRows");
+
+        }
+        private void processEnd()
+        {
+            showThread("Tasks End");
+
+            crono.Stop();
+
+            //search for errors on each row (cells[5] are hidden)
+            int errN = 0;
+            foreach (DataGridViewRow row in dataGridView1.Rows)
+            {
+                if ((prErr)row.Cells[5].Value != prErr.None)
+                    errN++;
+            }
+
+            //update statusbar
+            if (errN > 0)
+                showError("Finished with errors", crono.Elapsed.TotalSeconds);
+            else
+                showStatus("Finished", crono.Elapsed.TotalSeconds);
+
+            //disable buttons
+            buttonGo.Enabled = true;
+            buttonExit.Enabled = true;
+            buttonRefresh.Enabled = true;
+
+            //close if selected
+            if (checkBoxCloseAtComplete.Checked)
+            {
+                //show countdown
+                System.Threading.Thread.Sleep(1000);
+                for (int i = 5; i > 0; i--)
+                {
+                    showStatus("Closing in " + i.ToString() + " s");
+                    System.Threading.Thread.Sleep(1000);
+                }
+                Close();
+            }
+        }
+        private void processRow(DataGridViewRow row)
+        {
+            showThread("Process Row " + row.Index.ToString());
+
+            //olny handle files that are checked
+            if ((bool)row.Cells[0].Value)
+            {
+                string inPath = (string)row.Cells[1].Value;
+                string inType = (string)row.Cells[2].Value;
+                string outPath = (string)row.Cells[3].Value;
+
+
+                //*********************************************************
+                // step 1: extract
+                //*********************************************************
+                row.Cells[4].Value = "Decompressing";
+
+                if (!Directory.Exists(inPath) && !File.Exists(inPath))
+                {
+                    row.Cells[4].Value = "Error: Input file don't exist";
+                    row.Cells[5].Value = prErr.NoInputFileFolder;
+                    BeginInvoke((Action)delegate { toolStripProgressBar1.Value += 5; });  //compensate for resting increments
+                    return;
+                }
+
+                //get initial tempPath (folder)
+                string tempPath = Path.Combine(Path.GetTempPath(), "CBM_" + Path.GetFileNameWithoutExtension(inPath));
+                //if tempPath exists, try to delete
+                if (Directory.Exists(tempPath))
+                {
+                    try
+                    {
+                        Directory.Delete(tempPath, true);
+                    }
+                    catch
+                    {
+                    }
+                }
+                //if still exist, search for unexisting directory
+                if (Directory.Exists(tempPath))
+                {
+                    string tempPath0 = tempPath;
+                    int j = 1;
+                    while (Directory.Exists(tempPath) && j <= 1000)
+                    {
+                        tempPath = tempPath0 + "_" + j.ToString();
+                        j++;
+                    }
+                }
+                //if still exist, show error
+                if (Directory.Exists(tempPath))
+                {
+                    row.Cells[4].Value = "Error: creating temp directory";
+                    row.Cells[5].Value = prErr.CreatingTemp;
+                    BeginInvoke((Action)delegate { toolStripProgressBar1.Value += 5; });  //compensate for resting increments
+                    return;
+                }
+
+                //create tempPath
+                Directory.CreateDirectory(tempPath);
+
+                //copy folder or extract archive/comic to tempPath
+                if (inType == FolderStr)
+                {
+                    //copy folder to tempPath (using VisualBasic function)
+                    Microsoft.VisualBasic.FileIO.FileSystem.CopyDirectory(inPath, tempPath, true);
+                }
+                else
+                {
+                    /// 7-Zip basic parameters to extract with full path:
+                    ///     7z.exe x {archive} {switches}
+                    /// Swithes:
+                    ///     -ao{mode}       overwrite mode (a=all)
+                    ///     -o{outdir}      set output directory
+
+                    //extract  comic/archive to tempPath
+                    Process pr7z = new Process();
+                    pr7z.StartInfo = new ProcessStartInfo();
+                    pr7z.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+                    pr7z.StartInfo.FileName = "7z.exe";
+                    pr7z.StartInfo.Arguments = "x " + quote(inPath) + " -o" + quote(tempPath) + " -aoa";
+                    pr7z.Start();
+                    pr7z.WaitForExit();
+                }
+
+                BeginInvoke((Action)delegate { toolStripProgressBar1.Value++; });
+
+
+                //*********************************************************
+                // Step 2: clean files
+                //*********************************************************
+                row.Cells[4].Value = "Cleaning";
+                //TODO: clean files in tempPath
+                BeginInvoke((Action)delegate { toolStripProgressBar1.Value++; });
+
+
+                //*********************************************************
+                // Step 3: compress
+                //*********************************************************
+                row.Cells[4].Value = "Compressing";
+
+                //if outPath already exists, handle acordingly
+                if (File.Exists(outPath))
+                {
+                    if (fileExistAction == fEA.Overwrite)
+                        File.Delete(outPath);
+                    else if (fileExistAction == fEA.Skip)
+                    {
+                        row.Cells[4].Value = "Skipped: file exists";    //skip is not treated as an error)
+                        BeginInvoke((Action)delegate { toolStripProgressBar1.Value += 3; });  //compensate for resting increments
+                        return;
+                    }
+                    else if (fileExistAction == fEA.Rename)
+                    {
+                        row.Cells[4].Value = "Renamed also exist: skipping";    //renaming option, but file exist -> skip
+                        BeginInvoke((Action)delegate { toolStripProgressBar1.Value += 3; });  //compensate for resting increments
+                        return;
+                    }
+                }
+
+                //compress to comic
+                if (outType == "cbz")
+                {
+                    /// 7-Zip basic parameters to Compress:
+                    ///     7z.exe a {archive} {files|@listfiles} {switches}
+                    /// Swithes:
+                    ///     -bb{level}      output log level (0=none..3)
+                    ///     -mx={level}     compression level (0=none,1,3,5,7,9)
+                    ///     -mt={mode}      multithreading mode (on,off)
+                    ///     -r              enable recurse directory for wildcards
+                    ///     -t{type}        set type of archive (7z,zip)
+                    ///     -x!{wildcard}   exclude files
+
+                    Process pr7z = new Process();
+                    pr7z.StartInfo = new ProcessStartInfo();
+                    pr7z.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+                    pr7z.StartInfo.FileName = "7z.exe";
+                    pr7z.StartInfo.Arguments = "a -mx=0 -tzip -r -mmt=off -bb1 " + quote(outPath) + " " + quote(Path.Combine(tempPath, "*.*"));
+                    pr7z.Start();
+                    pr7z.WaitForExit();
+                }
+                else if (outType == "cb7")
+                {
+                    Process pr7z = new Process();
+                    pr7z.StartInfo = new ProcessStartInfo();
+                    pr7z.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+                    pr7z.StartInfo.FileName = "7z.exe";
+                    pr7z.StartInfo.Arguments = "a -mx0 -t7z -r -mmt=off " + quote(outPath) + " " + quote(Path.Combine(tempPath, "*.*"));
+                    pr7z.Start();
+                    pr7z.WaitForExit();
+                }
+                else if (outType == "cbr")
+                {
+                    ////test again ir Rar.exe exists
+                    //if (!File.Exists(textBoxRarPath.Text))
+                    //{
+                    //    row.Cells[4].Value = "Error: missing rar.exe";
+                    //    row.Cells[5].Value = prErr.MissingRar;
+                    //    BeginInvoke((Action)delegate { toolStripProgressBar1.Value += 3; });  //compensate for resting increments
+                    //    return;
+                    //}
+
+                    /// RAR basic parameters to Compress:
+                    ///     rar.exe a {switches} {archive}  {files|@listfiles} 
+                    /// Switches:
+                    ///     -ed             do no add empty folders
+                    ///     -ep1            exclude base folder from names
+                    ///     -m{level}       compression level (0=none)
+                    ///     -ma{version}    specify archive version (4|5)
+                    ///     -ms{types}      file types to store
+                    ///     -mt{threads}    number of threads
+                    ///     -r              recurse subfolders
+                    ///     -r0             recurse subfolders for wildcards
+                    ///     -x{wildcard}    exclude specified file
+
+                    Process prRar = new Process();
+                    prRar.StartInfo = new ProcessStartInfo();
+                    prRar.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+                    prRar.StartInfo.FileName = textBoxRarPath.Text;
+                    prRar.StartInfo.Arguments = "a -ed -ep1 -m0 -ma4 -r -mt1 " + quote(outPath) + " " + quote(Path.Combine(tempPath, "*.*"));
+                    prRar.Start();
+                    prRar.WaitForExit();
+                }
+                BeginInvoke((Action)delegate { toolStripProgressBar1.Value++; });
+
+
+                //*********************************************************
+                // Step 4: delete inPath 
+                //*********************************************************
+                row.Cells[4].Value = "Deleting input";
+                //if option enabled and output is not overwriting input
+                if (checkBoxDeleteInputFiles.Checked && (inPath != outPath))
+                {
+                    //deletes to recycle bin, using VisualBasic functions: https://diptimayapatra.wordpress.com/2014/01/16/delete-file-to-recycle-bin-in-c/
+                    if (Directory.Exists(inPath))
+                        Microsoft.VisualBasic.FileIO.FileSystem.DeleteDirectory(inPath, Microsoft.VisualBasic.FileIO.UIOption.OnlyErrorDialogs, Microsoft.VisualBasic.FileIO.RecycleOption.SendToRecycleBin);
+                    else if (File.Exists(inPath))
+                        Microsoft.VisualBasic.FileIO.FileSystem.DeleteFile(inPath, Microsoft.VisualBasic.FileIO.UIOption.OnlyErrorDialogs, Microsoft.VisualBasic.FileIO.RecycleOption.SendToRecycleBin);
+                }
+                BeginInvoke((Action)delegate { toolStripProgressBar1.Value++; });
+
+
+                //*********************************************************
+                // Step 5: delete tempPath
+                //*********************************************************
+                row.Cells[4].Value = "Deleting temp";
+                if (Directory.Exists(tempPath))
+                    Directory.Delete(tempPath, true);
+                BeginInvoke((Action)delegate { toolStripProgressBar1.Value++; });
+
+
+                //*********************************************************
+                // End
+                //*********************************************************
+                row.Cells[4].Value = "Finished";
+            }
+        }
+        private void argumentsHandle(string[] args)
+        {
+            /// -s     start automatically
+            /// -up     use previous settings      
+            /// -e      exit after completition
+            /// -es     exit after successfull completition
+            /// -a      add files/folders
+            /// -otz    output file type cbz
+            /// -ot7    output file type cb7
+            /// -otr    output file type cbr
+            /// -op     output path
+            /// -oeo    output file exists overwrite    
+            /// -oes    output file exists skip
+            /// -oer<pat>   output file exists rename with <pat> pattern
+            /// -m      use multicore
+            /// -di     delete input files
+            /// -c<pat> clean files 
+            /// -c<pat><n>  clean files limiting
+            /// -r      remove folder structure
+            /// -rs     remove folder structure smart
+
         }
 
-    }
-}
+    }   //formMain
+}   //Comic_Book_Maker

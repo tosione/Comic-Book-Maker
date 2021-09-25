@@ -36,7 +36,7 @@
       <Value Profile="(Default)">True</Value>
     </Setting>
     <Setting Name="multi_core_n_max" Type="System.Decimal" Scope="User">
-      <Value Profile="(Default)">4</Value>
+      <Value Profile="(Default)">2</Value>
     </Setting>
     <Setting Name="close_after_complete" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
