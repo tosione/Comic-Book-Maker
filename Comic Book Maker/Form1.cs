@@ -7,8 +7,26 @@ using System.Threading.Tasks;   //for multithreading
 using System.Windows.Forms;
 
 
-//TODO: revise tooltips
 //TODO: revise tab order
+//TODO: implement command line arguments
+// -s     start automatically
+// -up     use previous settings      
+// -e      exit after completition
+// -es     exit after successfull completition
+// -a      add files/folders
+// -otz    output file type cbz
+// -ot7    output file type cb7
+// -otr    output file type cbr
+// -op     output path
+// -oeo    output file exists overwrite    
+// -oes    output file exists skip
+// -oer<pat>   output file exists rename with <pat> pattern
+// -m      use multicore
+// -di     delete input files
+// -c<pat> clean files 
+// -c<pat><n>  clean files limiting
+// -r      remove folder structure
+// -rs     remove folder structure smart
 
 
 namespace Comic_Book_Maker
@@ -27,9 +45,11 @@ namespace Comic_Book_Maker
         private const string FolderStr = "Folder", ArchiveStr = "Archive", ComicStr = "Comic";  //strings defining the input types
         private const int totalSteps = 5;       //total number of steps of the process
         private string outType = "cbz";         //output type (lower case)
+        private readonly string programFolderPath = Path.GetDirectoryName(Application.ExecutablePath);
         private fEA fileExistAction = fEA.Overwrite;
         private rFS removeFolderStruct;
-        private bool ErrorRarPath = false;      //that Rar.exe is not present when Output is CBR
+        private bool ErrorRarPath = false;      //Rar.exe is missing when Output is CBR
+        private bool Error7zipPath = false;     //7z.exe or 7z.dll are missing 
         private bool ErrorRenameSuffix = false; //Suffix pattern doesnt constaint \n when Rename Output is selected
         private bool cancelClosing = false;     //cancel auto-closing when finished
         private int closingCounter;             //counter (0.1 s) for autoclosing
@@ -40,6 +60,8 @@ namespace Comic_Book_Maker
         {
             InitializeComponent();
 
+            showThread("Main");
+
             //settings that are not assignable 
             comboBoxOutputType.SelectedIndex = Properties.Settings.Default.output_type_selection;
             comboBoxFileExistAction.SelectedIndex = Properties.Settings.Default.file_exist_selection;
@@ -47,17 +69,23 @@ namespace Comic_Book_Maker
 
             this.Size = Properties.Settings.Default.form_size;
 
-            //if command line arguments are given
-            if (args1.Length > 0)
-                populateGrid(args1, true);
-
             //configure initial sorting of dataGridView1;
             dataGridView1.Sort(dataGridView1.Columns[1], System.ComponentModel.ListSortDirection.Ascending);
             updateSendtoShortcutButtonText();
 
             labelAbout.Text = Application.ProductName + " v" + System.Reflection.Assembly.GetEntryAssembly().GetName().Version.ToString(2);
 
-            showThread("Main");
+            //test existence of 7zip files
+            if (!File.Exists(Path.Combine(programFolderPath, "7z.exe")) || !File.Exists(Path.Combine(programFolderPath, "7z.dll")))
+            {
+                Error7zipPath = true;
+                showWarning("Missing 7z.exe or 7z.dll in program folder");
+                buttonGo.Enabled = !Error7zipPath && !ErrorRarPath && !ErrorRenameSuffix;
+            }
+
+            //if command line arguments are given
+            if (args1.Length > 0)
+                populateGrid(args1, true);
         }
         private void form1_FormClosed(object sender, FormClosedEventArgs e)
         {
@@ -75,29 +103,6 @@ namespace Comic_Book_Maker
             Comic_Book_Maker.Properties.Settings.Default.Save();
             ;
         }
-        //private void argumentsHandle(string[] args)
-        //{
-        //    /// TODO: implement command line arguments
-        //
-        //    /// -s     start automatically
-        //    /// -up     use previous settings      
-        //    /// -e      exit after completition
-        //    /// -es     exit after successfull completition
-        //    /// -a      add files/folders
-        //    /// -otz    output file type cbz
-        //    /// -ot7    output file type cb7
-        //    /// -otr    output file type cbr
-        //    /// -op     output path
-        //    /// -oeo    output file exists overwrite    
-        //    /// -oes    output file exists skip
-        //    /// -oer<pat>   output file exists rename with <pat> pattern
-        //    /// -m      use multicore
-        //    /// -di     delete input files
-        //    /// -c<pat> clean files 
-        //    /// -c<pat><n>  clean files limiting
-        //    /// -r      remove folder structure
-        //    /// -rs     remove folder structure smart
-        //}
 
 
         /// Event handlers
@@ -226,7 +231,7 @@ namespace Comic_Book_Maker
                 errorProvider1.SetError(textBoxRarPath, "Rar.exe not found");
             else
                 errorProvider1.SetError(textBoxRarPath, "");
-            buttonGo.Enabled = !ErrorRarPath && !ErrorRenameSuffix;
+            buttonGo.Enabled = !Error7zipPath && !ErrorRarPath && !ErrorRenameSuffix;
         }
         private void textBoxtextBoxRenameSuffix_TextChanged(object sender, EventArgs e)
         {
@@ -235,8 +240,7 @@ namespace Comic_Book_Maker
                 errorProvider1.SetError(textBoxRenameSuffix, "Suffix pattern doesn't contains \\n");
             else
                 errorProvider1.SetError(textBoxRenameSuffix, "");
-            buttonGo.Enabled = !ErrorRarPath && !ErrorRenameSuffix;
-
+            buttonGo.Enabled = !Error7zipPath && !ErrorRarPath && !ErrorRenameSuffix;
             updateOutputNames();
         }
         private void dataGridView1_KeyDown(object sender, KeyEventArgs e)
@@ -437,7 +441,7 @@ namespace Comic_Book_Maker
                     dataGridView1.Sort(dataGridView1.SortedColumn, System.ComponentModel.ListSortDirection.Descending);
             }
 
-            if (checkBoxStartAfterFileAdd.Checked)
+            if (checkBoxStartAfterFileAdd.Checked && !Error7zipPath)
                 processAllRows();
 
         }
@@ -875,13 +879,6 @@ namespace Comic_Book_Maker
                 }
                 else if (outType == "cbr")
                 {
-                    //test again if Rar.exe exists
-                    if (!File.Exists(textBoxRarPath.Text))
-                    {
-                        stepExit("Missing rar.exe");
-                        return;
-                    }
-
                     //compress to CBZ
                     Process prRar = new Process();
                     prRar.StartInfo = new ProcessStartInfo();
@@ -954,6 +951,8 @@ namespace Comic_Book_Maker
                 stepSkipAll();
             }
         }
+
+
     }   //formMain
 }   //Comic_Book_Maker
 
