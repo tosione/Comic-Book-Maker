@@ -85,25 +85,13 @@ namespace Comic_Book_Maker.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("zzz*.*")]
+        [global::System.Configuration.DefaultSettingValueAttribute("zzz*.*|*.url")]
         public string clean_files_string {
             get {
                 return ((string)(this["clean_files_string"]));
             }
             set {
                 this["clean_files_string"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool clean_files_limit_enable {
-            get {
-                return ((bool)(this["clean_files_limit_enable"]));
-            }
-            set {
-                this["clean_files_limit_enable"] = value;
             }
         }
         
@@ -122,48 +110,12 @@ namespace Comic_Book_Maker.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool remove_folders {
-            get {
-                return ((bool)(this["remove_folders"]));
-            }
-            set {
-                this["remove_folders"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool remove_folders_smart {
-            get {
-                return ((bool)(this["remove_folders_smart"]));
-            }
-            set {
-                this["remove_folders_smart"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("True")]
         public bool multi_core_enable {
             get {
                 return ((bool)(this["multi_core_enable"]));
             }
             set {
                 this["multi_core_enable"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("2")]
-        public decimal multi_core_n_max {
-            get {
-                return ((decimal)(this["multi_core_n_max"]));
-            }
-            set {
-                this["multi_core_n_max"] = value;
             }
         }
         
@@ -289,7 +241,7 @@ namespace Comic_Book_Maker.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("1100, 550")]
+        [global::System.Configuration.DefaultSettingValueAttribute("1100, 600")]
         public global::System.Drawing.Size form_size {
             get {
                 return ((global::System.Drawing.Size)(this["form_size"]));
@@ -314,12 +266,36 @@ namespace Comic_Book_Maker.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool specifiy_ouput_folder {
+        public bool use_ouput_folder {
             get {
-                return ((bool)(this["specifiy_ouput_folder"]));
+                return ((bool)(this["use_ouput_folder"]));
             }
             set {
-                this["specifiy_ouput_folder"] = value;
+                this["use_ouput_folder"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("2")]
+        public int remove_folder_structure_selection {
+            get {
+                return ((int)(this["remove_folder_structure_selection"]));
+            }
+            set {
+                this["remove_folder_structure_selection"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool go_after_file_add {
+            get {
+                return ((bool)(this["go_after_file_add"]));
+            }
+            set {
+                this["go_after_file_add"] = value;
             }
         }
     }

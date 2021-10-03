@@ -120,17 +120,65 @@
   <metadata name="toolTip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>329, 4</value>
   </metadata>
+  <data name="comboBoxRemoveFolder.ToolTip" xml:space="preserve">
+    <value>-No: folder structure will be mantained as it is.
+-Yes: all files will be placed in the root folder and 
+directories will be deleted.
+-Smart: remove top level folders until two or more 
+folders/files are on the same level.</value>
+  </data>
+  <data name="comboBoxOutputType.ToolTip" xml:space="preserve">
+    <value>The recommended type is CBZ, because of highter compatibility 
+and no need for comercial compression sofware (WinRar).
+
+In all cases the lowest compression rate is used (none), as
+all files should be jpg or png, which are already highly compressed.
+
+Using higher compression ratio only would slow down creation 
+opening, and viewing of comic files at nearly no size decrease.</value>
+  </data>
+  <data name="buttonGo.ToolTip" xml:space="preserve">
+    <value>Process checked rows (Enter).
+
+Start conversion process (Enter):
+1. Extract files or copy (in case folders) to windows temp folder.
+2. Clean files (if enabled).
+3. Compress into comic files.
+4. Delete input files (if enabled).
+5. Delete files in temp folder.
+
+</value>
+  </data>
   <metadata name="openFileDialog1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>20, 4</value>
   </metadata>
   <metadata name="statusStrip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>426, 4</value>
   </metadata>
+  <data name="buttonSendtoShortcut.ToolTip" xml:space="preserve">
+    <value>Adds/removes Comic Book Maker to the SendTo 
+context menu of windows explorer.
+This allows easy opening of multiple files from 
+windows explorer.
+
+The shortcut that is created, links to the program at  
+its current location. If program is moved to another 
+folder, the shorcut must be deleted and created again.</value>
+  </data>
+  <data name="checkBoxStartAfterFileAdd.ToolTip" xml:space="preserve">
+    <value>If this option is enabled, when starting the program 
+by drag and droping files onto the program, 
+or sending files through SendTo context menu, 
+the files will automatically converted.
+
+Used in combination with the "Close after succesfull 
+completition" option allows a fully automatic behaviour.</value>
+  </data>
   <metadata name="errorProvider1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>542, 4</value>
   </metadata>
   <metadata name="$this.TrayHeight" type="System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>33</value>
+    <value>25</value>
   </metadata>
   <metadata name="ColumnSelect.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
@@ -289,5 +337,8 @@
   </data>
   <metadata name="folderBrowserDialog1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>160, 4</value>
+  </metadata>
+  <metadata name="timerClose.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>672, 4</value>
   </metadata>
 </root>

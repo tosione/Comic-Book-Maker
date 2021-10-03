@@ -18,25 +18,13 @@
       <Value Profile="(Default)">True</Value>
     </Setting>
     <Setting Name="clean_files_string" Type="System.String" Scope="User">
-      <Value Profile="(Default)">zzz*.*</Value>
-    </Setting>
-    <Setting Name="clean_files_limit_enable" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">True</Value>
+      <Value Profile="(Default)">zzz*.*|*.url</Value>
     </Setting>
     <Setting Name="clean_files_limit_n" Type="System.Decimal" Scope="User">
       <Value Profile="(Default)">4</Value>
     </Setting>
-    <Setting Name="remove_folders" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">True</Value>
-    </Setting>
-    <Setting Name="remove_folders_smart" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">True</Value>
-    </Setting>
     <Setting Name="multi_core_enable" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
-    </Setting>
-    <Setting Name="multi_core_n_max" Type="System.Decimal" Scope="User">
-      <Value Profile="(Default)">2</Value>
     </Setting>
     <Setting Name="close_after_complete" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
@@ -69,13 +57,19 @@
       <Value Profile="(Default)">100, 100</Value>
     </Setting>
     <Setting Name="form_size" Type="System.Drawing.Size" Scope="User">
-      <Value Profile="(Default)">1100, 550</Value>
+      <Value Profile="(Default)">1100, 600</Value>
     </Setting>
     <Setting Name="output_path" Type="System.String" Scope="User">
       <Value Profile="(Default)">C:\Users\Gabriel\Desktop\Out\</Value>
     </Setting>
-    <Setting Name="specifiy_ouput_folder" Type="System.Boolean" Scope="User">
+    <Setting Name="use_ouput_folder" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="remove_folder_structure_selection" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">2</Value>
+    </Setting>
+    <Setting Name="go_after_file_add" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
     </Setting>
   </Settings>
 </SettingsFile>
