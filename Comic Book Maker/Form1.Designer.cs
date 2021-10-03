@@ -172,8 +172,7 @@ namespace Comic_Book_Maker
             this.checkBoxClean.Size = new System.Drawing.Size(77, 17);
             this.checkBoxClean.TabIndex = 0;
             this.checkBoxClean.Text = "Clean files:";
-            this.toolTip1.SetToolTip(this.checkBoxClean, "Avoids the addition into the output comic\r\nof the files that match this patterns." +
-        "\r\n");
+            this.toolTip1.SetToolTip(this.checkBoxClean, "Files that match this patterns will not be \r\nadded to the comic.\r\n");
             this.checkBoxClean.UseVisualStyleBackColor = true;
             this.checkBoxClean.CheckedChanged += new System.EventHandler(this.checkBoxClean_CheckedChanged);
             // 
@@ -225,6 +224,8 @@ namespace Comic_Book_Maker
             this.numericUpDownCleanLimit.Name = "numericUpDownCleanLimit";
             this.numericUpDownCleanLimit.Size = new System.Drawing.Size(42, 20);
             this.numericUpDownCleanLimit.TabIndex = 4;
+            this.toolTip1.SetToolTip(this.numericUpDownCleanLimit, "If more files than this limit are found to \r\nbe excluded, the file will be skippe" +
+        "d.");
             this.numericUpDownCleanLimit.Value = global::Comic_Book_Maker.Properties.Settings.Default.clean_files_limit_n;
             // 
             // label1
@@ -370,7 +371,7 @@ namespace Comic_Book_Maker
             this.textBoxRenameSuffix.Size = new System.Drawing.Size(47, 20);
             this.textBoxRenameSuffix.TabIndex = 1;
             this.textBoxRenameSuffix.Text = global::Comic_Book_Maker.Properties.Settings.Default.file_exist_suffix;
-            this.toolTip1.SetToolTip(this.textBoxRenameSuffix, "Needs to to include \\n which will be substituted by numerical value.");
+            this.toolTip1.SetToolTip(this.textBoxRenameSuffix, "Needs to include \\n which will be substituted by numerical value.");
             this.textBoxRenameSuffix.EnabledChanged += new System.EventHandler(this.textBoxtextBoxRenameSuffix_TextChanged);
             this.textBoxRenameSuffix.TextChanged += new System.EventHandler(this.textBoxtextBoxRenameSuffix_TextChanged);
             this.textBoxRenameSuffix.VisibleChanged += new System.EventHandler(this.textBoxtextBoxRenameSuffix_TextChanged);
