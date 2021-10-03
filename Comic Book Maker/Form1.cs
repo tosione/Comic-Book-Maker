@@ -17,21 +17,22 @@ namespace Comic_Book_Maker
     {
         /// Types
         enum fEA { Overwrite, Skip, Rename };   //file exist action
-        enum rFS { no, yes, smart };    //remove folder structure
+        enum rFS { no, yes, smart };    //remove folder structure option
 
 
         /// Objects
-        private delegate void endDelegate();
-        private readonly Stopwatch crono = new Stopwatch();
-        private readonly string shortcutLocation = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.SendTo), "Comic Book Maker.lnk");
-        private const string FolderStr = "Folder", ArchiveStr = "Archive", ComicStr = "Comic";
-        private const int nStep = 5;
-        private string outType = "";
+        private delegate void endDelegate();   //to invoke processEnd() 
+        private readonly Stopwatch crono = new Stopwatch(); //for measuring processing time
+        private readonly string shortcutPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.SendTo), "Comic Book Maker.lnk");   //path to shortcut file
+        private const string FolderStr = "Folder", ArchiveStr = "Archive", ComicStr = "Comic";  //strings defining the input types
+        private const int totalSteps = 5;       //total number of steps of the process
+        private string outType = "cbz";         //output type (lower case)
         private fEA fileExistAction = fEA.Overwrite;
-        private bool ErrorRarPath = false;
-        private bool ErrorRenameSuffix = false;
-        private bool cancelClosing = false;
-        private int closeCounter;
+        private rFS removeFolderStruct;
+        private bool ErrorRarPath = false;      //that Rar.exe is not present when Output is CBR
+        private bool ErrorRenameSuffix = false; //Suffix pattern doesnt constaint \n when Rename Output is selected
+        private bool cancelClosing = false;     //cancel auto-closing when finished
+        private int closingCounter;             //counter (0.1 s) for autoclosing
 
 
         /// Initialization and Closing
@@ -272,10 +273,10 @@ namespace Comic_Book_Maker
         }
         private void buttonSendtoShortcut_Click(object sender, EventArgs e)
         {
-            if (File.Exists(shortcutLocation))
-                File.Delete(shortcutLocation);
+            if (File.Exists(shortcutPath))
+                File.Delete(shortcutPath);
             else
-                createShortcut(shortcutLocation, Application.ExecutablePath);
+                createShortcut(shortcutPath, Application.ExecutablePath);
             updateSendtoShortcutButtonText();
         }
         private void buttonCancelClosing_Click(object sender, EventArgs e)
@@ -284,14 +285,14 @@ namespace Comic_Book_Maker
         }
         private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            Process.Start("mailto:gabriel.gross@gmail.com");
+            Process.Start("https://github.com/tosione/Comic-Book-Maker");
         }
         private void timerClose_Tick(object sender, EventArgs e)
         {
-            closeCounter--;
+            closingCounter--;
 
             //show countdown
-            showWarning("Closing in " + (closeCounter / 10).ToString() + " s");
+            showWarning("Closing in " + (closingCounter / 10).ToString() + " s");
 
             //if canceled
             if (cancelClosing)
@@ -308,7 +309,7 @@ namespace Comic_Book_Maker
             else
             {
                 //whatch if countdown reached end to close
-                if (closeCounter == 0)
+                if (closingCounter == 0)
                     Close();
             }
         }
@@ -359,14 +360,15 @@ namespace Comic_Book_Maker
         }
         private void updateSendtoShortcutButtonText()
         {
-            if (File.Exists(shortcutLocation))
+            if (File.Exists(shortcutPath))
                 buttonSendtoShortcut.Text = "Remove";
             else
                 buttonSendtoShortcut.Text = "Add";
         }
+        [Conditional("DEBUG")] 
         private void showThread(string s)
         {
-            //show message with thread ID in console for debuggin reasons
+            //show message with thread ID in console for debuggin 
             Console.WriteLine(s + " (Thread ID = " + Thread.CurrentThread.ManagedThreadId.ToString() + ")");
         }
 
@@ -510,7 +512,7 @@ namespace Comic_Book_Maker
 
             //reset statusBar
             toolStripProgressBar1.Value = 0;
-            toolStripProgressBar1.Maximum = nStep * dataGridView1.Rows.Count;
+            toolStripProgressBar1.Maximum = totalSteps * dataGridView1.Rows.Count;
 
             //disable buttons while working
             buttonGo.Enabled = false;
@@ -534,7 +536,7 @@ namespace Comic_Book_Maker
             for (int i = 0; i <= cleanStr.GetUpperBound(0); i++)
                 cleanStr[i] = cleanStr[i].Trim();
             int nCleanLimit = (int)numericUpDownCleanLimit.Value;
-            rFS removeFolders = (rFS)comboBoxRemoveFolder.SelectedIndex;
+            removeFolderStruct = (rFS)comboBoxRemoveFolder.SelectedIndex;
 
             //start crono (will be stopped in processEnd)
             crono.Restart();
@@ -543,28 +545,30 @@ namespace Comic_Book_Maker
             //process rows
             if (checkBoxParelize.Checked)
             {
-                //parallel
+                //parallel execution of processRow();
                 Task task1 = Task.Run(() =>
                 {
                     showThread("Parallel start");
-                    Parallel.ForEach(dataGridView1.Rows.Cast<DataGridViewRow>(), row => { processRow(row, cleanStr, nCleanLimit, removeFolders); });
+                    Parallel.ForEach(dataGridView1.Rows.Cast<DataGridViewRow>(), row => { processRow(row, cleanStr, nCleanLimit, removeFolderStruct); });
                 });
                 task1.ContinueWith((antecedent) =>
                 {
+                    //function to execute after finishing all processRow()
                     showThread("Continue With");
                     this.Invoke(new endDelegate(processEnd));
                 });
             }
             else
             {
-                //sequential
+                //sequential execution of processRow();
                 Task task1 = Task.Run(() =>
                 {
                     showThread("Sequential start");
-                    foreach (DataGridViewRow row in dataGridView1.Rows) processRow(row, cleanStr, nCleanLimit, removeFolders);
+                    foreach (DataGridViewRow row in dataGridView1.Rows) processRow(row, cleanStr, nCleanLimit, removeFolderStruct);
                 });
                 task1.ContinueWith((antecedent) =>
                 {
+                    //function to execute after finishing all processRow();
                     showThread("ContinueWith");
                     this.Invoke(new endDelegate(processEnd));
                 });
@@ -603,7 +607,7 @@ namespace Comic_Book_Maker
 
                     //start timer
                     timerClose.Start();
-                    closeCounter = 50; //50 means 5 s (timer interval = 100 ms)
+                    closingCounter = 50; //50 means 5 s (timer interval = 100 ms)
                 }
             }
 
@@ -618,12 +622,10 @@ namespace Comic_Book_Maker
             showThread("Process Row " + row.Index.ToString());
 
             //variables
-            string inPath = (string)row.Cells[1].Value;
-            string inType = (string)row.Cells[2].Value;
-            string outPath = (string)row.Cells[3].Value;
+            string inPath = (string)row.Cells[1].Value;     //path of input folder or file
+            string inType = (string)row.Cells[2].Value;     //type of input folder/archive/comic
+            string outPath = (string)row.Cells[3].Value;    //path of output comic file
             int step = 0;
-            const int totalSteps = 5;
-
 
             //local functions to handle step & show progress or exit
             void stepIncrease(string message)

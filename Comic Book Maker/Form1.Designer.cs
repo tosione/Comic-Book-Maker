@@ -54,6 +54,21 @@ namespace Comic_Book_Maker
             this.checkBoxUseOutPath = new System.Windows.Forms.CheckBox();
             this.buttonExit = new System.Windows.Forms.Button();
             this.buttonRefresh = new System.Windows.Forms.Button();
+            this.checkBoxCreateFromFolder = new System.Windows.Forms.CheckBox();
+            this.checkBoxCreateFromComic = new System.Windows.Forms.CheckBox();
+            this.checkBoxCreateFromArchive = new System.Windows.Forms.CheckBox();
+            this.checkBoxParelize = new System.Windows.Forms.CheckBox();
+            this.buttonSendtoShortcut = new System.Windows.Forms.Button();
+            this.textBoxRarPath = new System.Windows.Forms.TextBox();
+            this.checkBoxCloseAtComplete = new System.Windows.Forms.CheckBox();
+            this.checkBoxStartAfterFileAdd = new System.Windows.Forms.CheckBox();
+            this.dataGridView1 = new System.Windows.Forms.DataGridView();
+            this.ColumnSelect = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.ColumnInput = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.ColumnType = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.ColumnOutput = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.ColumnState = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.ColumnError = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.toolStripProgressBar1 = new System.Windows.Forms.ToolStripProgressBar();
@@ -66,30 +81,15 @@ namespace Comic_Book_Maker
             this.buttonOutputPath = new System.Windows.Forms.Button();
             this.textBoxOutPath = new System.Windows.Forms.TextBox();
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
-            this.checkBoxCreateFromFolder = new System.Windows.Forms.CheckBox();
-            this.checkBoxCreateFromComic = new System.Windows.Forms.CheckBox();
-            this.checkBoxCreateFromArchive = new System.Windows.Forms.CheckBox();
             this.buttonCancelClosing = new System.Windows.Forms.Button();
             this.tableLayoutPanel4 = new System.Windows.Forms.TableLayoutPanel();
-            this.checkBoxParelize = new System.Windows.Forms.CheckBox();
             this.tableLayoutPanel11 = new System.Windows.Forms.TableLayoutPanel();
-            this.buttonSendtoShortcut = new System.Windows.Forms.Button();
             this.label7 = new System.Windows.Forms.Label();
             this.tableLayoutPanel9 = new System.Windows.Forms.TableLayoutPanel();
-            this.textBoxRarPath = new System.Windows.Forms.TextBox();
             this.checkBoxDeleteInputFiles = new System.Windows.Forms.CheckBox();
-            this.checkBoxCloseAtComplete = new System.Windows.Forms.CheckBox();
-            this.checkBoxStartAfterFileAdd = new System.Windows.Forms.CheckBox();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.errorProvider1 = new System.Windows.Forms.ErrorProvider(this.components);
             this.folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
-            this.dataGridView1 = new System.Windows.Forms.DataGridView();
-            this.ColumnSelect = new System.Windows.Forms.DataGridViewCheckBoxColumn();
-            this.ColumnInput = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.ColumnType = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.ColumnOutput = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.ColumnState = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.ColumnError = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.timerClose = new System.Windows.Forms.Timer(this.components);
             this.labelAbout = new System.Windows.Forms.Label();
             this.linkLabel1 = new System.Windows.Forms.LinkLabel();
@@ -99,6 +99,7 @@ namespace Comic_Book_Maker
             this.tableLayoutPanel6.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownCleanLimit)).BeginInit();
             this.tableLayoutPanel8.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.statusStrip1.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
             this.tableLayoutPanel10.SuspendLayout();
@@ -109,7 +110,6 @@ namespace Comic_Book_Maker
             this.tableLayoutPanel9.SuspendLayout();
             this.groupBox3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
             // 
             // groupBox2
@@ -401,7 +401,8 @@ namespace Comic_Book_Maker
             this.buttonExit.Size = new System.Drawing.Size(140, 22);
             this.buttonExit.TabIndex = 6;
             this.buttonExit.Text = "Exit";
-            this.toolTip1.SetToolTip(this.buttonExit, "Exit program (Esc).");
+            this.toolTip1.SetToolTip(this.buttonExit, "Exit program (Esc).\r\n\r\nAll settings will be saved at \r\nexit and restored at start" +
+        "up.");
             this.buttonExit.UseVisualStyleBackColor = false;
             this.buttonExit.Click += new System.EventHandler(this.buttonExit_Click);
             // 
@@ -417,6 +418,199 @@ namespace Comic_Book_Maker
             this.toolTip1.SetToolTip(this.buttonRefresh, "Check input files and update output names (F5).");
             this.buttonRefresh.UseVisualStyleBackColor = false;
             this.buttonRefresh.Click += new System.EventHandler(this.buttonRefresh_Click);
+            // 
+            // checkBoxCreateFromFolder
+            // 
+            this.checkBoxCreateFromFolder.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.checkBoxCreateFromFolder.AutoSize = true;
+            this.checkBoxCreateFromFolder.Checked = global::Comic_Book_Maker.Properties.Settings.Default.create_from_folders;
+            this.checkBoxCreateFromFolder.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBoxCreateFromFolder.DataBindings.Add(new System.Windows.Forms.Binding("Checked", global::Comic_Book_Maker.Properties.Settings.Default, "create_from_folders", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.checkBoxCreateFromFolder.Location = new System.Drawing.Point(3, 3);
+            this.checkBoxCreateFromFolder.Name = "checkBoxCreateFromFolder";
+            this.checkBoxCreateFromFolder.Size = new System.Drawing.Size(150, 17);
+            this.checkBoxCreateFromFolder.TabIndex = 0;
+            this.checkBoxCreateFromFolder.Text = "Create comics from folders";
+            this.toolTip1.SetToolTip(this.checkBoxCreateFromFolder, "Each folder will be compressed to a comic file.");
+            this.checkBoxCreateFromFolder.UseVisualStyleBackColor = true;
+            this.checkBoxCreateFromFolder.CheckedChanged += new System.EventHandler(this.checkBoxCreateFromFolder_CheckedChanged);
+            // 
+            // checkBoxCreateFromComic
+            // 
+            this.checkBoxCreateFromComic.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.checkBoxCreateFromComic.AutoSize = true;
+            this.checkBoxCreateFromComic.Checked = global::Comic_Book_Maker.Properties.Settings.Default.convert_comics;
+            this.checkBoxCreateFromComic.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBoxCreateFromComic.DataBindings.Add(new System.Windows.Forms.Binding("Checked", global::Comic_Book_Maker.Properties.Settings.Default, "convert_comics", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.checkBoxCreateFromComic.Location = new System.Drawing.Point(3, 57);
+            this.checkBoxCreateFromComic.Name = "checkBoxCreateFromComic";
+            this.checkBoxCreateFromComic.Size = new System.Drawing.Size(99, 17);
+            this.checkBoxCreateFromComic.TabIndex = 0;
+            this.checkBoxCreateFromComic.Text = "Convert comics";
+            this.toolTip1.SetToolTip(this.checkBoxCreateFromComic, "Valid comic types: CBZ, CB7, CBR");
+            this.checkBoxCreateFromComic.UseVisualStyleBackColor = true;
+            this.checkBoxCreateFromComic.CheckedChanged += new System.EventHandler(this.checkBoxCreateFromComic_CheckedChanged);
+            // 
+            // checkBoxCreateFromArchive
+            // 
+            this.checkBoxCreateFromArchive.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.checkBoxCreateFromArchive.AutoSize = true;
+            this.checkBoxCreateFromArchive.Checked = global::Comic_Book_Maker.Properties.Settings.Default.create_from_archives;
+            this.checkBoxCreateFromArchive.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBoxCreateFromArchive.DataBindings.Add(new System.Windows.Forms.Binding("Checked", global::Comic_Book_Maker.Properties.Settings.Default, "create_from_archives", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.checkBoxCreateFromArchive.Location = new System.Drawing.Point(3, 29);
+            this.checkBoxCreateFromArchive.Name = "checkBoxCreateFromArchive";
+            this.checkBoxCreateFromArchive.Size = new System.Drawing.Size(159, 17);
+            this.checkBoxCreateFromArchive.TabIndex = 0;
+            this.checkBoxCreateFromArchive.Text = "Create comics from archives";
+            this.toolTip1.SetToolTip(this.checkBoxCreateFromArchive, "Valid archives types: ZIP, 7Z, RAR");
+            this.checkBoxCreateFromArchive.UseVisualStyleBackColor = true;
+            this.checkBoxCreateFromArchive.CheckedChanged += new System.EventHandler(this.checkBoxCreateFromArchive_CheckedChanged);
+            // 
+            // checkBoxParelize
+            // 
+            this.checkBoxParelize.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.checkBoxParelize.AutoSize = true;
+            this.checkBoxParelize.Checked = global::Comic_Book_Maker.Properties.Settings.Default.multi_core_enable;
+            this.checkBoxParelize.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBoxParelize.DataBindings.Add(new System.Windows.Forms.Binding("Checked", global::Comic_Book_Maker.Properties.Settings.Default, "multi_core_enable", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.checkBoxParelize.Location = new System.Drawing.Point(3, 3);
+            this.checkBoxParelize.Name = "checkBoxParelize";
+            this.checkBoxParelize.Size = new System.Drawing.Size(147, 17);
+            this.checkBoxParelize.TabIndex = 0;
+            this.checkBoxParelize.Text = "Use multi-core processing";
+            this.toolTip1.SetToolTip(this.checkBoxParelize, "Use multiple threads in parallel to speed up the process.");
+            this.checkBoxParelize.UseVisualStyleBackColor = true;
+            // 
+            // buttonSendtoShortcut
+            // 
+            this.buttonSendtoShortcut.Location = new System.Drawing.Point(3, 3);
+            this.buttonSendtoShortcut.Name = "buttonSendtoShortcut";
+            this.buttonSendtoShortcut.Size = new System.Drawing.Size(55, 23);
+            this.buttonSendtoShortcut.TabIndex = 4;
+            this.buttonSendtoShortcut.Text = "Remove";
+            this.toolTip1.SetToolTip(this.buttonSendtoShortcut, resources.GetString("buttonSendtoShortcut.ToolTip"));
+            this.buttonSendtoShortcut.Click += new System.EventHandler(this.buttonSendtoShortcut_Click);
+            // 
+            // textBoxRarPath
+            // 
+            this.textBoxRarPath.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.textBoxRarPath.DataBindings.Add(new System.Windows.Forms.Binding("Text", global::Comic_Book_Maker.Properties.Settings.Default, "rar_path", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.textBoxRarPath.Location = new System.Drawing.Point(80, 3);
+            this.textBoxRarPath.Name = "textBoxRarPath";
+            this.textBoxRarPath.Size = new System.Drawing.Size(200, 20);
+            this.textBoxRarPath.TabIndex = 1;
+            this.textBoxRarPath.Text = global::Comic_Book_Maker.Properties.Settings.Default.rar_path;
+            this.toolTip1.SetToolTip(this.textBoxRarPath, "Used for CBR files.\r\nIncluded in comercial program Winrar.");
+            this.textBoxRarPath.EnabledChanged += new System.EventHandler(this.textBoxRarPath_Changed);
+            this.textBoxRarPath.TextChanged += new System.EventHandler(this.textBoxRarPath_Changed);
+            this.textBoxRarPath.VisibleChanged += new System.EventHandler(this.textBoxRarPath_Changed);
+            // 
+            // checkBoxCloseAtComplete
+            // 
+            this.checkBoxCloseAtComplete.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.checkBoxCloseAtComplete.AutoSize = true;
+            this.checkBoxCloseAtComplete.Checked = global::Comic_Book_Maker.Properties.Settings.Default.close_after_complete;
+            this.checkBoxCloseAtComplete.DataBindings.Add(new System.Windows.Forms.Binding("Checked", global::Comic_Book_Maker.Properties.Settings.Default, "close_after_complete", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.checkBoxCloseAtComplete.Location = new System.Drawing.Point(3, 49);
+            this.checkBoxCloseAtComplete.Name = "checkBoxCloseAtComplete";
+            this.checkBoxCloseAtComplete.Size = new System.Drawing.Size(190, 17);
+            this.checkBoxCloseAtComplete.TabIndex = 0;
+            this.checkBoxCloseAtComplete.Text = "Close after successfull completition";
+            this.toolTip1.SetToolTip(this.checkBoxCloseAtComplete, "If enabled, will close the program after succesfully\r\nconverting all files.\r\nA 5 " +
+        "secconds countdown will be shown, allowing \r\nto cancel the closing.");
+            this.checkBoxCloseAtComplete.UseVisualStyleBackColor = true;
+            // 
+            // checkBoxStartAfterFileAdd
+            // 
+            this.checkBoxStartAfterFileAdd.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.checkBoxStartAfterFileAdd.AutoSize = true;
+            this.checkBoxStartAfterFileAdd.Checked = global::Comic_Book_Maker.Properties.Settings.Default.go_after_file_add;
+            this.checkBoxStartAfterFileAdd.DataBindings.Add(new System.Windows.Forms.Binding("Checked", global::Comic_Book_Maker.Properties.Settings.Default, "go_after_file_add", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.checkBoxStartAfterFileAdd.Location = new System.Drawing.Point(3, 26);
+            this.checkBoxStartAfterFileAdd.Name = "checkBoxStartAfterFileAdd";
+            this.checkBoxStartAfterFileAdd.Size = new System.Drawing.Size(192, 17);
+            this.checkBoxStartAfterFileAdd.TabIndex = 0;
+            this.checkBoxStartAfterFileAdd.Text = "Start automatically after adding files";
+            this.toolTip1.SetToolTip(this.checkBoxStartAfterFileAdd, resources.GetString("checkBoxStartAfterFileAdd.ToolTip"));
+            this.checkBoxStartAfterFileAdd.UseVisualStyleBackColor = true;
+            // 
+            // dataGridView1
+            // 
+            this.dataGridView1.AllowDrop = true;
+            this.dataGridView1.AllowUserToAddRows = false;
+            this.dataGridView1.AllowUserToResizeRows = false;
+            this.dataGridView1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.dataGridView1.BackgroundColor = System.Drawing.SystemColors.ControlLightLight;
+            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
+            this.dataGridView1.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.ColumnSelect,
+            this.ColumnInput,
+            this.ColumnType,
+            this.ColumnOutput,
+            this.ColumnState,
+            this.ColumnError});
+            this.dataGridView1.EditMode = System.Windows.Forms.DataGridViewEditMode.EditOnF2;
+            this.dataGridView1.GridColor = System.Drawing.SystemColors.ControlLight;
+            this.dataGridView1.Location = new System.Drawing.Point(12, 9);
+            this.dataGridView1.Name = "dataGridView1";
+            this.dataGridView1.RowHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.Single;
+            this.dataGridView1.RowHeadersVisible = false;
+            this.dataGridView1.RowHeadersWidth = 23;
+            this.dataGridView1.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
+            this.dataGridView1.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this.dataGridView1.ShowCellToolTips = false;
+            this.dataGridView1.Size = new System.Drawing.Size(521, 525);
+            this.dataGridView1.TabIndex = 13;
+            this.toolTip1.SetToolTip(this.dataGridView1, "Drag and drop valid files here.\r\n\r\nValid file types:\r\n-Folders with files.\r\n-Arch" +
+        "ives: ZIP, 7Z, RAR.\r\n-Comics: CBZ, CB7, CBR.\r\n\r\nOutput names can be editet wich " +
+        "F2 \r\nor by clicking on the name.");
+            this.dataGridView1.ColumnHeaderMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dataGridView1_ColumnHeaderMouseClick);
+            this.dataGridView1.DragDrop += new System.Windows.Forms.DragEventHandler(this.dataGridView1_DragDrop);
+            this.dataGridView1.DragOver += new System.Windows.Forms.DragEventHandler(this.dataGridView1_DragOver);
+            this.dataGridView1.KeyDown += new System.Windows.Forms.KeyEventHandler(this.dataGridView1_KeyDown);
+            // 
+            // ColumnSelect
+            // 
+            this.ColumnSelect.HeaderText = "";
+            this.ColumnSelect.Name = "ColumnSelect";
+            this.ColumnSelect.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.ColumnSelect.Width = 21;
+            // 
+            // ColumnInput
+            // 
+            this.ColumnInput.HeaderText = "Input";
+            this.ColumnInput.Name = "ColumnInput";
+            this.ColumnInput.ReadOnly = true;
+            this.ColumnInput.Width = global::Comic_Book_Maker.Properties.Settings.Default.column_width_input;
+            // 
+            // ColumnType
+            // 
+            this.ColumnType.HeaderText = "Type";
+            this.ColumnType.Name = "ColumnType";
+            this.ColumnType.ReadOnly = true;
+            this.ColumnType.Width = global::Comic_Book_Maker.Properties.Settings.Default.column_width_type;
+            // 
+            // ColumnOutput
+            // 
+            this.ColumnOutput.HeaderText = "Output";
+            this.ColumnOutput.Name = "ColumnOutput";
+            this.ColumnOutput.Width = global::Comic_Book_Maker.Properties.Settings.Default.column_width_input;
+            // 
+            // ColumnState
+            // 
+            this.ColumnState.HeaderText = "State";
+            this.ColumnState.Name = "ColumnState";
+            this.ColumnState.ReadOnly = true;
+            this.ColumnState.Width = global::Comic_Book_Maker.Properties.Settings.Default.column_width_state;
+            // 
+            // ColumnError
+            // 
+            this.ColumnError.HeaderText = "Error";
+            this.ColumnError.Name = "ColumnError";
+            this.ColumnError.Visible = false;
             // 
             // openFileDialog1
             // 
@@ -579,54 +773,6 @@ namespace Comic_Book_Maker
             this.tableLayoutPanel2.Size = new System.Drawing.Size(148, 27);
             this.tableLayoutPanel2.TabIndex = 11;
             // 
-            // checkBoxCreateFromFolder
-            // 
-            this.checkBoxCreateFromFolder.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.checkBoxCreateFromFolder.AutoSize = true;
-            this.checkBoxCreateFromFolder.Checked = global::Comic_Book_Maker.Properties.Settings.Default.create_from_folders;
-            this.checkBoxCreateFromFolder.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBoxCreateFromFolder.DataBindings.Add(new System.Windows.Forms.Binding("Checked", global::Comic_Book_Maker.Properties.Settings.Default, "create_from_folders", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.checkBoxCreateFromFolder.Location = new System.Drawing.Point(3, 3);
-            this.checkBoxCreateFromFolder.Name = "checkBoxCreateFromFolder";
-            this.checkBoxCreateFromFolder.Size = new System.Drawing.Size(150, 17);
-            this.checkBoxCreateFromFolder.TabIndex = 0;
-            this.checkBoxCreateFromFolder.Text = "Create comics from folders";
-            this.toolTip1.SetToolTip(this.checkBoxCreateFromFolder, "Each folder will be compressed to a comic file.");
-            this.checkBoxCreateFromFolder.UseVisualStyleBackColor = true;
-            this.checkBoxCreateFromFolder.CheckedChanged += new System.EventHandler(this.checkBoxCreateFromFolder_CheckedChanged);
-            // 
-            // checkBoxCreateFromComic
-            // 
-            this.checkBoxCreateFromComic.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.checkBoxCreateFromComic.AutoSize = true;
-            this.checkBoxCreateFromComic.Checked = global::Comic_Book_Maker.Properties.Settings.Default.convert_comics;
-            this.checkBoxCreateFromComic.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBoxCreateFromComic.DataBindings.Add(new System.Windows.Forms.Binding("Checked", global::Comic_Book_Maker.Properties.Settings.Default, "convert_comics", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.checkBoxCreateFromComic.Location = new System.Drawing.Point(3, 57);
-            this.checkBoxCreateFromComic.Name = "checkBoxCreateFromComic";
-            this.checkBoxCreateFromComic.Size = new System.Drawing.Size(99, 17);
-            this.checkBoxCreateFromComic.TabIndex = 0;
-            this.checkBoxCreateFromComic.Text = "Convert comics";
-            this.toolTip1.SetToolTip(this.checkBoxCreateFromComic, "Valid comic types: CBZ, CB7, CBR");
-            this.checkBoxCreateFromComic.UseVisualStyleBackColor = true;
-            this.checkBoxCreateFromComic.CheckedChanged += new System.EventHandler(this.checkBoxCreateFromComic_CheckedChanged);
-            // 
-            // checkBoxCreateFromArchive
-            // 
-            this.checkBoxCreateFromArchive.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.checkBoxCreateFromArchive.AutoSize = true;
-            this.checkBoxCreateFromArchive.Checked = global::Comic_Book_Maker.Properties.Settings.Default.create_from_archives;
-            this.checkBoxCreateFromArchive.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBoxCreateFromArchive.DataBindings.Add(new System.Windows.Forms.Binding("Checked", global::Comic_Book_Maker.Properties.Settings.Default, "create_from_archives", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.checkBoxCreateFromArchive.Location = new System.Drawing.Point(3, 29);
-            this.checkBoxCreateFromArchive.Name = "checkBoxCreateFromArchive";
-            this.checkBoxCreateFromArchive.Size = new System.Drawing.Size(159, 17);
-            this.checkBoxCreateFromArchive.TabIndex = 0;
-            this.checkBoxCreateFromArchive.Text = "Create comics from archives";
-            this.toolTip1.SetToolTip(this.checkBoxCreateFromArchive, "Valid archives types: ZIP, 7Z, RAR");
-            this.checkBoxCreateFromArchive.UseVisualStyleBackColor = true;
-            this.checkBoxCreateFromArchive.CheckedChanged += new System.EventHandler(this.checkBoxCreateFromArchive_CheckedChanged);
-            // 
             // buttonCancelClosing
             // 
             this.buttonCancelClosing.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
@@ -665,21 +811,6 @@ namespace Comic_Book_Maker
             this.tableLayoutPanel4.Size = new System.Drawing.Size(313, 147);
             this.tableLayoutPanel4.TabIndex = 11;
             // 
-            // checkBoxParelize
-            // 
-            this.checkBoxParelize.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.checkBoxParelize.AutoSize = true;
-            this.checkBoxParelize.Checked = global::Comic_Book_Maker.Properties.Settings.Default.multi_core_enable;
-            this.checkBoxParelize.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBoxParelize.DataBindings.Add(new System.Windows.Forms.Binding("Checked", global::Comic_Book_Maker.Properties.Settings.Default, "multi_core_enable", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.checkBoxParelize.Location = new System.Drawing.Point(3, 3);
-            this.checkBoxParelize.Name = "checkBoxParelize";
-            this.checkBoxParelize.Size = new System.Drawing.Size(147, 17);
-            this.checkBoxParelize.TabIndex = 0;
-            this.checkBoxParelize.Text = "Use multi-core processing";
-            this.toolTip1.SetToolTip(this.checkBoxParelize, "Use multiple threads in parallel to speed up the process.");
-            this.checkBoxParelize.UseVisualStyleBackColor = true;
-            // 
             // tableLayoutPanel11
             // 
             this.tableLayoutPanel11.AutoSize = true;
@@ -697,16 +828,6 @@ namespace Comic_Book_Maker
             this.tableLayoutPanel11.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel11.Size = new System.Drawing.Size(295, 29);
             this.tableLayoutPanel11.TabIndex = 15;
-            // 
-            // buttonSendtoShortcut
-            // 
-            this.buttonSendtoShortcut.Location = new System.Drawing.Point(3, 3);
-            this.buttonSendtoShortcut.Name = "buttonSendtoShortcut";
-            this.buttonSendtoShortcut.Size = new System.Drawing.Size(55, 23);
-            this.buttonSendtoShortcut.TabIndex = 4;
-            this.buttonSendtoShortcut.Text = "Remove";
-            this.toolTip1.SetToolTip(this.buttonSendtoShortcut, resources.GetString("buttonSendtoShortcut.ToolTip"));
-            this.buttonSendtoShortcut.Click += new System.EventHandler(this.buttonSendtoShortcut_Click);
             // 
             // label7
             // 
@@ -737,20 +858,6 @@ namespace Comic_Book_Maker
             this.tableLayoutPanel9.Size = new System.Drawing.Size(313, 26);
             this.tableLayoutPanel9.TabIndex = 14;
             // 
-            // textBoxRarPath
-            // 
-            this.textBoxRarPath.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.textBoxRarPath.DataBindings.Add(new System.Windows.Forms.Binding("Text", global::Comic_Book_Maker.Properties.Settings.Default, "rar_path", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.textBoxRarPath.Location = new System.Drawing.Point(80, 3);
-            this.textBoxRarPath.Name = "textBoxRarPath";
-            this.textBoxRarPath.Size = new System.Drawing.Size(200, 20);
-            this.textBoxRarPath.TabIndex = 1;
-            this.textBoxRarPath.Text = global::Comic_Book_Maker.Properties.Settings.Default.rar_path;
-            this.toolTip1.SetToolTip(this.textBoxRarPath, "Used for CBR files.\r\nIncluded in comercial program Winrar.");
-            this.textBoxRarPath.EnabledChanged += new System.EventHandler(this.textBoxRarPath_Changed);
-            this.textBoxRarPath.TextChanged += new System.EventHandler(this.textBoxRarPath_Changed);
-            this.textBoxRarPath.VisibleChanged += new System.EventHandler(this.textBoxRarPath_Changed);
-            // 
             // checkBoxDeleteInputFiles
             // 
             this.checkBoxDeleteInputFiles.Anchor = System.Windows.Forms.AnchorStyles.Left;
@@ -763,35 +870,6 @@ namespace Comic_Book_Maker
             this.checkBoxDeleteInputFiles.TabIndex = 0;
             this.checkBoxDeleteInputFiles.Text = "Delete input files at successfull completition (Recycle Bin)";
             this.checkBoxDeleteInputFiles.UseVisualStyleBackColor = true;
-            // 
-            // checkBoxCloseAtComplete
-            // 
-            this.checkBoxCloseAtComplete.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.checkBoxCloseAtComplete.AutoSize = true;
-            this.checkBoxCloseAtComplete.Checked = global::Comic_Book_Maker.Properties.Settings.Default.close_after_complete;
-            this.checkBoxCloseAtComplete.DataBindings.Add(new System.Windows.Forms.Binding("Checked", global::Comic_Book_Maker.Properties.Settings.Default, "close_after_complete", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.checkBoxCloseAtComplete.Location = new System.Drawing.Point(3, 49);
-            this.checkBoxCloseAtComplete.Name = "checkBoxCloseAtComplete";
-            this.checkBoxCloseAtComplete.Size = new System.Drawing.Size(190, 17);
-            this.checkBoxCloseAtComplete.TabIndex = 0;
-            this.checkBoxCloseAtComplete.Text = "Close after successfull completition";
-            this.toolTip1.SetToolTip(this.checkBoxCloseAtComplete, "If enabled, will close the program after succesfully\r\nconverting all files.\r\nA 5 " +
-        "secconds countdown will be shown, allowing \r\nto cancel the closing.");
-            this.checkBoxCloseAtComplete.UseVisualStyleBackColor = true;
-            // 
-            // checkBoxStartAfterFileAdd
-            // 
-            this.checkBoxStartAfterFileAdd.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.checkBoxStartAfterFileAdd.AutoSize = true;
-            this.checkBoxStartAfterFileAdd.Checked = global::Comic_Book_Maker.Properties.Settings.Default.go_after_file_add;
-            this.checkBoxStartAfterFileAdd.DataBindings.Add(new System.Windows.Forms.Binding("Checked", global::Comic_Book_Maker.Properties.Settings.Default, "go_after_file_add", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.checkBoxStartAfterFileAdd.Location = new System.Drawing.Point(3, 26);
-            this.checkBoxStartAfterFileAdd.Name = "checkBoxStartAfterFileAdd";
-            this.checkBoxStartAfterFileAdd.Size = new System.Drawing.Size(192, 17);
-            this.checkBoxStartAfterFileAdd.TabIndex = 0;
-            this.checkBoxStartAfterFileAdd.Text = "Start automatically after adding files";
-            this.toolTip1.SetToolTip(this.checkBoxStartAfterFileAdd, resources.GetString("checkBoxStartAfterFileAdd.ToolTip"));
-            this.checkBoxStartAfterFileAdd.UseVisualStyleBackColor = true;
             // 
             // groupBox3
             // 
@@ -814,82 +892,6 @@ namespace Comic_Book_Maker
             // 
             this.folderBrowserDialog1.RootFolder = System.Environment.SpecialFolder.MyComputer;
             // 
-            // dataGridView1
-            // 
-            this.dataGridView1.AllowDrop = true;
-            this.dataGridView1.AllowUserToAddRows = false;
-            this.dataGridView1.AllowUserToResizeRows = false;
-            this.dataGridView1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.dataGridView1.BackgroundColor = System.Drawing.SystemColors.ControlLightLight;
-            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
-            this.dataGridView1.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.ColumnSelect,
-            this.ColumnInput,
-            this.ColumnType,
-            this.ColumnOutput,
-            this.ColumnState,
-            this.ColumnError});
-            this.dataGridView1.EditMode = System.Windows.Forms.DataGridViewEditMode.EditOnF2;
-            this.dataGridView1.GridColor = System.Drawing.SystemColors.ControlLight;
-            this.dataGridView1.Location = new System.Drawing.Point(12, 9);
-            this.dataGridView1.Name = "dataGridView1";
-            this.dataGridView1.RowHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.Single;
-            this.dataGridView1.RowHeadersVisible = false;
-            this.dataGridView1.RowHeadersWidth = 23;
-            this.dataGridView1.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
-            this.dataGridView1.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dataGridView1.ShowCellToolTips = false;
-            this.dataGridView1.Size = new System.Drawing.Size(521, 525);
-            this.dataGridView1.TabIndex = 13;
-            this.toolTip1.SetToolTip(this.dataGridView1, "Drag and drop valid files here:\r\n-Folders with files\r\n-Archives: ZIP, 7Z, RAR\r\n-C" +
-        "omics: CBZ, CB7, CBR");
-            this.dataGridView1.ColumnHeaderMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dataGridView1_ColumnHeaderMouseClick);
-            this.dataGridView1.DragDrop += new System.Windows.Forms.DragEventHandler(this.dataGridView1_DragDrop);
-            this.dataGridView1.DragOver += new System.Windows.Forms.DragEventHandler(this.dataGridView1_DragOver);
-            this.dataGridView1.KeyDown += new System.Windows.Forms.KeyEventHandler(this.dataGridView1_KeyDown);
-            // 
-            // ColumnSelect
-            // 
-            this.ColumnSelect.HeaderText = "";
-            this.ColumnSelect.Name = "ColumnSelect";
-            this.ColumnSelect.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.ColumnSelect.Width = 21;
-            // 
-            // ColumnInput
-            // 
-            this.ColumnInput.HeaderText = "Input";
-            this.ColumnInput.Name = "ColumnInput";
-            this.ColumnInput.ReadOnly = true;
-            this.ColumnInput.Width = global::Comic_Book_Maker.Properties.Settings.Default.column_width_input;
-            // 
-            // ColumnType
-            // 
-            this.ColumnType.HeaderText = "Type";
-            this.ColumnType.Name = "ColumnType";
-            this.ColumnType.ReadOnly = true;
-            this.ColumnType.Width = global::Comic_Book_Maker.Properties.Settings.Default.column_width_type;
-            // 
-            // ColumnOutput
-            // 
-            this.ColumnOutput.HeaderText = "Output";
-            this.ColumnOutput.Name = "ColumnOutput";
-            this.ColumnOutput.Width = global::Comic_Book_Maker.Properties.Settings.Default.column_width_input;
-            // 
-            // ColumnState
-            // 
-            this.ColumnState.HeaderText = "State";
-            this.ColumnState.Name = "ColumnState";
-            this.ColumnState.ReadOnly = true;
-            this.ColumnState.Width = global::Comic_Book_Maker.Properties.Settings.Default.column_width_state;
-            // 
-            // ColumnError
-            // 
-            this.ColumnError.HeaderText = "Error";
-            this.ColumnError.Name = "ColumnError";
-            this.ColumnError.Visible = false;
-            // 
             // timerClose
             // 
             this.timerClose.Tick += new System.EventHandler(this.timerClose_Tick);
@@ -908,12 +910,12 @@ namespace Comic_Book_Maker
             // 
             this.linkLabel1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.linkLabel1.AutoSize = true;
-            this.linkLabel1.Location = new System.Drawing.Point(694, 521);
+            this.linkLabel1.Location = new System.Drawing.Point(671, 521);
             this.linkLabel1.Name = "linkLabel1";
-            this.linkLabel1.Size = new System.Drawing.Size(124, 13);
+            this.linkLabel1.Size = new System.Drawing.Size(193, 13);
             this.linkLabel1.TabIndex = 14;
             this.linkLabel1.TabStop = true;
-            this.linkLabel1.Text = "gabriel.gross@gmail.com";
+            this.linkLabel1.Text = "github.com/tosione/Comic-Book-Maker";
             this.linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel1_LinkClicked);
             // 
             // formMain
@@ -952,6 +954,7 @@ namespace Comic_Book_Maker
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownCleanLimit)).EndInit();
             this.tableLayoutPanel8.ResumeLayout(false);
             this.tableLayoutPanel8.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
             this.tableLayoutPanel1.ResumeLayout(false);
@@ -971,7 +974,6 @@ namespace Comic_Book_Maker
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
