@@ -29,7 +29,7 @@ Add files, select options and click Go.
 
 There are different ways to add files:
 
-1. Drag-n-drop files on *DataGrid*.
+1. Drag-n-drop files on *DataGrid*. Hold Ctrl key to add files to existing. Duplicate files will not be added twice.
 2. Start program by using *SendTo* context menu of Windows Explorer while selecting one or multiple input files/folders. Needs to add Comic Book Maker to the *SendTo* context menu (there is a button provided for this, se options below).
 3. Start program by drag-n-dropping input files/folders onto it in Windows Explorer.
 4. Start program with command line adding files to process: `"Comic Book Maker.exe" inputpath1 inputpath2 ...`
