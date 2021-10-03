@@ -124,23 +124,11 @@
     <value>329, 4</value>
   </metadata>
   <data name="comboBoxRemoveFolder.ToolTip" xml:space="preserve">
-    <value>-No: folder structure will be mantained as it is.
+    <value>-No: folder structure will be maintained as it is.
 -Yes: all files will be placed in the root folder and 
 directories will be deleted.
 -Smart: remove top level folders until two or more 
 folders/files are on the same level.</value>
-  </data>
-  <data name="comboBoxOutputType.ToolTip" xml:space="preserve">
-    <value>The recommended type is CBZ, because of highter compatibility 
-and no need for comercial compression sofware (WinRar).
-
-In all cases the lowest compression rate is used (none), as
-all files should be jpg or png, which are already highly compressed.
-
-Using higher compression ratio only would slow down creation 
-opening, and viewing of comic files at nearly no size decrease.
-
-RAR4 compression will be used for CBR, instead of less compatible RAR5.</value>
   </data>
   <data name="buttonGo.ToolTip" xml:space="preserve">
     <value>Process checked rows (Enter).
@@ -153,6 +141,17 @@ Start conversion process (Enter):
 5. Delete files in temp folder.
 
 </value>
+  </data>
+  <data name="comboBoxOutputType.ToolTip" xml:space="preserve">
+    <value>The recommended type is CBZ, because of higher compatibility 
+and no need for commercial compression software (WinRar).
+
+In all cases the lowest compression rate is used (none), as all files 
+should be JPG or PNG, which are already highly compressed. 
+Using higher compression ratio only would slow down the creation,
+opening, and viewing of comic files at nearly no size benefit.
+
+RAR4 compression will be used for CBR, instead of less compatible RAR5.</value>
   </data>
   <data name="buttonSendtoShortcut.ToolTip" xml:space="preserve">
     <value>Adds/removes Comic Book Maker to the SendTo 

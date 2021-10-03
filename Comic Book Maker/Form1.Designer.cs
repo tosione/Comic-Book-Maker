@@ -34,8 +34,8 @@ namespace Comic_Book_Maker
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.tableLayoutPanel3 = new System.Windows.Forms.TableLayoutPanel();
             this.tableLayoutPanel5 = new System.Windows.Forms.TableLayoutPanel();
-            this.checkBoxClean = new System.Windows.Forms.CheckBox();
-            this.textBoxCleanFiles = new System.Windows.Forms.TextBox();
+            this.checkBoxExcludeFiles = new System.Windows.Forms.CheckBox();
+            this.textBoxExludeFiles = new System.Windows.Forms.TextBox();
             this.tableLayoutPanel6 = new System.Windows.Forms.TableLayoutPanel();
             this.numericUpDownCleanLimit = new System.Windows.Forms.NumericUpDown();
             this.label1 = new System.Windows.Forms.Label();
@@ -57,7 +57,7 @@ namespace Comic_Book_Maker
             this.checkBoxCreateFromFolder = new System.Windows.Forms.CheckBox();
             this.checkBoxCreateFromComic = new System.Windows.Forms.CheckBox();
             this.checkBoxCreateFromArchive = new System.Windows.Forms.CheckBox();
-            this.checkBoxParelize = new System.Windows.Forms.CheckBox();
+            this.checkBoxMultiThread = new System.Windows.Forms.CheckBox();
             this.buttonSendtoShortcut = new System.Windows.Forms.Button();
             this.textBoxRarPath = new System.Windows.Forms.TextBox();
             this.checkBoxCloseAtComplete = new System.Windows.Forms.CheckBox();
@@ -122,7 +122,7 @@ namespace Comic_Book_Maker
             this.groupBox2.Size = new System.Drawing.Size(325, 114);
             this.groupBox2.TabIndex = 3;
             this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "Cleanup files";
+            this.groupBox2.Text = "Cleanup";
             // 
             // tableLayoutPanel3
             // 
@@ -140,7 +140,7 @@ namespace Comic_Book_Maker
             this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel3.Size = new System.Drawing.Size(276, 79);
+            this.tableLayoutPanel3.Size = new System.Drawing.Size(287, 79);
             this.tableLayoutPanel3.TabIndex = 10;
             // 
             // tableLayoutPanel5
@@ -150,42 +150,42 @@ namespace Comic_Book_Maker
             this.tableLayoutPanel5.ColumnCount = 2;
             this.tableLayoutPanel5.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tableLayoutPanel5.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tableLayoutPanel5.Controls.Add(this.checkBoxClean, 0, 0);
-            this.tableLayoutPanel5.Controls.Add(this.textBoxCleanFiles, 1, 0);
+            this.tableLayoutPanel5.Controls.Add(this.checkBoxExcludeFiles, 0, 0);
+            this.tableLayoutPanel5.Controls.Add(this.textBoxExludeFiles, 1, 0);
             this.tableLayoutPanel5.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel5.Margin = new System.Windows.Forms.Padding(0);
             this.tableLayoutPanel5.Name = "tableLayoutPanel5";
             this.tableLayoutPanel5.RowCount = 1;
             this.tableLayoutPanel5.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel5.Size = new System.Drawing.Size(276, 26);
+            this.tableLayoutPanel5.Size = new System.Drawing.Size(287, 26);
             this.tableLayoutPanel5.TabIndex = 12;
             // 
-            // checkBoxClean
+            // checkBoxExcludeFiles
             // 
-            this.checkBoxClean.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.checkBoxClean.AutoSize = true;
-            this.checkBoxClean.Checked = global::Comic_Book_Maker.Properties.Settings.Default.clean_files_enable;
-            this.checkBoxClean.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBoxClean.DataBindings.Add(new System.Windows.Forms.Binding("Checked", global::Comic_Book_Maker.Properties.Settings.Default, "clean_files_enable", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.checkBoxClean.Location = new System.Drawing.Point(3, 4);
-            this.checkBoxClean.Name = "checkBoxClean";
-            this.checkBoxClean.Size = new System.Drawing.Size(77, 17);
-            this.checkBoxClean.TabIndex = 0;
-            this.checkBoxClean.Text = "Clean files:";
-            this.toolTip1.SetToolTip(this.checkBoxClean, "Files that match this patterns will not be \r\nadded to the comic.\r\n");
-            this.checkBoxClean.UseVisualStyleBackColor = true;
-            this.checkBoxClean.CheckedChanged += new System.EventHandler(this.checkBoxClean_CheckedChanged);
+            this.checkBoxExcludeFiles.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.checkBoxExcludeFiles.AutoSize = true;
+            this.checkBoxExcludeFiles.Checked = global::Comic_Book_Maker.Properties.Settings.Default.clean_files_enable;
+            this.checkBoxExcludeFiles.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBoxExcludeFiles.DataBindings.Add(new System.Windows.Forms.Binding("Checked", global::Comic_Book_Maker.Properties.Settings.Default, "clean_files_enable", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.checkBoxExcludeFiles.Location = new System.Drawing.Point(3, 4);
+            this.checkBoxExcludeFiles.Name = "checkBoxExcludeFiles";
+            this.checkBoxExcludeFiles.Size = new System.Drawing.Size(88, 17);
+            this.checkBoxExcludeFiles.TabIndex = 0;
+            this.checkBoxExcludeFiles.Text = "Exclude files:";
+            this.toolTip1.SetToolTip(this.checkBoxExcludeFiles, "Files that match this patterns will \r\nbe excluded from output file.");
+            this.checkBoxExcludeFiles.UseVisualStyleBackColor = true;
+            this.checkBoxExcludeFiles.CheckedChanged += new System.EventHandler(this.checkBoxExcludeFiles_CheckedChanged);
             // 
-            // textBoxCleanFiles
+            // textBoxExludeFiles
             // 
-            this.textBoxCleanFiles.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.textBoxCleanFiles.DataBindings.Add(new System.Windows.Forms.Binding("Text", global::Comic_Book_Maker.Properties.Settings.Default, "clean_files_string", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.textBoxCleanFiles.Location = new System.Drawing.Point(86, 3);
-            this.textBoxCleanFiles.Name = "textBoxCleanFiles";
-            this.textBoxCleanFiles.Size = new System.Drawing.Size(187, 20);
-            this.textBoxCleanFiles.TabIndex = 1;
-            this.textBoxCleanFiles.Text = global::Comic_Book_Maker.Properties.Settings.Default.clean_files_string;
-            this.toolTip1.SetToolTip(this.textBoxCleanFiles, "Use | to separate multiple files. \r\nWillcards ? and * are allowed.");
+            this.textBoxExludeFiles.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.textBoxExludeFiles.DataBindings.Add(new System.Windows.Forms.Binding("Text", global::Comic_Book_Maker.Properties.Settings.Default, "clean_files_string", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.textBoxExludeFiles.Location = new System.Drawing.Point(97, 3);
+            this.textBoxExludeFiles.Name = "textBoxExludeFiles";
+            this.textBoxExludeFiles.Size = new System.Drawing.Size(187, 20);
+            this.textBoxExludeFiles.TabIndex = 1;
+            this.textBoxExludeFiles.Text = global::Comic_Book_Maker.Properties.Settings.Default.clean_files_string;
+            this.toolTip1.SetToolTip(this.textBoxExludeFiles, "Use | to separate multiple files. \r\nWillcards ? and * are allowed.");
             // 
             // tableLayoutPanel6
             // 
@@ -203,7 +203,7 @@ namespace Comic_Book_Maker
             this.tableLayoutPanel6.Name = "tableLayoutPanel6";
             this.tableLayoutPanel6.RowCount = 1;
             this.tableLayoutPanel6.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel6.Size = new System.Drawing.Size(276, 26);
+            this.tableLayoutPanel6.Size = new System.Drawing.Size(284, 26);
             this.tableLayoutPanel6.TabIndex = 12;
             // 
             // numericUpDownCleanLimit
@@ -244,9 +244,9 @@ namespace Comic_Book_Maker
             this.label6.AutoSize = true;
             this.label6.Location = new System.Drawing.Point(178, 6);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(95, 13);
+            this.label6.Size = new System.Drawing.Size(103, 13);
             this.label6.TabIndex = 3;
-            this.label6.Text = "files will be deleted";
+            this.label6.Text = "files will be excluded";
             // 
             // tableLayoutPanel8
             // 
@@ -467,20 +467,20 @@ namespace Comic_Book_Maker
             this.checkBoxCreateFromArchive.UseVisualStyleBackColor = true;
             this.checkBoxCreateFromArchive.CheckedChanged += new System.EventHandler(this.checkBoxCreateFromArchive_CheckedChanged);
             // 
-            // checkBoxParelize
+            // checkBoxMultiThread
             // 
-            this.checkBoxParelize.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.checkBoxParelize.AutoSize = true;
-            this.checkBoxParelize.Checked = global::Comic_Book_Maker.Properties.Settings.Default.multi_core_enable;
-            this.checkBoxParelize.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBoxParelize.DataBindings.Add(new System.Windows.Forms.Binding("Checked", global::Comic_Book_Maker.Properties.Settings.Default, "multi_core_enable", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.checkBoxParelize.Location = new System.Drawing.Point(3, 3);
-            this.checkBoxParelize.Name = "checkBoxParelize";
-            this.checkBoxParelize.Size = new System.Drawing.Size(147, 17);
-            this.checkBoxParelize.TabIndex = 0;
-            this.checkBoxParelize.Text = "Use multi-core processing";
-            this.toolTip1.SetToolTip(this.checkBoxParelize, "Use multiple threads in parallel to speed up the process.");
-            this.checkBoxParelize.UseVisualStyleBackColor = true;
+            this.checkBoxMultiThread.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.checkBoxMultiThread.AutoSize = true;
+            this.checkBoxMultiThread.Checked = global::Comic_Book_Maker.Properties.Settings.Default.multi_core_enable;
+            this.checkBoxMultiThread.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBoxMultiThread.DataBindings.Add(new System.Windows.Forms.Binding("Checked", global::Comic_Book_Maker.Properties.Settings.Default, "multi_core_enable", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.checkBoxMultiThread.Location = new System.Drawing.Point(3, 3);
+            this.checkBoxMultiThread.Name = "checkBoxMultiThread";
+            this.checkBoxMultiThread.Size = new System.Drawing.Size(170, 17);
+            this.checkBoxMultiThread.TabIndex = 0;
+            this.checkBoxMultiThread.Text = "Use multi-threading processing";
+            this.toolTip1.SetToolTip(this.checkBoxMultiThread, "Use multiple threads in parallel to speed up the process.");
+            this.checkBoxMultiThread.UseVisualStyleBackColor = true;
             // 
             // buttonSendtoShortcut
             // 
@@ -514,11 +514,11 @@ namespace Comic_Book_Maker
             this.checkBoxCloseAtComplete.DataBindings.Add(new System.Windows.Forms.Binding("Checked", global::Comic_Book_Maker.Properties.Settings.Default, "close_after_complete", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.checkBoxCloseAtComplete.Location = new System.Drawing.Point(3, 49);
             this.checkBoxCloseAtComplete.Name = "checkBoxCloseAtComplete";
-            this.checkBoxCloseAtComplete.Size = new System.Drawing.Size(190, 17);
+            this.checkBoxCloseAtComplete.Size = new System.Drawing.Size(183, 17);
             this.checkBoxCloseAtComplete.TabIndex = 0;
-            this.checkBoxCloseAtComplete.Text = "Close after successfull completition";
-            this.toolTip1.SetToolTip(this.checkBoxCloseAtComplete, "If enabled, will close the program after succesfully\r\nconverting all files.\r\nA 5 " +
-        "secconds countdown will be shown, allowing \r\nto cancel the closing.");
+            this.checkBoxCloseAtComplete.Text = "Close after successful completion";
+            this.toolTip1.SetToolTip(this.checkBoxCloseAtComplete, "If enabled, will close the program after succesfuly\r\nconverting all files.\r\nA 5 s" +
+        "ecconds countdown will be shown, allowing \r\nto cancel the closing.");
             this.checkBoxCloseAtComplete.UseVisualStyleBackColor = true;
             // 
             // checkBoxStartAfterFileAdd
@@ -554,7 +554,7 @@ namespace Comic_Book_Maker
             this.ColumnError});
             this.dataGridView1.EditMode = System.Windows.Forms.DataGridViewEditMode.EditOnF2;
             this.dataGridView1.GridColor = System.Drawing.SystemColors.ControlLight;
-            this.dataGridView1.Location = new System.Drawing.Point(12, 9);
+            this.dataGridView1.Location = new System.Drawing.Point(12, 12);
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.RowHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.Single;
             this.dataGridView1.RowHeadersVisible = false;
@@ -562,7 +562,7 @@ namespace Comic_Book_Maker
             this.dataGridView1.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
             this.dataGridView1.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dataGridView1.ShowCellToolTips = false;
-            this.dataGridView1.Size = new System.Drawing.Size(521, 525);
+            this.dataGridView1.Size = new System.Drawing.Size(521, 524);
             this.dataGridView1.TabIndex = 13;
             this.toolTip1.SetToolTip(this.dataGridView1, "Drag and drop valid files here.\r\n\r\nValid file types:\r\n-Folders with files.\r\n-Arch" +
         "ives: ZIP, 7Z, RAR.\r\n-Comics: CBZ, CB7, CBR.\r\n\r\nOutput names can be editet wich " +
@@ -754,6 +754,7 @@ namespace Comic_Book_Maker
             this.textBoxOutPath.Size = new System.Drawing.Size(262, 20);
             this.textBoxOutPath.TabIndex = 1;
             this.textBoxOutPath.Text = global::Comic_Book_Maker.Properties.Settings.Default.output_path;
+            this.toolTip1.SetToolTip(this.textBoxOutPath, "If folder doesn\'t exists, it will be created.");
             this.textBoxOutPath.TextChanged += new System.EventHandler(this.textBoxOutPath_TextChanged);
             // 
             // tableLayoutPanel2
@@ -792,7 +793,7 @@ namespace Comic_Book_Maker
             this.tableLayoutPanel4.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.tableLayoutPanel4.ColumnCount = 1;
             this.tableLayoutPanel4.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tableLayoutPanel4.Controls.Add(this.checkBoxParelize, 0, 0);
+            this.tableLayoutPanel4.Controls.Add(this.checkBoxMultiThread, 0, 0);
             this.tableLayoutPanel4.Controls.Add(this.tableLayoutPanel11, 0, 5);
             this.tableLayoutPanel4.Controls.Add(this.tableLayoutPanel9, 0, 4);
             this.tableLayoutPanel4.Controls.Add(this.checkBoxDeleteInputFiles, 0, 3);
@@ -866,9 +867,9 @@ namespace Comic_Book_Maker
             this.checkBoxDeleteInputFiles.DataBindings.Add(new System.Windows.Forms.Binding("Checked", global::Comic_Book_Maker.Properties.Settings.Default, "delete_input_files", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.checkBoxDeleteInputFiles.Location = new System.Drawing.Point(3, 72);
             this.checkBoxDeleteInputFiles.Name = "checkBoxDeleteInputFiles";
-            this.checkBoxDeleteInputFiles.Size = new System.Drawing.Size(296, 17);
+            this.checkBoxDeleteInputFiles.Size = new System.Drawing.Size(294, 17);
             this.checkBoxDeleteInputFiles.TabIndex = 0;
-            this.checkBoxDeleteInputFiles.Text = "Delete input files at successfull completition (Recycle Bin)";
+            this.checkBoxDeleteInputFiles.Text = "Delete input files at successful completition (Recycle Bin)";
             this.checkBoxDeleteInputFiles.UseVisualStyleBackColor = true;
             // 
             // groupBox3
@@ -986,11 +987,11 @@ namespace Comic_Book_Maker
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.TextBox textBoxRenameSuffix;
         private System.Windows.Forms.NumericUpDown numericUpDownCleanLimit;
-        private System.Windows.Forms.TextBox textBoxCleanFiles;
-        private System.Windows.Forms.CheckBox checkBoxClean;
+        private System.Windows.Forms.TextBox textBoxExludeFiles;
+        private System.Windows.Forms.CheckBox checkBoxExcludeFiles;
         private System.Windows.Forms.CheckBox checkBoxDeleteInputFiles;
         private System.Windows.Forms.CheckBox checkBoxCloseAtComplete;
-        private System.Windows.Forms.CheckBox checkBoxParelize;
+        private System.Windows.Forms.CheckBox checkBoxMultiThread;
         private System.Windows.Forms.Button buttonGo;
         private System.Windows.Forms.TextBox textBoxRarPath;
         private System.Windows.Forms.Label labelRarPath;

@@ -173,10 +173,10 @@ namespace Comic_Book_Maker
         {
             updateOutputNames();
         }
-        private void checkBoxClean_CheckedChanged(object sender, EventArgs e)
+        private void checkBoxExcludeFiles_CheckedChanged(object sender, EventArgs e)
         {
-            textBoxCleanFiles.Enabled = checkBoxClean.Checked;
-            numericUpDownCleanLimit.Enabled = checkBoxClean.Checked;
+            textBoxExludeFiles.Enabled = checkBoxExcludeFiles.Checked;
+            numericUpDownCleanLimit.Enabled = checkBoxExcludeFiles.Checked;
         }
         private void comboBoxFileExistAction_SelectedValueChanged(object sender, EventArgs e)
         {
@@ -532,7 +532,7 @@ namespace Comic_Book_Maker
 
             //get parameters for clean up
             char[] separator = { '|' };
-            string[] cleanStr = checkBoxClean.Checked ? textBoxCleanFiles.Text.Split(separator, StringSplitOptions.RemoveEmptyEntries) : null;
+            string[] cleanStr = checkBoxExcludeFiles.Checked ? textBoxExludeFiles.Text.Split(separator, StringSplitOptions.RemoveEmptyEntries) : null;
             for (int i = 0; i <= cleanStr.GetUpperBound(0); i++)
                 cleanStr[i] = cleanStr[i].Trim();
             int nCleanLimit = (int)numericUpDownCleanLimit.Value;
@@ -543,7 +543,7 @@ namespace Comic_Book_Maker
             showThread("Entering ProcessAllRows");
 
             //process rows
-            if (checkBoxParelize.Checked)
+            if (checkBoxMultiThread.Checked)
             {
                 //parallel execution of processRow();
                 Task task1 = Task.Run(() =>
