@@ -18,7 +18,7 @@ Official repository: https://github.com/tosione/Comic-Book-Maker
 - Deleting of input files.
 - Drag-n-drop support.
 - Integration into *SendTo* context menu of Windows Explorer for automatic opening of multiple files.
-- Option for automatic start after adding files, and close after successful completion, allowing automatic file processing when used together with *SendTo* context menu.
+- Option for automatic start after adding files, and automatic close after successful completion, allowing automatic file processing when used together with *SendTo* context menu.
 
 [^1]: Rar.exe from [RarLab](https://www.rarlab.com) is required for CBR creation.
 
