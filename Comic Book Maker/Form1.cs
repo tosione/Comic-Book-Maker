@@ -380,7 +380,7 @@ namespace Comic_Book_Maker
             else
                 buttonSendtoShortcut.Text = "Add";
         }
-        [Conditional("DEBUG")] 
+        [Conditional("DEBUG")]
         private void showThread(string s)
         {
             //show message with thread ID in console for debuggin 
