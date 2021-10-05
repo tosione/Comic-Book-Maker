@@ -914,7 +914,7 @@ namespace Comic_Book_Maker
                 }
 
                 /// 7-Zip basic parameters to Compress:
-                ///     7z.exe a {archive} {files|@listfiles} {switches}
+                ///     7z.exe a  {switches} {archive} {files|@listfiles}
                 /// Swithes:
                 ///     -bb{level}      output log level (0=none..3)
                 ///     -mx={level}     compression level (0=none,1,3,5,7,9)

@@ -130,6 +130,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>copy "$(ProjectDir)7-Zip\*.*" "$(TargetDir)"</PostBuildEvent>
+    <PostBuildEvent>copy "$(ProjectDir)7-Zip\*.*" "$(TargetDir)"
+copy "$(SolutionDir)Readme.md" "$(TargetDir)"</PostBuildEvent>
   </PropertyGroup>
 </Project>
