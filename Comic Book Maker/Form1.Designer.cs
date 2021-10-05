@@ -69,6 +69,7 @@ namespace Comic_Book_Maker
             this.ColumnOutput = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ColumnState = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ColumnError = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.textBoxOutPath = new System.Windows.Forms.TextBox();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.toolStripProgressBar1 = new System.Windows.Forms.ToolStripProgressBar();
@@ -79,7 +80,6 @@ namespace Comic_Book_Maker
             this.comboBoxFileExistAction = new System.Windows.Forms.ComboBox();
             this.tableLayoutPanel7 = new System.Windows.Forms.TableLayoutPanel();
             this.buttonOutputPath = new System.Windows.Forms.Button();
-            this.textBoxOutPath = new System.Windows.Forms.TextBox();
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
             this.buttonCancelClosing = new System.Windows.Forms.Button();
             this.tableLayoutPanel4 = new System.Windows.Forms.TableLayoutPanel();
@@ -117,7 +117,7 @@ namespace Comic_Book_Maker
             this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox2.AutoSize = true;
             this.groupBox2.Controls.Add(this.tableLayoutPanel3);
-            this.groupBox2.Location = new System.Drawing.Point(539, 207);
+            this.groupBox2.Location = new System.Drawing.Point(847, 207);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(325, 114);
             this.groupBox2.TabIndex = 3;
@@ -562,7 +562,7 @@ namespace Comic_Book_Maker
             this.dataGridView1.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
             this.dataGridView1.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dataGridView1.ShowCellToolTips = false;
-            this.dataGridView1.Size = new System.Drawing.Size(521, 524);
+            this.dataGridView1.Size = new System.Drawing.Size(829, 524);
             this.dataGridView1.TabIndex = 13;
             this.toolTip1.SetToolTip(this.dataGridView1, "Drag and drop valid files here.\r\n\r\nValid file types:\r\n-Folders with files.\r\n-Arch" +
         "ives: ZIP, 7Z, RAR.\r\n-Comics: CBZ, CB7, CBR.\r\n\r\nOutput names can be editet wich " +
@@ -612,6 +612,18 @@ namespace Comic_Book_Maker
             this.ColumnError.Name = "ColumnError";
             this.ColumnError.Visible = false;
             // 
+            // textBoxOutPath
+            // 
+            this.textBoxOutPath.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.textBoxOutPath.DataBindings.Add(new System.Windows.Forms.Binding("Text", global::Comic_Book_Maker.Properties.Settings.Default, "output_path", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.textBoxOutPath.Location = new System.Drawing.Point(3, 3);
+            this.textBoxOutPath.Name = "textBoxOutPath";
+            this.textBoxOutPath.Size = new System.Drawing.Size(262, 20);
+            this.textBoxOutPath.TabIndex = 1;
+            this.textBoxOutPath.Text = global::Comic_Book_Maker.Properties.Settings.Default.output_path;
+            this.toolTip1.SetToolTip(this.textBoxOutPath, "If folder doesn\'t exists, it will be created.");
+            this.textBoxOutPath.TextChanged += new System.EventHandler(this.textBoxOutPath_TextChanged);
+            // 
             // openFileDialog1
             // 
             this.openFileDialog1.Filter = "RAR executable|Rar.exe";
@@ -623,7 +635,7 @@ namespace Comic_Book_Maker
             this.toolStripStatusLabel1});
             this.statusStrip1.Location = new System.Drawing.Point(0, 539);
             this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Size = new System.Drawing.Size(876, 22);
+            this.statusStrip1.Size = new System.Drawing.Size(1184, 22);
             this.statusStrip1.TabIndex = 7;
             this.statusStrip1.Text = "statusStrip1";
             // 
@@ -656,7 +668,7 @@ namespace Comic_Book_Maker
             this.tableLayoutPanel1.Controls.Add(this.buttonGo, 1, 0);
             this.tableLayoutPanel1.Controls.Add(this.buttonExit, 1, 2);
             this.tableLayoutPanel1.Controls.Add(this.buttonRefresh, 1, 3);
-            this.tableLayoutPanel1.Location = new System.Drawing.Point(545, 9);
+            this.tableLayoutPanel1.Location = new System.Drawing.Point(853, 9);
             this.tableLayoutPanel1.Margin = new System.Windows.Forms.Padding(0);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 7;
@@ -744,18 +756,6 @@ namespace Comic_Book_Maker
             this.buttonOutputPath.TabIndex = 6;
             this.buttonOutputPath.Text = "...";
             this.buttonOutputPath.Click += new System.EventHandler(this.buttonOutputPath_Click);
-            // 
-            // textBoxOutPath
-            // 
-            this.textBoxOutPath.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.textBoxOutPath.DataBindings.Add(new System.Windows.Forms.Binding("Text", global::Comic_Book_Maker.Properties.Settings.Default, "output_path", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.textBoxOutPath.Location = new System.Drawing.Point(3, 3);
-            this.textBoxOutPath.Name = "textBoxOutPath";
-            this.textBoxOutPath.Size = new System.Drawing.Size(262, 20);
-            this.textBoxOutPath.TabIndex = 1;
-            this.textBoxOutPath.Text = global::Comic_Book_Maker.Properties.Settings.Default.output_path;
-            this.toolTip1.SetToolTip(this.textBoxOutPath, "If folder doesn\'t exists, it will be created.");
-            this.textBoxOutPath.TextChanged += new System.EventHandler(this.textBoxOutPath_TextChanged);
             // 
             // tableLayoutPanel2
             // 
@@ -878,7 +878,7 @@ namespace Comic_Book_Maker
             this.groupBox3.AutoSize = true;
             this.groupBox3.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.groupBox3.Controls.Add(this.tableLayoutPanel4);
-            this.groupBox3.Location = new System.Drawing.Point(539, 327);
+            this.groupBox3.Location = new System.Drawing.Point(847, 327);
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.Size = new System.Drawing.Size(325, 182);
             this.groupBox3.TabIndex = 12;
@@ -901,7 +901,7 @@ namespace Comic_Book_Maker
             // 
             this.labelAbout.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.labelAbout.AutoSize = true;
-            this.labelAbout.Location = new System.Drawing.Point(545, 521);
+            this.labelAbout.Location = new System.Drawing.Point(853, 521);
             this.labelAbout.Name = "labelAbout";
             this.labelAbout.Size = new System.Drawing.Size(121, 13);
             this.labelAbout.TabIndex = 3;
@@ -911,7 +911,7 @@ namespace Comic_Book_Maker
             // 
             this.linkLabel1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.linkLabel1.AutoSize = true;
-            this.linkLabel1.Location = new System.Drawing.Point(671, 521);
+            this.linkLabel1.Location = new System.Drawing.Point(979, 521);
             this.linkLabel1.Name = "linkLabel1";
             this.linkLabel1.Size = new System.Drawing.Size(193, 13);
             this.linkLabel1.TabIndex = 14;
@@ -924,7 +924,7 @@ namespace Comic_Book_Maker
             this.AcceptButton = this.buttonGo;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(876, 561);
+            this.ClientSize = new System.Drawing.Size(1184, 561);
             this.Controls.Add(this.buttonCancelClosing);
             this.Controls.Add(this.linkLabel1);
             this.Controls.Add(this.labelAbout);
@@ -939,10 +939,10 @@ namespace Comic_Book_Maker
             this.Location = global::Comic_Book_Maker.Properties.Settings.Default.form_location;
             this.MinimumSize = new System.Drawing.Size(800, 600);
             this.Name = "formMain";
-            this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
             this.Text = "Comic Book Maker";
             this.toolTip1.SetToolTip(this, "Files to clean: use ? and * wildcards. Multiple types separated by |.");
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.form1_FormClosed);
+            this.Shown += new System.EventHandler(this.formMain_Shown);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.formMain_KeyDown);
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();

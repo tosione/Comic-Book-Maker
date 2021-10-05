@@ -85,7 +85,7 @@ namespace Comic_Book_Maker.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("zzz*.*|*.url")]
+        [global::System.Configuration.DefaultSettingValueAttribute("zz*.*|*.url|thumb.db")]
         public string clean_files_string {
             get {
                 return ((string)(this["clean_files_string"]));

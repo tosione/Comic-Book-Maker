@@ -87,6 +87,12 @@ namespace Comic_Book_Maker
             if (args1.Length > 0)
                 populateGrid(args1, true);
         }
+        private void formMain_Shown(object sender, EventArgs e)
+        {
+            //When main windows hasn't at least 100 pix on scrreen, reposition it at 100 pix (upper-right)
+            if (!isOnScreen(this,100))
+                Location = new System.Drawing.Point(100, 100);
+        }
         private void form1_FormClosed(object sender, FormClosedEventArgs e)
         {
             //settings that are not assignable
@@ -167,8 +173,13 @@ namespace Comic_Book_Maker
         }
         private void buttonGo_Click(object sender, EventArgs e)
         {
-            updateOutputNames();
-            processAllRows();
+            if (dataGridView1.Rows.Count > 0)
+            {
+                updateOutputNames();
+                processAllRows();
+            }
+            else
+                showStatus("No files to process");
         }
         private void buttonExit_Click(object sender, EventArgs e)
         {
@@ -374,6 +385,18 @@ namespace Comic_Book_Maker
         {
             //show message with thread ID in console for debuggin 
             Console.WriteLine(s + " (Thread ID = " + Thread.CurrentThread.ManagedThreadId.ToString() + ")");
+        }
+        private bool isOnScreen(Form form,int minPixel)
+        {
+            //source: https://stackoverflow.com/questions/987018/determining-if-a-form-is-completely-off-screen
+            Screen[] screens = Screen.AllScreens;
+            foreach (Screen screen in screens)
+            {
+                System.Drawing.Point formTopLeft = new System.Drawing.Point(form.Left + minPixel, form.Top + minPixel);
+                if (screen.WorkingArea.Contains(formTopLeft))
+                    return true;
+            }
+            return false;
         }
 
 

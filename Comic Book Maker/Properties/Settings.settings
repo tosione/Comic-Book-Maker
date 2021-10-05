@@ -18,7 +18,7 @@
       <Value Profile="(Default)">True</Value>
     </Setting>
     <Setting Name="clean_files_string" Type="System.String" Scope="User">
-      <Value Profile="(Default)">zzz*.*|*.url</Value>
+      <Value Profile="(Default)">zz*.*|*.url|thumb.db</Value>
     </Setting>
     <Setting Name="clean_files_limit_n" Type="System.Decimal" Scope="User">
       <Value Profile="(Default)">4</Value>
