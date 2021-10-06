@@ -117,7 +117,7 @@ namespace Comic_Book_Maker
             this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox2.AutoSize = true;
             this.groupBox2.Controls.Add(this.tableLayoutPanel3);
-            this.groupBox2.Location = new System.Drawing.Point(447, 207);
+            this.groupBox2.Location = new System.Drawing.Point(847, 207);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(325, 114);
             this.groupBox2.TabIndex = 3;
@@ -562,7 +562,7 @@ namespace Comic_Book_Maker
             this.dataGridView1.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
             this.dataGridView1.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dataGridView1.ShowCellToolTips = false;
-            this.dataGridView1.Size = new System.Drawing.Size(429, 524);
+            this.dataGridView1.Size = new System.Drawing.Size(829, 524);
             this.dataGridView1.TabIndex = 13;
             this.toolTip1.SetToolTip(this.dataGridView1, "Drag and drop valid files here.\r\n\r\nValid file types:\r\n-Folders with files.\r\n-Arch" +
         "ives: ZIP, 7Z, RAR.\r\n-Comics: CBZ, CB7, CBR.\r\n\r\nOutput names can be editet wich " +
@@ -635,7 +635,7 @@ namespace Comic_Book_Maker
             this.toolStripStatusLabel1});
             this.statusStrip1.Location = new System.Drawing.Point(0, 539);
             this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Size = new System.Drawing.Size(784, 22);
+            this.statusStrip1.Size = new System.Drawing.Size(1184, 22);
             this.statusStrip1.TabIndex = 7;
             this.statusStrip1.Text = "statusStrip1";
             // 
@@ -668,7 +668,7 @@ namespace Comic_Book_Maker
             this.tableLayoutPanel1.Controls.Add(this.buttonGo, 1, 0);
             this.tableLayoutPanel1.Controls.Add(this.buttonExit, 1, 2);
             this.tableLayoutPanel1.Controls.Add(this.buttonRefresh, 1, 3);
-            this.tableLayoutPanel1.Location = new System.Drawing.Point(453, 9);
+            this.tableLayoutPanel1.Location = new System.Drawing.Point(853, 9);
             this.tableLayoutPanel1.Margin = new System.Windows.Forms.Padding(0);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 7;
@@ -878,7 +878,7 @@ namespace Comic_Book_Maker
             this.groupBox3.AutoSize = true;
             this.groupBox3.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.groupBox3.Controls.Add(this.tableLayoutPanel4);
-            this.groupBox3.Location = new System.Drawing.Point(447, 327);
+            this.groupBox3.Location = new System.Drawing.Point(847, 327);
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.Size = new System.Drawing.Size(325, 182);
             this.groupBox3.TabIndex = 12;
@@ -901,7 +901,7 @@ namespace Comic_Book_Maker
             // 
             this.labelAbout.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.labelAbout.AutoSize = true;
-            this.labelAbout.Location = new System.Drawing.Point(447, 517);
+            this.labelAbout.Location = new System.Drawing.Point(847, 517);
             this.labelAbout.Name = "labelAbout";
             this.labelAbout.Size = new System.Drawing.Size(121, 13);
             this.labelAbout.TabIndex = 3;
@@ -911,7 +911,7 @@ namespace Comic_Book_Maker
             // 
             this.linkLabel1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.linkLabel1.AutoSize = true;
-            this.linkLabel1.Location = new System.Drawing.Point(579, 517);
+            this.linkLabel1.Location = new System.Drawing.Point(979, 517);
             this.linkLabel1.Name = "linkLabel1";
             this.linkLabel1.Size = new System.Drawing.Size(193, 13);
             this.linkLabel1.TabIndex = 14;
@@ -924,7 +924,7 @@ namespace Comic_Book_Maker
             this.AcceptButton = this.buttonGo;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(784, 561);
+            this.ClientSize = new System.Drawing.Size(1184, 561);
             this.Controls.Add(this.buttonCancelClosing);
             this.Controls.Add(this.linkLabel1);
             this.Controls.Add(this.labelAbout);

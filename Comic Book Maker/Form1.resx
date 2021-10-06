@@ -120,15 +120,23 @@
   <metadata name="toolTip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>329, 4</value>
   </metadata>
-  <metadata name="toolTip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>329, 4</value>
-  </metadata>
   <data name="comboBoxRemoveFolder.ToolTip" xml:space="preserve">
     <value>-No: folder structure will be maintained as it is.
 -Yes: all files will be placed in the root folder and 
 directories will be deleted.
 -Smart: remove top level folders until two or more 
 folders/files are on the same level.</value>
+  </data>
+  <data name="comboBoxOutputType.ToolTip" xml:space="preserve">
+    <value>The recommended type is CBZ, because of higher compatibility 
+and no need for commercial compression software (WinRar).
+
+In all cases the lowest compression rate is used (none), as all files 
+should be JPG or PNG, which are already highly compressed. 
+Using higher compression ratio only would slow down the creation,
+opening, and viewing of comic files at nearly no size benefit.
+
+RAR4 compression will be used for CBR, instead of less compatible RAR5.</value>
   </data>
   <data name="buttonGo.ToolTip" xml:space="preserve">
     <value>Process checked rows (Enter).
@@ -141,17 +149,6 @@ Start conversion process (Enter):
 5. Delete files in temp folder.
 
 </value>
-  </data>
-  <data name="comboBoxOutputType.ToolTip" xml:space="preserve">
-    <value>The recommended type is CBZ, because of higher compatibility 
-and no need for commercial compression software (WinRar).
-
-In all cases the lowest compression rate is used (none), as all files 
-should be JPG or PNG, which are already highly compressed. 
-Using higher compression ratio only would slow down the creation,
-opening, and viewing of comic files at nearly no size benefit.
-
-RAR4 compression will be used for CBR, instead of less compatible RAR5.</value>
   </data>
   <data name="buttonSendtoShortcut.ToolTip" xml:space="preserve">
     <value>Adds/removes Comic Book Maker to the SendTo 
@@ -172,24 +169,6 @@ the files will automatically converted.
 Used in combination with the "Close after succesfull 
 completition" option allows a fully automatic behaviour.</value>
   </data>
-  <metadata name="ColumnSelect.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>True</value>
-  </metadata>
-  <metadata name="ColumnInput.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>True</value>
-  </metadata>
-  <metadata name="ColumnType.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>True</value>
-  </metadata>
-  <metadata name="ColumnOutput.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>True</value>
-  </metadata>
-  <metadata name="ColumnState.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>True</value>
-  </metadata>
-  <metadata name="ColumnError.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>True</value>
-  </metadata>
   <metadata name="ColumnSelect.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
   </metadata>
