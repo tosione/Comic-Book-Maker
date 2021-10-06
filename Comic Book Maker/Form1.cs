@@ -738,6 +738,7 @@ namespace Comic_Book_Maker
                     Process pr7z = new Process();
                     pr7z.StartInfo = new ProcessStartInfo();
                     pr7z.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+                    pr7z.StartInfo.WorkingDirectory = programFolderPath;
                     pr7z.StartInfo.FileName = "7z.exe";
                     pr7z.StartInfo.Arguments = "x " + quote(inPath) + " -o" + quote(tempPath) + " -aoa";
                     pr7z.Start();
@@ -882,6 +883,7 @@ namespace Comic_Book_Maker
                     Process pr7z = new Process();
                     pr7z.StartInfo = new ProcessStartInfo();
                     pr7z.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+                    pr7z.StartInfo.WorkingDirectory = programFolderPath;
                     pr7z.StartInfo.FileName = "7z.exe";
                     pr7z.StartInfo.Arguments = "a -mx=0 -tzip -r -mmt=off " + quote(outPath) + " " + quote(Path.Combine(tempPath, "*.*"));
                     pr7z.Start();
@@ -894,6 +896,7 @@ namespace Comic_Book_Maker
                     Process pr7z = new Process();
                     pr7z.StartInfo = new ProcessStartInfo();
                     pr7z.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+                    pr7z.StartInfo.WorkingDirectory = programFolderPath;
                     pr7z.StartInfo.FileName = "7z.exe";
                     pr7z.StartInfo.Arguments = "a -mx0 -t7z -r -mmt=off " + quote(outPath) + " " + quote(Path.Combine(tempPath, "*.*"));
                     pr7z.Start();
