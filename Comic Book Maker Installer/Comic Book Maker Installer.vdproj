@@ -15,19 +15,13 @@
     {
         "Entry"
         {
-        "MsmKey" = "8:_11DFC0EFF9794193B77B5D258B7EDDE1"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_5968E1E027BF4CA2B24628DE35AF93A8"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_7842D55ABDA442FD81CE325C08E96DF8"
+        "MsmKey" = "8:_768D90CFF3C64DCCB599F7FDC37F79F5"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -40,6 +34,12 @@
         "Entry"
         {
         "MsmKey" = "8:_8BA8105015DB40C7908501226E139FA2"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_9C3CDD39C71D488F94F6CEAC0F2369BA"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -150,29 +150,9 @@
         }
         "File"
         {
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_11DFC0EFF9794193B77B5D258B7EDDE1"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_768D90CFF3C64DCCB599F7FDC37F79F5"
             {
-            "SourcePath" = "8:..\\Comic Book Maker\\7-Zip\\7z.dll"
-            "TargetName" = "8:7z.dll"
-            "Tag" = "8:"
-            "Folder" = "8:_55803129B53D4918AEE7E83E44B32CD4"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_7842D55ABDA442FD81CE325C08E96DF8"
-            {
-            "SourcePath" = "8:..\\Comic Book Maker\\7-Zip\\7z.exe"
+            "SourcePath" = "8:..\\7-Zip\\7z.exe"
             "TargetName" = "8:7z.exe"
             "Tag" = "8:"
             "Folder" = "8:_55803129B53D4918AEE7E83E44B32CD4"
@@ -241,19 +221,39 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_9C3CDD39C71D488F94F6CEAC0F2369BA"
+            {
+            "SourcePath" = "8:..\\7-Zip\\7z.dll"
+            "TargetName" = "8:7z.dll"
+            "Tag" = "8:"
+            "Folder" = "8:_55803129B53D4918AEE7E83E44B32CD4"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
         }
         "FileType"
         {
         }
         "Folder"
         {
-            "{1525181F-901A-416C-8A58-119130FE478E}:_2304CB7B690E4E15B0B62F1F61D1F7E2"
+            "{1525181F-901A-416C-8A58-119130FE478E}:_338066414BE149D083811AA97A83DBE1"
             {
-            "Name" = "8:#1916"
+            "Name" = "8:#1920"
             "AlwaysCreate" = "11:FALSE"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
-            "Property" = "8:DesktopFolder"
+            "Property" = "8:SendToFolder"
                 "Folders"
                 {
                 }
@@ -298,7 +298,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Comic Book Maker"
         "ProductCode" = "8:{AD531B25-1764-4098-8909-93B72979778A}"
-        "PackageCode" = "8:{E1FD6153-E3AA-442A-9552-6C15EF786221}"
+        "PackageCode" = "8:{446D2484-8D6E-47CC-953C-4F0A0E2CC307}"
         "UpgradeCode" = "8:{17EC024E-846F-4178-8442-29A094652C44}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
@@ -315,8 +315,8 @@
         "Keywords" = "8:"
         "ARPCOMMENTS" = "8:"
         "ARPURLINFOABOUT" = "8:"
-        "ARPPRODUCTICON" = "8:"
-        "ARPIconIndex" = "3:0"
+        "ARPPRODUCTICON" = "8:_5968E1E027BF4CA2B24628DE35AF93A8"
+        "ARPIconIndex" = "3:32512"
         "SearchPath" = "8:"
         "UseSystemSearchPath" = "11:TRUE"
         "TargetPlatform" = "3:1"
@@ -418,20 +418,6 @@
         }
         "Shortcut"
         {
-            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_02632B17C0BC4BB0923678C9664FF660"
-            {
-            "Name" = "8:Comic Book Maker"
-            "Arguments" = "8:"
-            "Description" = "8:"
-            "ShowCmd" = "3:1"
-            "IconIndex" = "3:32512"
-            "Transitive" = "11:FALSE"
-            "Target" = "8:_5968E1E027BF4CA2B24628DE35AF93A8"
-            "Folder" = "8:_2304CB7B690E4E15B0B62F1F61D1F7E2"
-            "WorkingFolder" = "8:_55803129B53D4918AEE7E83E44B32CD4"
-            "Icon" = "8:_5968E1E027BF4CA2B24628DE35AF93A8"
-            "Feature" = "8:"
-            }
             "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_A28C44C0F9C34CCFA264126EBF393329"
             {
             "Name" = "8:Comic Book Maker"
@@ -442,6 +428,20 @@
             "Transitive" = "11:FALSE"
             "Target" = "8:_5968E1E027BF4CA2B24628DE35AF93A8"
             "Folder" = "8:_6307893AD3964A2C888A0D6D95CA632A"
+            "WorkingFolder" = "8:_55803129B53D4918AEE7E83E44B32CD4"
+            "Icon" = "8:_5968E1E027BF4CA2B24628DE35AF93A8"
+            "Feature" = "8:"
+            }
+            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_AD0333C7FD1844A3BBF684BDE98FC37A"
+            {
+            "Name" = "8:Comic Book Maker"
+            "Arguments" = "8:"
+            "Description" = "8:"
+            "ShowCmd" = "3:1"
+            "IconIndex" = "3:32512"
+            "Transitive" = "11:FALSE"
+            "Target" = "8:_5968E1E027BF4CA2B24628DE35AF93A8"
+            "Folder" = "8:_338066414BE149D083811AA97A83DBE1"
             "WorkingFolder" = "8:_55803129B53D4918AEE7E83E44B32CD4"
             "Icon" = "8:_5968E1E027BF4CA2B24628DE35AF93A8"
             "Feature" = "8:"
