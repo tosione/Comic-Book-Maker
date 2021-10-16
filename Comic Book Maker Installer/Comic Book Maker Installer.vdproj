@@ -15,12 +15,6 @@
     {
         "Entry"
         {
-        "MsmKey" = "8:_5968E1E027BF4CA2B24628DE35AF93A8"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_768D90CFF3C64DCCB599F7FDC37F79F5"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -28,7 +22,7 @@
         "Entry"
         {
         "MsmKey" = "8:_82C3487FD4CF653CB03F31620AB378FA"
-        "OwnerKey" = "8:_5968E1E027BF4CA2B24628DE35AF93A8"
+        "OwnerKey" = "8:_E0F40B44DE514E3491FBA2A89380CF7B"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -45,14 +39,20 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_5968E1E027BF4CA2B24628DE35AF93A8"
+        "MsmKey" = "8:_E0F40B44DE514E3491FBA2A89380CF7B"
+        "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_82C3487FD4CF653CB03F31620AB378FA"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_E0F40B44DE514E3491FBA2A89380CF7B"
         "MsmSig" = "8:_UNDEFINED"
         }
     }
@@ -298,7 +298,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Comic Book Maker"
         "ProductCode" = "8:{AD531B25-1764-4098-8909-93B72979778A}"
-        "PackageCode" = "8:{446D2484-8D6E-47CC-953C-4F0A0E2CC307}"
+        "PackageCode" = "8:{F7565F1E-6429-4A0F-824F-75FFBFE6984D}"
         "UpgradeCode" = "8:{17EC024E-846F-4178-8442-29A094652C44}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
@@ -313,9 +313,9 @@
         "Subject" = "8:"
         "ARPCONTACT" = "8:"
         "Keywords" = "8:"
-        "ARPCOMMENTS" = "8:"
+        "ARPCOMMENTS" = "8:Comic Book Maker creates comic files (CBZ, CB7, CBR) from folders with images and other files, or by repacking existing archives or comic book files."
         "ARPURLINFOABOUT" = "8:"
-        "ARPPRODUCTICON" = "8:_5968E1E027BF4CA2B24628DE35AF93A8"
+        "ARPPRODUCTICON" = "8:_E0F40B44DE514E3491FBA2A89380CF7B"
         "ARPIconIndex" = "3:32512"
         "SearchPath" = "8:"
         "UseSystemSearchPath" = "11:TRUE"
@@ -418,7 +418,7 @@
         }
         "Shortcut"
         {
-            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_A28C44C0F9C34CCFA264126EBF393329"
+            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_2CC280F3AC764E13B2151F8D223B1CFE"
             {
             "Name" = "8:Comic Book Maker"
             "Arguments" = "8:"
@@ -426,24 +426,24 @@
             "ShowCmd" = "3:1"
             "IconIndex" = "3:32512"
             "Transitive" = "11:FALSE"
-            "Target" = "8:_5968E1E027BF4CA2B24628DE35AF93A8"
-            "Folder" = "8:_6307893AD3964A2C888A0D6D95CA632A"
-            "WorkingFolder" = "8:_55803129B53D4918AEE7E83E44B32CD4"
-            "Icon" = "8:_5968E1E027BF4CA2B24628DE35AF93A8"
-            "Feature" = "8:"
-            }
-            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_AD0333C7FD1844A3BBF684BDE98FC37A"
-            {
-            "Name" = "8:Comic Book Maker"
-            "Arguments" = "8:"
-            "Description" = "8:"
-            "ShowCmd" = "3:1"
-            "IconIndex" = "3:32512"
-            "Transitive" = "11:FALSE"
-            "Target" = "8:_5968E1E027BF4CA2B24628DE35AF93A8"
+            "Target" = "8:_E0F40B44DE514E3491FBA2A89380CF7B"
             "Folder" = "8:_338066414BE149D083811AA97A83DBE1"
             "WorkingFolder" = "8:_55803129B53D4918AEE7E83E44B32CD4"
-            "Icon" = "8:_5968E1E027BF4CA2B24628DE35AF93A8"
+            "Icon" = "8:_E0F40B44DE514E3491FBA2A89380CF7B"
+            "Feature" = "8:"
+            }
+            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_70FBB6C8976042BCB83F6C5E630DA758"
+            {
+            "Name" = "8:Comic Book Maker"
+            "Arguments" = "8:"
+            "Description" = "8:"
+            "ShowCmd" = "3:1"
+            "IconIndex" = "3:32512"
+            "Transitive" = "11:FALSE"
+            "Target" = "8:_E0F40B44DE514E3491FBA2A89380CF7B"
+            "Folder" = "8:_6307893AD3964A2C888A0D6D95CA632A"
+            "WorkingFolder" = "8:_55803129B53D4918AEE7E83E44B32CD4"
+            "Icon" = "8:_E0F40B44DE514E3491FBA2A89380CF7B"
             "Feature" = "8:"
             }
         }
@@ -845,7 +845,7 @@
         }
         "ProjectOutput"
         {
-            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_5968E1E027BF4CA2B24628DE35AF93A8"
+            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_E0F40B44DE514E3491FBA2A89380CF7B"
             {
             "SourcePath" = "8:..\\Comic Book Maker\\obj\\Release\\Comic Book Maker.exe"
             "TargetName" = "8:"
