@@ -5,6 +5,8 @@ VisualStudioVersion = 16.0.31624.102
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Comic Book Maker", "Comic Book Maker\Comic Book Maker.csproj", "{7A1ADF90-9A84-45A4-8EB5-9AC4F891E135}"
 EndProject
+Project("{29E15B7A-B420-4782-B51D-1BE2F663A160}") = "Comic Book Maker Setup", "Comic Book Maker Setup\Comic Book Maker Setup.innoproj", "{599CFAF5-51FC-41F5-95C0-C9DACA00AF63}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,12 @@ Global
 		{7A1ADF90-9A84-45A4-8EB5-9AC4F891E135}.Release|Any CPU.Build.0 = Release|Any CPU
 		{7A1ADF90-9A84-45A4-8EB5-9AC4F891E135}.Release|x86.ActiveCfg = Release|Any CPU
 		{7A1ADF90-9A84-45A4-8EB5-9AC4F891E135}.Release|x86.Build.0 = Release|Any CPU
+		{599CFAF5-51FC-41F5-95C0-C9DACA00AF63}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{599CFAF5-51FC-41F5-95C0-C9DACA00AF63}.Debug|x86.ActiveCfg = Debug|x86
+		{599CFAF5-51FC-41F5-95C0-C9DACA00AF63}.Debug|x86.Build.0 = Debug|x86
+		{599CFAF5-51FC-41F5-95C0-C9DACA00AF63}.Release|Any CPU.ActiveCfg = Release|x86
+		{599CFAF5-51FC-41F5-95C0-C9DACA00AF63}.Release|x86.ActiveCfg = Release|x86
+		{599CFAF5-51FC-41F5-95C0-C9DACA00AF63}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
