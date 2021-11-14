@@ -63,12 +63,6 @@ namespace Comic_Book_Maker
             this.checkBoxCloseAtComplete = new System.Windows.Forms.CheckBox();
             this.checkBoxStartAfterFileAdd = new System.Windows.Forms.CheckBox();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
-            this.ColumnSelect = new System.Windows.Forms.DataGridViewCheckBoxColumn();
-            this.ColumnInput = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.ColumnType = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.ColumnOutput = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.ColumnState = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.ColumnError = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.textBoxOutPath = new System.Windows.Forms.TextBox();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
@@ -93,6 +87,12 @@ namespace Comic_Book_Maker
             this.timerClose = new System.Windows.Forms.Timer(this.components);
             this.labelAbout = new System.Windows.Forms.Label();
             this.linkLabel1 = new System.Windows.Forms.LinkLabel();
+            this.ColumnSelect = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.ColumnInput = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.ColumnType = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.ColumnOutput = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.ColumnState = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.ColumnErrorWarning = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.groupBox2.SuspendLayout();
             this.tableLayoutPanel3.SuspendLayout();
             this.tableLayoutPanel5.SuspendLayout();
@@ -117,12 +117,12 @@ namespace Comic_Book_Maker
             this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox2.AutoSize = true;
             this.groupBox2.Controls.Add(this.tableLayoutPanel3);
-            this.groupBox2.Location = new System.Drawing.Point(847, 207);
+            this.groupBox2.Location = new System.Drawing.Point(923, 207);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(325, 114);
             this.groupBox2.TabIndex = 3;
             this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "Cleanup";
+            this.groupBox2.Text = "Cleaning";
             // 
             // tableLayoutPanel3
             // 
@@ -551,7 +551,7 @@ namespace Comic_Book_Maker
             this.ColumnType,
             this.ColumnOutput,
             this.ColumnState,
-            this.ColumnError});
+            this.ColumnErrorWarning});
             this.dataGridView1.EditMode = System.Windows.Forms.DataGridViewEditMode.EditOnF2;
             this.dataGridView1.GridColor = System.Drawing.SystemColors.ControlLight;
             this.dataGridView1.Location = new System.Drawing.Point(12, 12);
@@ -562,7 +562,7 @@ namespace Comic_Book_Maker
             this.dataGridView1.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
             this.dataGridView1.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dataGridView1.ShowCellToolTips = false;
-            this.dataGridView1.Size = new System.Drawing.Size(829, 524);
+            this.dataGridView1.Size = new System.Drawing.Size(905, 524);
             this.dataGridView1.TabIndex = 13;
             this.toolTip1.SetToolTip(this.dataGridView1, "Drag and drop valid files here.\r\n\r\nValid file types:\r\n-Folders with files.\r\n-Arch" +
         "ives: ZIP, 7Z, RAR.\r\n-Comics: CBZ, CB7, CBR.\r\n\r\nOutput names can be editet wich " +
@@ -571,46 +571,6 @@ namespace Comic_Book_Maker
             this.dataGridView1.DragDrop += new System.Windows.Forms.DragEventHandler(this.dataGridView1_DragDrop);
             this.dataGridView1.DragOver += new System.Windows.Forms.DragEventHandler(this.dataGridView1_DragOver);
             this.dataGridView1.KeyDown += new System.Windows.Forms.KeyEventHandler(this.dataGridView1_KeyDown);
-            // 
-            // ColumnSelect
-            // 
-            this.ColumnSelect.HeaderText = "";
-            this.ColumnSelect.Name = "ColumnSelect";
-            this.ColumnSelect.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.ColumnSelect.Width = 21;
-            // 
-            // ColumnInput
-            // 
-            this.ColumnInput.HeaderText = "Input";
-            this.ColumnInput.Name = "ColumnInput";
-            this.ColumnInput.ReadOnly = true;
-            this.ColumnInput.Width = global::Comic_Book_Maker.Properties.Settings.Default.column_width_input;
-            // 
-            // ColumnType
-            // 
-            this.ColumnType.HeaderText = "Type";
-            this.ColumnType.Name = "ColumnType";
-            this.ColumnType.ReadOnly = true;
-            this.ColumnType.Width = global::Comic_Book_Maker.Properties.Settings.Default.column_width_type;
-            // 
-            // ColumnOutput
-            // 
-            this.ColumnOutput.HeaderText = "Output";
-            this.ColumnOutput.Name = "ColumnOutput";
-            this.ColumnOutput.Width = global::Comic_Book_Maker.Properties.Settings.Default.column_width_input;
-            // 
-            // ColumnState
-            // 
-            this.ColumnState.HeaderText = "State";
-            this.ColumnState.Name = "ColumnState";
-            this.ColumnState.ReadOnly = true;
-            this.ColumnState.Width = global::Comic_Book_Maker.Properties.Settings.Default.column_width_state;
-            // 
-            // ColumnError
-            // 
-            this.ColumnError.HeaderText = "Error";
-            this.ColumnError.Name = "ColumnError";
-            this.ColumnError.Visible = false;
             // 
             // textBoxOutPath
             // 
@@ -635,7 +595,7 @@ namespace Comic_Book_Maker
             this.toolStripStatusLabel1});
             this.statusStrip1.Location = new System.Drawing.Point(0, 539);
             this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Size = new System.Drawing.Size(1184, 22);
+            this.statusStrip1.Size = new System.Drawing.Size(1260, 22);
             this.statusStrip1.TabIndex = 7;
             this.statusStrip1.Text = "statusStrip1";
             // 
@@ -668,7 +628,7 @@ namespace Comic_Book_Maker
             this.tableLayoutPanel1.Controls.Add(this.buttonGo, 1, 0);
             this.tableLayoutPanel1.Controls.Add(this.buttonExit, 1, 2);
             this.tableLayoutPanel1.Controls.Add(this.buttonRefresh, 1, 3);
-            this.tableLayoutPanel1.Location = new System.Drawing.Point(853, 9);
+            this.tableLayoutPanel1.Location = new System.Drawing.Point(929, 9);
             this.tableLayoutPanel1.Margin = new System.Windows.Forms.Padding(0);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 7;
@@ -878,7 +838,7 @@ namespace Comic_Book_Maker
             this.groupBox3.AutoSize = true;
             this.groupBox3.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.groupBox3.Controls.Add(this.tableLayoutPanel4);
-            this.groupBox3.Location = new System.Drawing.Point(847, 327);
+            this.groupBox3.Location = new System.Drawing.Point(923, 327);
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.Size = new System.Drawing.Size(325, 182);
             this.groupBox3.TabIndex = 12;
@@ -901,17 +861,17 @@ namespace Comic_Book_Maker
             // 
             this.labelAbout.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.labelAbout.AutoSize = true;
-            this.labelAbout.Location = new System.Drawing.Point(847, 517);
+            this.labelAbout.Location = new System.Drawing.Point(923, 517);
             this.labelAbout.Name = "labelAbout";
-            this.labelAbout.Size = new System.Drawing.Size(121, 13);
+            this.labelAbout.Size = new System.Drawing.Size(120, 13);
             this.labelAbout.TabIndex = 3;
-            this.labelAbout.Text = "Comic Book Maker v1.0";
+            this.labelAbout.Text = "Comic Book Maker v1.x";
             // 
             // linkLabel1
             // 
             this.linkLabel1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.linkLabel1.AutoSize = true;
-            this.linkLabel1.Location = new System.Drawing.Point(979, 517);
+            this.linkLabel1.Location = new System.Drawing.Point(1055, 517);
             this.linkLabel1.Name = "linkLabel1";
             this.linkLabel1.Size = new System.Drawing.Size(193, 13);
             this.linkLabel1.TabIndex = 14;
@@ -919,12 +879,51 @@ namespace Comic_Book_Maker
             this.linkLabel1.Text = "github.com/tosione/Comic-Book-Maker";
             this.linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel1_LinkClicked);
             // 
+            // ColumnSelect
+            // 
+            this.ColumnSelect.HeaderText = "";
+            this.ColumnSelect.Name = "ColumnSelect";
+            this.ColumnSelect.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.ColumnSelect.Width = 21;
+            // 
+            // ColumnInput
+            // 
+            this.ColumnInput.HeaderText = "Input";
+            this.ColumnInput.Name = "ColumnInput";
+            this.ColumnInput.ReadOnly = true;
+            this.ColumnInput.Width = 340;
+            // 
+            // ColumnType
+            // 
+            this.ColumnType.HeaderText = "Type";
+            this.ColumnType.Name = "ColumnType";
+            this.ColumnType.ReadOnly = true;
+            this.ColumnType.Width = 50;
+            // 
+            // ColumnOutput
+            // 
+            this.ColumnOutput.HeaderText = "Output";
+            this.ColumnOutput.Name = "ColumnOutput";
+            this.ColumnOutput.Width = 340;
+            // 
+            // ColumnState
+            // 
+            this.ColumnState.HeaderText = "State";
+            this.ColumnState.Name = "ColumnState";
+            this.ColumnState.ReadOnly = true;
+            this.ColumnState.Width = 50;
+            // 
+            // ColumnErrorWarning
+            // 
+            this.ColumnErrorWarning.HeaderText = "Error/Warning";
+            this.ColumnErrorWarning.Name = "ColumnErrorWarning";
+            this.ColumnErrorWarning.ReadOnly = true;
+            // 
             // formMain
             // 
-            this.AcceptButton = this.buttonGo;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1184, 561);
+            this.ClientSize = new System.Drawing.Size(1260, 561);
             this.Controls.Add(this.buttonCancelClosing);
             this.Controls.Add(this.linkLabel1);
             this.Controls.Add(this.labelAbout);
@@ -1024,12 +1023,6 @@ namespace Comic_Book_Maker
         private System.Windows.Forms.FolderBrowserDialog folderBrowserDialog1;
         private System.Windows.Forms.DataGridView dataGridView1;
         private System.Windows.Forms.Button buttonRefresh;
-        private System.Windows.Forms.DataGridViewCheckBoxColumn ColumnSelect;
-        private System.Windows.Forms.DataGridViewTextBoxColumn ColumnInput;
-        private System.Windows.Forms.DataGridViewTextBoxColumn ColumnType;
-        private System.Windows.Forms.DataGridViewTextBoxColumn ColumnOutput;
-        private System.Windows.Forms.DataGridViewTextBoxColumn ColumnState;
-        private System.Windows.Forms.DataGridViewTextBoxColumn ColumnError;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel8;
         private System.Windows.Forms.ComboBox comboBoxRemoveFolder;
@@ -1043,6 +1036,12 @@ namespace Comic_Book_Maker
         private System.Windows.Forms.Label labelAbout;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.CheckBox checkBoxStartAfterFileAdd;
+        private System.Windows.Forms.DataGridViewCheckBoxColumn ColumnSelect;
+        private System.Windows.Forms.DataGridViewTextBoxColumn ColumnInput;
+        private System.Windows.Forms.DataGridViewTextBoxColumn ColumnType;
+        private System.Windows.Forms.DataGridViewTextBoxColumn ColumnOutput;
+        private System.Windows.Forms.DataGridViewTextBoxColumn ColumnState;
+        private System.Windows.Forms.DataGridViewTextBoxColumn ColumnErrorWarning;
     }
 }
 

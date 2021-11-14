@@ -90,7 +90,7 @@ namespace Comic_Book_Maker
         private void formMain_Shown(object sender, EventArgs e)
         {
             //When main windows hasn't at least 100 pix on scrreen, reposition it at 100 pix (upper-right)
-            if (!isOnScreen(this,100))
+            if (!isOnScreen(this, 100))
                 Location = new System.Drawing.Point(100, 100);
         }
         private void form1_FormClosed(object sender, FormClosedEventArgs e)
@@ -114,7 +114,7 @@ namespace Comic_Book_Maker
         /// Event handlers
         private void dataGridView1_DragOver(object sender, DragEventArgs e)
         {
-            // If the data is a file or a bitmap.
+            // If the dragged element is a file 
             if (e.Data.GetDataPresent(DataFormats.FileDrop))
             {
                 if ((ModifierKeys & Keys.Control) != 0)
@@ -173,13 +173,7 @@ namespace Comic_Book_Maker
         }
         private void buttonGo_Click(object sender, EventArgs e)
         {
-            if (dataGridView1.Rows.Count > 0)
-            {
-                updateOutputNames();
-                processAllRows();
-            }
-            else
-                showStatus("No files to process");
+            processAllRows();
         }
         private void buttonExit_Click(object sender, EventArgs e)
         {
@@ -258,6 +252,8 @@ namespace Comic_Book_Maker
         {
             if (e.KeyCode == Keys.Space)
             {
+                //swap selected rows  (if checked/unchecked are mixed, all will be checked)
+
                 bool allChecked = true;
                 foreach (DataGridViewRow row in dataGridView1.SelectedRows)
                     allChecked = allChecked && (bool)row.Cells[0].Value;
@@ -268,12 +264,15 @@ namespace Comic_Book_Maker
         }
         private void formMain_KeyDown(object sender, KeyEventArgs e)
         {
+
             if (e.KeyData == Keys.F5)
                 updateOutputNames();
-            else if (e.KeyData == Keys.Escape)
+            else if (e.KeyData == Keys.Escape)  //CancelButton Property from formMain is not working correctly: it exits form when pressing Esc while editing DataGridView Cell
+                Close();
+            else if (e.KeyData == Keys.Enter)  //EnterButton Property from formMain is not working correctly: not working while DataGridView is focused
             {
-                if (!dataGridView1.IsCurrentCellInEditMode)
-                    Close();
+                if (buttonGo.Enabled)
+                    processAllRows();
             }
         }
         private void dataGridView1_ColumnHeaderMouseClick(object sender, DataGridViewCellMouseEventArgs e)
@@ -386,7 +385,7 @@ namespace Comic_Book_Maker
             //show message with thread ID in console for debuggin 
             Console.WriteLine(s + " (Thread ID = " + Thread.CurrentThread.ManagedThreadId.ToString() + ")");
         }
-        private bool isOnScreen(Form form,int minPixel)
+        private bool isOnScreen(Form form, int minPixel)
         {
             //source: https://stackoverflow.com/questions/987018/determining-if-a-form-is-completely-off-screen
             Screen[] screens = Screen.AllScreens;
@@ -397,6 +396,32 @@ namespace Comic_Book_Maker
                     return true;
             }
             return false;
+        }
+        private void makeFolderReadable(string folder)
+        {
+            //remove readonly attribute from directory
+            DirectoryInfo di = new DirectoryInfo(folder);
+            di.Attributes &= ~FileAttributes.ReadOnly;
+
+            //remove readonly attribute from all sub-directories
+            foreach (string subDirName in Directory.GetDirectories(folder))
+            {
+                DirectoryInfo sdi = new DirectoryInfo(subDirName);
+                sdi.Attributes &= ~FileAttributes.ReadOnly;
+            }
+
+            //remove readonly attribute from all files (including files from sub-directories)
+            foreach (string fileName in Directory.GetFiles(folder, "*", SearchOption.AllDirectories))
+            {
+                FileInfo fileInfo = new FileInfo(fileName);
+                fileInfo.Attributes &= ~FileAttributes.ReadOnly;
+            }
+        }
+        private void makeFileReadable(string file)
+        {
+            //remove readonly attribute from file
+            FileInfo fileInfo = new FileInfo(file);
+            fileInfo.Attributes &= ~FileAttributes.ReadOnly;
         }
 
 
@@ -414,22 +439,24 @@ namespace Comic_Book_Maker
             for (i = 0; i <= files.GetUpperBound(0); i++)
             {
                 inPath = files[i];
-                bool duplicate = false;
+                bool existing = false;
 
-                //search if duplicate file
+                //search if inPath is already in dataGridView
                 foreach (DataGridViewRow row in dataGridView1.Rows)
                 {
                     if ((string)row.Cells[1].Value == inPath)
-                        duplicate = true;
+                        existing = true;
                 }
 
-                //if not, add to dataGridView1 depending on type
-                if (!duplicate)
+                //if not, add a new row to dataGridView1 depending on type
+                //  each row has 6 columns:
+                //  (0) selected, (1) inPath, (2) inType, (3) OutPath, (4) state, (5) error/warning message
+                if (!existing)
                 {
                     //as directory
                     if (Directory.Exists(inPath))
                     {
-                        object[] row = { true, inPath, FolderStr, "", "", false };
+                        object[] row = { true, inPath, FolderStr, "", "", "" };
                         dataGridView1.Rows.Add(row);
                     }
                     else if (File.Exists(inPath))
@@ -438,13 +465,13 @@ namespace Comic_Book_Maker
                         string ext = Path.GetExtension(inPath).ToLower();
                         if (ext == ".zip" || ext == ".7z" || ext == ".rar")
                         {
-                            object[] row = { true, inPath, ArchiveStr, "", "", false };
+                            object[] row = { true, inPath, ArchiveStr, "", "", "" };
                             dataGridView1.Rows.Add(row);
                         }
                         //as comic file
                         else if (ext == ".cbz" || ext == ".cb7" || ext == ".cbr")
                         {
-                            object[] row = { true, inPath, ComicStr, "", "", false };
+                            object[] row = { true, inPath, ComicStr, "", "", "" };
                             dataGridView1.Rows.Add(row);
                         }
                     }
@@ -465,7 +492,10 @@ namespace Comic_Book_Maker
             }
 
             if (checkBoxStartAfterFileAdd.Checked && !Error7zipPath)
-                processAllRows();
+            {
+                if (buttonGo.Enabled)
+                    processAllRows();
+            }
 
         }
         private void updateOutputNames()
@@ -479,16 +509,39 @@ namespace Comic_Book_Maker
                 inPath = (string)row.Cells[1].Value;
                 inType = (string)row.Cells[2].Value;
 
+                //reset state and error/warning
+                row.Cells[4].Value = "";
+                row.Cells[5].Value = "";
+
+                //if input file or folder dont exist show error
+                if ((inType == FolderStr && !Directory.Exists(inPath)) || ((inType == ArchiveStr || inType == ComicStr) && !File.Exists(inPath)))
+                    row.Cells[5].Value = "Error: input file or folder doesn't exist";
+
                 //construct outputPath
                 if (checkBoxUseOutPath.Checked)
                     outPath = Path.Combine(textBoxOutPath.Text, Path.ChangeExtension(Path.GetFileName(inPath), outType));
                 else
                     outPath = Path.ChangeExtension(inPath, outType);
+                row.Cells[3].Value = outPath;
+            }
+
+            //revise output renaming
+            updateOutputRenaming();
+
+            dataGridView1.Refresh();
+        }
+        private void updateOutputRenaming()
+        {
+            string outPath;
+
+            foreach (DataGridViewRow row in dataGridView1.Rows)
+            {
+                outPath = (string)row.Cells[3].Value;
 
                 //if output file already exists and rename option is selected
                 if (File.Exists(outPath) && (fileExistAction == fEA.Rename))
                 {
-                    //test if rename pattern contains \n
+                    //test if rename pattern contains \n, and if not, use default pattern (not saved to textBox)
                     string pattern;
                     if (textBoxRenameSuffix.Text.Contains("\\n"))
                         pattern = textBoxRenameSuffix.Text;
@@ -496,29 +549,23 @@ namespace Comic_Book_Maker
                         pattern = "_\\n";
 
                     //try pattern with numbers 1-100
-                    string outPath0 = outPath;
+                    string outPath0 = outPath;  //backup original name
                     int j = 1;
                     while (File.Exists(outPath) && j <= 1000)
                     {
                         outPath = Path.Combine(Path.GetDirectoryName(outPath0), Path.GetFileNameWithoutExtension(outPath0) + pattern.Replace("\\n", j.ToString()) + Path.GetExtension(outPath0));
                         j++;
                     }
-                    //if none found show warning
+                    //if none found show warning and use original name
                     if (j > 1000)
                     {
-                        row.Cells[4].Value = "Renamed also exist";
+                        row.Cells[5].Value = "Error: No renaming name found";
                         outPath = outPath0;
                     }
+                    //set name on DataGridView
+                    row.Cells[3].Value = outPath;
                 }
-                //set outputPath in any case
-                row.Cells[3].Value = outPath;
-
-                //if input file dont exist show warning
-                if (!Directory.Exists(inPath) && !File.Exists(inPath))
-                    row.Cells[4].Value = "Input file doesn't exist";
-
             }
-            dataGridView1.Refresh();
         }
         private void updateSelectedRows()
         {
@@ -527,7 +574,7 @@ namespace Comic_Book_Maker
             {
                 string inType = (string)row.Cells[2].Value;
 
-                //select row based on options
+                //select row based on CreateFromXXX options
                 row.Cells[0].Value = (inType == FolderStr && checkBoxCreateFromFolder.Checked) ||
                                     (inType == ArchiveStr && checkBoxCreateFromArchive.Checked) ||
                                     (inType == ComicStr && checkBoxCreateFromComic.Checked);
@@ -535,73 +582,85 @@ namespace Comic_Book_Maker
         }
         private void processAllRows()
         {
-            showStatus("Working");
-
-            //reset statusBar
-            toolStripProgressBar1.Value = 0;
-            toolStripProgressBar1.Maximum = totalSteps * dataGridView1.Rows.Count;
-
-            //disable buttons while working
-            buttonGo.Enabled = false;
-            buttonExit.Enabled = false;
-            buttonRefresh.Enabled = false;
-
-            //create output directory if it does not exist
-            if (!Directory.Exists(textBoxOutPath.Text))
-                Directory.CreateDirectory(textBoxOutPath.Text);
-
-            //reset status & errors for all rows
-            foreach (DataGridViewRow Row in dataGridView1.Rows)
+            if (dataGridView1.Rows.Count > 0)
             {
-                Row.Cells[4].Value = "";
-                Row.Cells[5].Value = false;
-            }
+                showStatus("Working");
 
-            //get parameters for clean up
-            char[] separator = { '|' };
-            string[] cleanStr = checkBoxExcludeFiles.Checked ? textBoxExludeFiles.Text.Split(separator, StringSplitOptions.RemoveEmptyEntries) : null;
-            for (int i = 0; i <= cleanStr.GetUpperBound(0); i++)
-                cleanStr[i] = cleanStr[i].Trim();
-            int nCleanLimit = (int)numericUpDownCleanLimit.Value;
-            removeFolderStruct = (rFS)comboBoxRemoveFolder.SelectedIndex;
+                //reset statusBar
+                toolStripProgressBar1.Value = 0;
+                toolStripProgressBar1.Maximum = totalSteps * dataGridView1.Rows.Count;
 
-            //start crono (will be stopped in processEnd)
-            crono.Restart();
-            showThread("Entering ProcessAllRows");
+                //disable buttons while working
+                buttonGo.Enabled = false;
+                buttonExit.Enabled = false;
+                buttonRefresh.Enabled = false;
 
-            //process rows
-            if (checkBoxMultiThread.Checked)
-            {
-                //parallel execution of processRow();
-                Task task1 = Task.Run(() =>
+                //TODO: avoid reordering rows while processing files (could prevent processing all rows)
+
+                //create output directory if it does not exist
+                if (!Directory.Exists(textBoxOutPath.Text))
+                    Directory.CreateDirectory(textBoxOutPath.Text);
+
+                //reset status & errors/warnings for all rows
+                foreach (DataGridViewRow Row in dataGridView1.Rows)
                 {
-                    showThread("Parallel start");
-                    Parallel.ForEach(dataGridView1.Rows.Cast<DataGridViewRow>(), row => { processRow(row, cleanStr, nCleanLimit, removeFolderStruct); });
-                });
-                task1.ContinueWith((antecedent) =>
+                    Row.Cells[4].Value = "";
+                    Row.Cells[5].Value = "";
+                }
+
+                //Test Output renaming again
+                updateOutputRenaming();
+
+                //get parameters for Cleaning
+                char[] separators = { '|' };
+                string[] cleanStr = checkBoxExcludeFiles.Checked ? textBoxExludeFiles.Text.Split(separators, StringSplitOptions.RemoveEmptyEntries) : null;
+                for (int i = 0; i <= cleanStr.GetUpperBound(0); i++)
+                    cleanStr[i] = cleanStr[i].Trim();
+                int nCleanLimit = (int)numericUpDownCleanLimit.Value;
+                removeFolderStruct = (rFS)comboBoxRemoveFolder.SelectedIndex;
+
+                //start crono (will be stopped in processEnd)
+                crono.Restart();
+                showThread("Entering ProcessAllRows");
+
+                //process rows
+                if (checkBoxMultiThread.Checked)
                 {
-                    //function to execute after finishing all processRow()
-                    showThread("Continue With");
-                    this.Invoke(new endDelegate(processEnd));
-                });
+                    //parallel execution of processRow();
+                    Task task1 = Task.Run(() =>
+                    {
+                        showThread("Parallel start");
+                        Parallel.ForEach(dataGridView1.Rows.Cast<DataGridViewRow>(), row => { processRow(row, cleanStr, nCleanLimit, removeFolderStruct); });
+                    });
+                    task1.ContinueWith((antecedent) =>
+                    {
+                        //function to execute after finishing all processRow()
+                        showThread("Continue With");
+                        this.Invoke(new endDelegate(processEnd));
+                    });
+                }
+                else
+                {
+                    //sequential execution of processRow();
+                    Task task1 = Task.Run(() =>
+                    {
+                        showThread("Sequential start");
+                        foreach (DataGridViewRow row in dataGridView1.Rows) processRow(row, cleanStr, nCleanLimit, removeFolderStruct);
+                    });
+                    task1.ContinueWith((antecedent) =>
+                    {
+                        //function to execute after finishing all processRow();
+                        showThread("ContinueWith");
+                        this.Invoke(new endDelegate(processEnd));
+                    });
+                }
+
+                showThread("Exiting ProcessAllRows");
+
             }
             else
-            {
-                //sequential execution of processRow();
-                Task task1 = Task.Run(() =>
-                {
-                    showThread("Sequential start");
-                    foreach (DataGridViewRow row in dataGridView1.Rows) processRow(row, cleanStr, nCleanLimit, removeFolderStruct);
-                });
-                task1.ContinueWith((antecedent) =>
-                {
-                    //function to execute after finishing all processRow();
-                    showThread("ContinueWith");
-                    this.Invoke(new endDelegate(processEnd));
-                });
-            }
+                showStatus("No files to process");
 
-            showThread("Exiting ProcessAllRows");
         }
         private void processEnd()
         {
@@ -609,17 +668,17 @@ namespace Comic_Book_Maker
 
             crono.Stop();
 
-            //search for errors on hidden column
+            //search for errors/warnings
             int errN = 0;
             foreach (DataGridViewRow row in dataGridView1.Rows)
             {
-                if ((bool)row.Cells[5].Value)
+                if ((string)row.Cells[5].Value != "")
                     errN++;
             }
 
             //if errors show them
             if (errN > 0)
-                showError("Finished with errors", crono.Elapsed.TotalSeconds);
+                showError("Finished with errors/warnings", crono.Elapsed.TotalSeconds);
             //if no errors
             else
             {
@@ -654,21 +713,30 @@ namespace Comic_Book_Maker
             string outPath = (string)row.Cells[3].Value;    //path of output comic file
             int step = 0;
 
-            //local functions to handle step & show progress or exit
-            void stepIncrease(string message)
+            //LOCAL FUNCTIONS to handle step & show progress or exit
+
+            //increase and show current step
+            void stepIncrease(string stepMessage)
             {
                 step++;
 
-                row.Cells[4].Value = message;
+                row.Cells[4].Value = stepMessage;
                 if (step > 1)
                     BeginInvoke((Action)delegate { toolStripProgressBar1.Value++; });
             }
-            void stepExit(string message)
+            //only add warning messages
+            void stepWarning(string warningMessage)
             {
-                row.Cells[4].Value = "Skip: " + message;
-                row.Cells[5].Value = true;   //store error on hidden column for evaluation after all steps finish
+                row.Cells[5].Value += "Warning: " + warningMessage + " ";
+            }
+            //exit current step, show error, and compensate for remaining steps (return must be called after this!)
+            void stepExitError(string errorMessage)
+            {
+                row.Cells[4].Value = "Skipped";
+                row.Cells[5].Value += "Error: " + errorMessage + " ";
                 BeginInvoke((Action)delegate { toolStripProgressBar1.Value += (totalSteps - step + 1); });  //compensate for remaining steps
             }
+            //skip all steps from beginning (before first stepIncrease)
             void stepSkipAll()
             {
                 BeginInvoke((Action)delegate { toolStripProgressBar1.Value += totalSteps; });  //compensate for remaining steps
@@ -679,14 +747,16 @@ namespace Comic_Book_Maker
             if ((bool)row.Cells[0].Value)
             {
                 //*********************************************************
-                // step 1: extract
+                // STEP 1: EXTRACT
                 //*********************************************************
                 stepIncrease("Decompressing");
 
-                //if input file/folder is missing show error
-                if (!Directory.Exists(inPath) && !File.Exists(inPath))
+                //if input file/folder is missing show error and exit
+
+                //if input file or folder dont exist show error
+                if ((inType == FolderStr && !Directory.Exists(inPath)) || ((inType == ArchiveStr || inType == ComicStr) && !File.Exists(inPath)))
                 {
-                    stepExit("Input file or folder missing");
+                    stepExitError("Input file or folder doesn't exist");
                     return;
                 }
 
@@ -695,8 +765,15 @@ namespace Comic_Book_Maker
                 //if tempPath exists, try to delete
                 if (Directory.Exists(tempPath))
                 {
-                    Directory.Delete(tempPath, true);
-                    //TODO: handle file delete exception
+                    try
+                    {
+                        makeFolderReadable(tempPath);
+                        Directory.Delete(tempPath, true);
+                    }
+                    catch (Exception e)
+                    {
+                        stepWarning("Exception deleting temporal path before decompression: " + e.Message);
+                    }
                 }
                 //if still exist, try other names
                 if (Directory.Exists(tempPath))
@@ -709,16 +786,23 @@ namespace Comic_Book_Maker
                         j++;
                     }
                 }
-                //if still exist, show error
+                //if still exist, show error and exit
                 if (Directory.Exists(tempPath))
                 {
-                    stepExit("Can't create temporal directory");
+                    stepExitError("Couldn't find an available temp folder name");
                     return;
                 }
 
                 //create tempPath
-                Directory.CreateDirectory(tempPath);
-                //TODO: handle directory create exception
+                try
+                {
+                    Directory.CreateDirectory(tempPath);
+                }
+                catch (Exception e)
+                {
+                    stepExitError("Exception creating temp folder: " + e.Message);
+                    return;
+                }
 
                 //depending on input type
                 if (inType == FolderStr)
@@ -734,24 +818,33 @@ namespace Comic_Book_Maker
                     ///     -ao{mode}       overwrite mode (a=all)
                     ///     -o{outdir}      set output directory
 
-                    //or extract comic/archive to tempPath
-                    Process pr7z = new Process();
-                    pr7z.StartInfo = new ProcessStartInfo();
-                    pr7z.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
-                    pr7z.StartInfo.WorkingDirectory = programFolderPath;
-                    pr7z.StartInfo.FileName = "7z.exe";
-                    pr7z.StartInfo.Arguments = "x " + quote(inPath) + " -o" + quote(tempPath) + " -aoa";
-                    pr7z.Start();
-                    pr7z.WaitForExit();
-
-                    //TODO: handle 7zip extract exception
+                    try
+                    {
+                        //or extract comic/archive to tempPath
+                        Process pr7z = new Process();
+                        pr7z.StartInfo = new ProcessStartInfo();
+                        pr7z.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+                        pr7z.StartInfo.WorkingDirectory = programFolderPath;
+                        pr7z.StartInfo.FileName = "7z.exe";
+                        pr7z.StartInfo.Arguments = "x " + quote(inPath) + " -o" + quote(tempPath) + " -aoa";
+                        pr7z.Start();
+                        pr7z.WaitForExit();
+                    }
+                    catch (Exception e)
+                    {
+                        stepExitError("Exception extracting files: " + e.Message);
+                        return;
+                    }
                 }
 
 
                 //*********************************************************
-                // Step 2: clean files
+                // STEP 2: CLEAN FILES
                 //*********************************************************
                 stepIncrease("Cleaning");
+
+                //remove all ReadOnly attributes
+                makeFolderReadable(tempPath);
 
                 //if provided cleanPatterns array is not empty
                 if (cleanPatterns != null)
@@ -763,16 +856,23 @@ namespace Comic_Book_Maker
 
                     if (filesToDelete.Count > nCleanLimit)
                     {
-                        //if to much found, exit
-                        stepExit("Excessive files to clean");
-                        return;
+                        //if to much found, show warning
+                        stepWarning("Excessive files to clean: none cleaned");
                     }
                     else
                     {
                         //if not to much, delete them
                         foreach (string file in filesToDelete)
-                            File.Delete(file);
-                        //TODO: handle file delete exception
+                        {
+                            try
+                            {
+                                File.Delete(file);
+                            }
+                            catch (Exception e)
+                            {
+                                stepWarning("Exception deleting clean file: " + e.Message);
+                            }
+                        }
                     }
                 }
 
@@ -781,7 +881,7 @@ namespace Comic_Book_Maker
                 {
                     string[] tempFilePaths = Directory.GetFileSystemEntries(tempPath, "*", SearchOption.AllDirectories);
 
-                    //get only filenames
+                    //get filenames (without path)
                     string[] tempFileNames = new string[tempFilePaths.Length];
                     for (int i = 0; i < tempFilePaths.Length; i++)
                         tempFileNames[i] = Path.GetFileName(tempFilePaths[i]);
@@ -804,19 +904,28 @@ namespace Comic_Book_Maker
                         }
                         if (dupeFound)
                         {
-                            //if found, exit
-                            stepExit("Folder structure cannot be removed because duplicate files");
+                            //if found, show error and exit
+                            stepExitError("Folder structure cannot be removed because duplicate files exist");
                             return;
                         }
                     }
 
-                    //if not, move files to tempPath
+                    //if not, move files to root folder (tempPath)
                     foreach (string srcFilePath in tempFilePaths)
                     {
                         string destFilePath = Path.Combine(tempPath, Path.GetFileName(srcFilePath));
                         if (srcFilePath != destFilePath)    //avoid moving if already in root folder
-                            File.Move(srcFilePath, destFilePath);
-                        //TODO: handle file move exception
+                        {
+                            try
+                            {
+                                File.Move(srcFilePath, destFilePath);
+                            }
+                            catch (Exception e)
+                            {
+                                stepExitError("Exception moving files to root folder: " + e.Message);
+                                return;
+                            }
+                        }
                     }
 
                     //remove remaining folders
@@ -824,8 +933,16 @@ namespace Comic_Book_Maker
                     foreach (string dir in dirs)
                     {
                         if (Directory.GetFiles(dir).Length == 0)
-                            Directory.Delete(dir, true);
-                        //TODO: handle file delete exception
+                        {
+                            try
+                            {
+                                Directory.Delete(dir, true);
+                            }
+                            catch (Exception e)
+                            {
+                                stepWarning("Exception deleting empty folders after flattening: " + e.Message);
+                            }
+                        }
                     }
                 }
 
@@ -849,7 +966,7 @@ namespace Comic_Book_Maker
 
 
                 //*********************************************************
-                // Step 3: compress
+                // STEP 3: COMPRESS
                 //*********************************************************
                 stepIncrease("Compressing");
 
@@ -859,61 +976,77 @@ namespace Comic_Book_Maker
                     //if owerwrite option, delete file
                     if (fileExistAction == fEA.Overwrite)
                     {
-                        File.Delete(outPath);
-                        //TODO: handle file delete exception
+                        try
+                        {
+                            makeFileReadable(outPath);
+                            File.Delete(outPath);
+                        }
+                        catch (Exception e)
+                        {
+                            stepExitError("Exception deleting existing output file: " + e.Message);
+                            return;
+                        }
                     }
-                    //if skip option, exit
+                    //if skip option, show warning
                     else if (fileExistAction == fEA.Skip)
                     {
-                        stepExit("Output file exists");
+                        stepExitError("Output file exists");
                         return;
                     }
-                    //if rename option, exit (this case should not exits as output name is checked before processRows() starts)
+                    //if rename option enabled, show error and exit                   
                     else if (fileExistAction == fEA.Rename)
                     {
-                        stepExit("Renamed output file exists");
+                        //as output name is checked with updateOutputRenaming() at beginning of processAllRows()                    
+                        //this case should only exits if updateOutputRenaming() got an error
+
+                        stepExitError("Renamed output file exist");
                         return;
                     }
                 }
 
                 //depending on output type
-                if (outType == "cbz")
+                try
                 {
-                    //compress to CBZ
-                    Process pr7z = new Process();
-                    pr7z.StartInfo = new ProcessStartInfo();
-                    pr7z.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
-                    pr7z.StartInfo.WorkingDirectory = programFolderPath;
-                    pr7z.StartInfo.FileName = "7z.exe";
-                    pr7z.StartInfo.Arguments = "a -mx=0 -tzip -r -mmt=off " + quote(outPath) + " " + quote(Path.Combine(tempPath, "*.*"));
-                    pr7z.Start();
-                    pr7z.WaitForExit();
-                    //TODO: handle 7zip compress exception
+                    if (outType == "cbz")
+                    {
+                        //compress to CBZ
+                        Process pr7z = new Process();
+                        pr7z.StartInfo = new ProcessStartInfo();
+                        pr7z.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+                        pr7z.StartInfo.WorkingDirectory = programFolderPath;
+                        pr7z.StartInfo.FileName = "7z.exe";
+                        pr7z.StartInfo.Arguments = "a -mx=0 -tzip -r -mmt=off " + quote(outPath) + " " + quote(Path.Combine(tempPath, "*.*"));
+                        pr7z.Start();
+                        pr7z.WaitForExit();
+                    }
+                    else if (outType == "cb7")
+                    {
+                        //compress to CB7
+                        Process pr7z = new Process();
+                        pr7z.StartInfo = new ProcessStartInfo();
+                        pr7z.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+                        pr7z.StartInfo.WorkingDirectory = programFolderPath;
+                        pr7z.StartInfo.FileName = "7z.exe";
+                        pr7z.StartInfo.Arguments = "a -mx0 -t7z -r -mmt=off " + quote(outPath) + " " + quote(Path.Combine(tempPath, "*.*"));
+                        pr7z.Start();
+                        pr7z.WaitForExit();
+                    }
+                    else if (outType == "cbr")
+                    {
+                        //compress to CBZ
+                        Process prRar = new Process();
+                        prRar.StartInfo = new ProcessStartInfo();
+                        prRar.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+                        prRar.StartInfo.FileName = textBoxRarPath.Text;
+                        prRar.StartInfo.Arguments = "a -ed -ep1 -m0 -ma4 -r -mt1 " + quote(outPath) + " " + quote(Path.Combine(tempPath, "*.*"));
+                        prRar.Start();
+                        prRar.WaitForExit();
+                    }
                 }
-                else if (outType == "cb7")
+                catch (Exception e)
                 {
-                    //compress to CB7
-                    Process pr7z = new Process();
-                    pr7z.StartInfo = new ProcessStartInfo();
-                    pr7z.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
-                    pr7z.StartInfo.WorkingDirectory = programFolderPath;
-                    pr7z.StartInfo.FileName = "7z.exe";
-                    pr7z.StartInfo.Arguments = "a -mx0 -t7z -r -mmt=off " + quote(outPath) + " " + quote(Path.Combine(tempPath, "*.*"));
-                    pr7z.Start();
-                    pr7z.WaitForExit();
-                    //TODO: handle 7zip compress exception
-                }
-                else if (outType == "cbr")
-                {
-                    //compress to CBZ
-                    Process prRar = new Process();
-                    prRar.StartInfo = new ProcessStartInfo();
-                    prRar.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
-                    prRar.StartInfo.FileName = textBoxRarPath.Text;
-                    prRar.StartInfo.Arguments = "a -ed -ep1 -m0 -ma4 -r -mt1 " + quote(outPath) + " " + quote(Path.Combine(tempPath, "*.*"));
-                    prRar.Start();
-                    prRar.WaitForExit();
-                    //TODO: handle rar compress exception
+                    stepExitError("Exception compressing files: " + e.Message);
+                    return;
                 }
 
                 /// 7-Zip basic parameters to Compress:
@@ -941,7 +1074,7 @@ namespace Comic_Book_Maker
 
 
                 //*********************************************************
-                // Step 4: delete inPath 
+                // STEP 4: DELETE INPATH 
                 //*********************************************************
                 stepIncrease("Deleting input");
 
@@ -950,24 +1083,52 @@ namespace Comic_Book_Maker
                 {
                     //deletes file/folder to recycle bin, using VisualBasic functions: https://diptimayapatra.wordpress.com/2014/01/16/delete-file-to-recycle-bin-in-c/
                     if (Directory.Exists(inPath))
-                        Microsoft.VisualBasic.FileIO.FileSystem.DeleteDirectory(inPath, Microsoft.VisualBasic.FileIO.UIOption.OnlyErrorDialogs, Microsoft.VisualBasic.FileIO.RecycleOption.SendToRecycleBin);
+                    {
+                        try
+                        {
+                            makeFolderReadable(inPath);
+                            Microsoft.VisualBasic.FileIO.FileSystem.DeleteDirectory(inPath, Microsoft.VisualBasic.FileIO.UIOption.OnlyErrorDialogs, Microsoft.VisualBasic.FileIO.RecycleOption.SendToRecycleBin);
+                        }
+                        catch (Exception e)
+                        {
+                            stepWarning("Exception deleting input folder: " + e.Message);
+                        }
+                    }
                     else if (File.Exists(inPath))
-                        Microsoft.VisualBasic.FileIO.FileSystem.DeleteFile(inPath, Microsoft.VisualBasic.FileIO.UIOption.OnlyErrorDialogs, Microsoft.VisualBasic.FileIO.RecycleOption.SendToRecycleBin);
-                    //TODO: handle folder delete exception
+                    {
+                        try
+                        {
+                            makeFileReadable(inPath);
+                            Microsoft.VisualBasic.FileIO.FileSystem.DeleteFile(inPath, Microsoft.VisualBasic.FileIO.UIOption.OnlyErrorDialogs, Microsoft.VisualBasic.FileIO.RecycleOption.SendToRecycleBin);
+                        }
+                        catch (Exception e)
+                        {
+                            stepWarning("Exception deleting input file: " + e.Message);
+                        }
+                    }
+
                 }
 
 
                 //*********************************************************
-                // Step 5: delete tempPath
+                // STEP 5: DELETE TEMPPATH
                 //*********************************************************
                 stepIncrease("Deleting temp");
 
                 if (Directory.Exists(tempPath))
-                    Directory.Delete(tempPath, true);
-                //TODO: handle folder delete exception
+                {
+                    try
+                    {
+                        Directory.Delete(tempPath, true);
+                    }
+                    catch (Exception e)
+                    {
+                        stepWarning("Exception deleting temporal path: " + e.Message);
+                    }
+                }
 
                 //*********************************************************
-                // End
+                // END STEPS
                 //*********************************************************
                 stepIncrease("Finished");
 
