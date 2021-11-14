@@ -63,6 +63,12 @@ namespace Comic_Book_Maker
             this.checkBoxCloseAtComplete = new System.Windows.Forms.CheckBox();
             this.checkBoxStartAfterFileAdd = new System.Windows.Forms.CheckBox();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
+            this.ColumnSelect = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.ColumnInput = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.ColumnType = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.ColumnOutput = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.ColumnState = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.ColumnErrorWarning = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.textBoxOutPath = new System.Windows.Forms.TextBox();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
@@ -87,12 +93,6 @@ namespace Comic_Book_Maker
             this.timerClose = new System.Windows.Forms.Timer(this.components);
             this.labelAbout = new System.Windows.Forms.Label();
             this.linkLabel1 = new System.Windows.Forms.LinkLabel();
-            this.ColumnSelect = new System.Windows.Forms.DataGridViewCheckBoxColumn();
-            this.ColumnInput = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.ColumnType = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.ColumnOutput = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.ColumnState = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.ColumnErrorWarning = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.groupBox2.SuspendLayout();
             this.tableLayoutPanel3.SuspendLayout();
             this.tableLayoutPanel5.SuspendLayout();
@@ -572,6 +572,46 @@ namespace Comic_Book_Maker
             this.dataGridView1.DragOver += new System.Windows.Forms.DragEventHandler(this.dataGridView1_DragOver);
             this.dataGridView1.KeyDown += new System.Windows.Forms.KeyEventHandler(this.dataGridView1_KeyDown);
             // 
+            // ColumnSelect
+            // 
+            this.ColumnSelect.HeaderText = "";
+            this.ColumnSelect.Name = "ColumnSelect";
+            this.ColumnSelect.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.ColumnSelect.Width = 21;
+            // 
+            // ColumnInput
+            // 
+            this.ColumnInput.HeaderText = "Input";
+            this.ColumnInput.Name = "ColumnInput";
+            this.ColumnInput.ReadOnly = true;
+            this.ColumnInput.Width = 340;
+            // 
+            // ColumnType
+            // 
+            this.ColumnType.HeaderText = "Type";
+            this.ColumnType.Name = "ColumnType";
+            this.ColumnType.ReadOnly = true;
+            this.ColumnType.Width = 50;
+            // 
+            // ColumnOutput
+            // 
+            this.ColumnOutput.HeaderText = "Output";
+            this.ColumnOutput.Name = "ColumnOutput";
+            this.ColumnOutput.Width = 340;
+            // 
+            // ColumnState
+            // 
+            this.ColumnState.HeaderText = "State";
+            this.ColumnState.Name = "ColumnState";
+            this.ColumnState.ReadOnly = true;
+            this.ColumnState.Width = 50;
+            // 
+            // ColumnErrorWarning
+            // 
+            this.ColumnErrorWarning.HeaderText = "Error/Warning";
+            this.ColumnErrorWarning.Name = "ColumnErrorWarning";
+            this.ColumnErrorWarning.ReadOnly = true;
+            // 
             // textBoxOutPath
             // 
             this.textBoxOutPath.Anchor = System.Windows.Forms.AnchorStyles.Left;
@@ -878,46 +918,6 @@ namespace Comic_Book_Maker
             this.linkLabel1.TabStop = true;
             this.linkLabel1.Text = "github.com/tosione/Comic-Book-Maker";
             this.linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel1_LinkClicked);
-            // 
-            // ColumnSelect
-            // 
-            this.ColumnSelect.HeaderText = "";
-            this.ColumnSelect.Name = "ColumnSelect";
-            this.ColumnSelect.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.ColumnSelect.Width = 21;
-            // 
-            // ColumnInput
-            // 
-            this.ColumnInput.HeaderText = "Input";
-            this.ColumnInput.Name = "ColumnInput";
-            this.ColumnInput.ReadOnly = true;
-            this.ColumnInput.Width = 340;
-            // 
-            // ColumnType
-            // 
-            this.ColumnType.HeaderText = "Type";
-            this.ColumnType.Name = "ColumnType";
-            this.ColumnType.ReadOnly = true;
-            this.ColumnType.Width = 50;
-            // 
-            // ColumnOutput
-            // 
-            this.ColumnOutput.HeaderText = "Output";
-            this.ColumnOutput.Name = "ColumnOutput";
-            this.ColumnOutput.Width = 340;
-            // 
-            // ColumnState
-            // 
-            this.ColumnState.HeaderText = "State";
-            this.ColumnState.Name = "ColumnState";
-            this.ColumnState.ReadOnly = true;
-            this.ColumnState.Width = 50;
-            // 
-            // ColumnErrorWarning
-            // 
-            this.ColumnErrorWarning.HeaderText = "Error/Warning";
-            this.ColumnErrorWarning.Name = "ColumnErrorWarning";
-            this.ColumnErrorWarning.ReadOnly = true;
             // 
             // formMain
             // 

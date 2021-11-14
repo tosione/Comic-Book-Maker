@@ -18,6 +18,7 @@ Official repository: https://github.com/tosione/Comic-Book-Maker
 - Drag-n-drop support.
 - Integration into *SendTo* context menu of Windows Explorer for automatic opening of multiple files.
 - Option for automatic start after adding files, and automatic close after successful completion, allowing automatic file processing when used together with *SendTo* context menu.
+- Removal of read-only attributes of files and folders.
 
 [^1]: Rar.exe from [WinRar](https://www.rarlab.com) is required for CBR creation.
 
@@ -77,10 +78,18 @@ All options are saved at closing and restored at startup.
 
 ### Actions and shortcut keys
 
+General:
+
 * Go button (Enter): start conversion.
-* Exit button (Esc): closes program. 
-* Refresh files (F5): checks input files and updates output names.
-* F2 (on *DataGrid*): enter edit mode of the output name for the selected row. Clicking on the output names of *DataGrid* has the same effect.
+* Exit button (Esc): close program. 
+* Refresh files (F5): check input files and updates output names.
+
+On *DataGrid*:
+
+* F2: enter edit mode of the output name for the selected row. Clicking on the output names of *DataGrid* has the same effect.
+* Space: check/uncheck selected rows.
+* Del: delete selected rows.
+* Ctrl + A: select all rows.
 
 ## Conversion details
 

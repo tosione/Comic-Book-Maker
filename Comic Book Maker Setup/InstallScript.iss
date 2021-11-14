@@ -7,7 +7,7 @@
 #define MySolutionFolder "C:\Users\Gabriel\source\repos\Comic Book Maker"
 
 [Setup]
-; NOTE: The value of AppId uniquely identifies this application. Do not use the same AppId value in installers for other applications.
+  ; NOTE: The value of AppId uniquely identifies this application. Do not use the same AppId value in installers for other applications.
 AppId=Comic Book Maker
 AppName={#MyAppName}
 AppVersion={#MyAppVersion}

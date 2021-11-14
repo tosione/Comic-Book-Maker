@@ -8,7 +8,7 @@
     <AssemblyName>Comic Book Maker Setup</AssemblyName>
     <Name>Comic Book Maker Setup</Name>
     <RootNamespace>Comic Book Maker Setup</RootNamespace>
-    <InnoSetupPath>C:\Program Files (x86)\Inno Setup 6\</InnoSetupPath>
+    <InnoSetupPath>"C:\Program Files (x86)\Inno Setup 6\"</InnoSetupPath>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <OutputPath>
