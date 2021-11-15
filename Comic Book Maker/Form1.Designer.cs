@@ -62,6 +62,7 @@ namespace Comic_Book_Maker
             this.textBoxRarPath = new System.Windows.Forms.TextBox();
             this.checkBoxCloseAtComplete = new System.Windows.Forms.CheckBox();
             this.checkBoxStartAfterFileAdd = new System.Windows.Forms.CheckBox();
+            this.textBoxOutPath = new System.Windows.Forms.TextBox();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.ColumnSelect = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.ColumnInput = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -69,7 +70,6 @@ namespace Comic_Book_Maker
             this.ColumnOutput = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ColumnState = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ColumnErrorWarning = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.textBoxOutPath = new System.Windows.Forms.TextBox();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.toolStripProgressBar1 = new System.Windows.Forms.ToolStripProgressBar();
@@ -535,6 +535,18 @@ namespace Comic_Book_Maker
             this.toolTip1.SetToolTip(this.checkBoxStartAfterFileAdd, resources.GetString("checkBoxStartAfterFileAdd.ToolTip"));
             this.checkBoxStartAfterFileAdd.UseVisualStyleBackColor = true;
             // 
+            // textBoxOutPath
+            // 
+            this.textBoxOutPath.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.textBoxOutPath.DataBindings.Add(new System.Windows.Forms.Binding("Text", global::Comic_Book_Maker.Properties.Settings.Default, "output_path", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.textBoxOutPath.Location = new System.Drawing.Point(3, 3);
+            this.textBoxOutPath.Name = "textBoxOutPath";
+            this.textBoxOutPath.Size = new System.Drawing.Size(262, 20);
+            this.textBoxOutPath.TabIndex = 1;
+            this.textBoxOutPath.Text = global::Comic_Book_Maker.Properties.Settings.Default.output_path;
+            this.toolTip1.SetToolTip(this.textBoxOutPath, "If folder doesn\'t exists, it will be created.");
+            this.textBoxOutPath.TextChanged += new System.EventHandler(this.textBoxOutPath_TextChanged);
+            // 
             // dataGridView1
             // 
             this.dataGridView1.AllowDrop = true;
@@ -561,12 +573,9 @@ namespace Comic_Book_Maker
             this.dataGridView1.RowHeadersWidth = 23;
             this.dataGridView1.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
             this.dataGridView1.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dataGridView1.ShowCellToolTips = false;
             this.dataGridView1.Size = new System.Drawing.Size(905, 524);
             this.dataGridView1.TabIndex = 13;
-            this.toolTip1.SetToolTip(this.dataGridView1, "Drag and drop valid files here.\r\n\r\nValid file types:\r\n-Folders with files.\r\n-Arch" +
-        "ives: ZIP, 7Z, RAR.\r\n-Comics: CBZ, CB7, CBR.\r\n\r\nOutput names can be editet wich " +
-        "F2 \r\nor by clicking on the name.");
+            this.dataGridView1.CellMouseEnter += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellMouseEnter);
             this.dataGridView1.ColumnHeaderMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dataGridView1_ColumnHeaderMouseClick);
             this.dataGridView1.DragDrop += new System.Windows.Forms.DragEventHandler(this.dataGridView1_DragDrop);
             this.dataGridView1.DragOver += new System.Windows.Forms.DragEventHandler(this.dataGridView1_DragOver);
@@ -584,45 +593,34 @@ namespace Comic_Book_Maker
             this.ColumnInput.HeaderText = "Input";
             this.ColumnInput.Name = "ColumnInput";
             this.ColumnInput.ReadOnly = true;
-            this.ColumnInput.Width = 340;
+            this.ColumnInput.Width = global::Comic_Book_Maker.Properties.Settings.Default.column_width_input;
             // 
             // ColumnType
             // 
             this.ColumnType.HeaderText = "Type";
             this.ColumnType.Name = "ColumnType";
             this.ColumnType.ReadOnly = true;
-            this.ColumnType.Width = 50;
+            this.ColumnType.Width = global::Comic_Book_Maker.Properties.Settings.Default.column_width_type;
             // 
             // ColumnOutput
             // 
             this.ColumnOutput.HeaderText = "Output";
             this.ColumnOutput.Name = "ColumnOutput";
-            this.ColumnOutput.Width = 340;
+            this.ColumnOutput.Width = global::Comic_Book_Maker.Properties.Settings.Default.column_width_output;
             // 
             // ColumnState
             // 
             this.ColumnState.HeaderText = "State";
             this.ColumnState.Name = "ColumnState";
             this.ColumnState.ReadOnly = true;
-            this.ColumnState.Width = 50;
+            this.ColumnState.Width = global::Comic_Book_Maker.Properties.Settings.Default.column_width_state;
             // 
             // ColumnErrorWarning
             // 
             this.ColumnErrorWarning.HeaderText = "Error/Warning";
             this.ColumnErrorWarning.Name = "ColumnErrorWarning";
             this.ColumnErrorWarning.ReadOnly = true;
-            // 
-            // textBoxOutPath
-            // 
-            this.textBoxOutPath.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.textBoxOutPath.DataBindings.Add(new System.Windows.Forms.Binding("Text", global::Comic_Book_Maker.Properties.Settings.Default, "output_path", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.textBoxOutPath.Location = new System.Drawing.Point(3, 3);
-            this.textBoxOutPath.Name = "textBoxOutPath";
-            this.textBoxOutPath.Size = new System.Drawing.Size(262, 20);
-            this.textBoxOutPath.TabIndex = 1;
-            this.textBoxOutPath.Text = global::Comic_Book_Maker.Properties.Settings.Default.output_path;
-            this.toolTip1.SetToolTip(this.textBoxOutPath, "If folder doesn\'t exists, it will be created.");
-            this.textBoxOutPath.TextChanged += new System.EventHandler(this.textBoxOutPath_TextChanged);
+            this.ColumnErrorWarning.Width = global::Comic_Book_Maker.Properties.Settings.Default.column_width_error_warning;
             // 
             // openFileDialog1
             // 

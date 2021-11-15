@@ -298,5 +298,29 @@ namespace Comic_Book_Maker.Properties {
                 this["go_after_file_add"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("200")]
+        public int column_width_error_warning {
+            get {
+                return ((int)(this["column_width_error_warning"]));
+            }
+            set {
+                this["column_width_error_warning"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool windows_maximized {
+            get {
+                return ((bool)(this["windows_maximized"]));
+            }
+            set {
+                this["windows_maximized"] = value;
+            }
+        }
     }
 }

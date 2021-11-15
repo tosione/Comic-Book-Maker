@@ -8,7 +8,9 @@ using System.Windows.Forms;
 
 
 //TODO: revise tab order
-//TODO: implement command line arguments
+//TODO: watch for files with same output name
+//TODO: implement command line arguments:
+//
 // -s     start automatically
 // -up     use previous settings      
 // -e      exit after completition
@@ -66,8 +68,10 @@ namespace Comic_Book_Maker
             comboBoxOutputType.SelectedIndex = Properties.Settings.Default.output_type_selection;
             comboBoxFileExistAction.SelectedIndex = Properties.Settings.Default.file_exist_selection;
             comboBoxRemoveFolder.SelectedIndex = Properties.Settings.Default.remove_folder_structure_selection;
-
-            this.Size = Properties.Settings.Default.form_size;
+            if (Properties.Settings.Default.windows_maximized)
+                WindowState = FormWindowState.Maximized;
+            else
+                this.Size = Properties.Settings.Default.form_size;
 
             //configure initial sorting of dataGridView1;
             dataGridView1.Sort(dataGridView1.Columns[1], System.ComponentModel.ListSortDirection.Ascending);
@@ -99,8 +103,12 @@ namespace Comic_Book_Maker
             Properties.Settings.Default.file_exist_selection = comboBoxFileExistAction.SelectedIndex;
             Properties.Settings.Default.output_type_selection = comboBoxOutputType.SelectedIndex;
             Properties.Settings.Default.remove_folder_structure_selection = comboBoxRemoveFolder.SelectedIndex;
-            Properties.Settings.Default.form_size = this.Size;
+            if (WindowState == FormWindowState.Maximized)
+                Properties.Settings.Default.windows_maximized = true;
+            else
+                Properties.Settings.Default.form_size = this.Size;
 
+            //settings that are not saved for any reason, but applied
             Properties.Settings.Default.column_width_input = ColumnInput.Width;
             Properties.Settings.Default.column_width_type = ColumnType.Width;
             Properties.Settings.Default.column_width_output = ColumnOutput.Width;
@@ -327,6 +335,12 @@ namespace Comic_Book_Maker
                     Close();
             }
         }
+        private void dataGridView1_CellMouseEnter(object sender, DataGridViewCellEventArgs e)
+        {
+            //show tooltip for each cell
+            if (e.ColumnIndex >= 0 & e.RowIndex >= 0)
+                dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex].ToolTipText = (string)dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex].Value;
+        }
 
 
         /// Auxiliar functions
@@ -423,7 +437,22 @@ namespace Comic_Book_Maker
             FileInfo fileInfo = new FileInfo(file);
             fileInfo.Attributes &= ~FileAttributes.ReadOnly;
         }
-
+        private void cleanTempDir()
+        {
+            //delete folders matching "CBM - *" in temp directory
+            string[] CBM_dirs = Directory.GetDirectories(Path.GetTempPath(), "CBM - *");
+            foreach (string dir in CBM_dirs)
+            {
+                try
+                {
+                    makeFolderReadable(dir);
+                    Directory.Delete(dir, true);
+                }
+                catch
+                {
+                }
+            }
+        }
 
         /// Main functions
         private void populateGrid(string[] files, bool replace)
@@ -582,6 +611,8 @@ namespace Comic_Book_Maker
         }
         private void processAllRows()
         {
+            cleanTempDir();
+
             if (dataGridView1.Rows.Count > 0)
             {
                 showStatus("Working");
@@ -595,7 +626,9 @@ namespace Comic_Book_Maker
                 buttonExit.Enabled = false;
                 buttonRefresh.Enabled = false;
 
-                //TODO: avoid reordering rows while processing files (could prevent processing all rows)
+                //disable sorting
+                foreach (DataGridViewColumn column in dataGridView1.Columns)
+                    column.SortMode = DataGridViewColumnSortMode.NotSortable;
 
                 //create output directory if it does not exist
                 if (!Directory.Exists(textBoxOutPath.Text))
@@ -697,6 +730,10 @@ namespace Comic_Book_Maker
                 }
             }
 
+            //re-enable sorting
+            foreach (DataGridViewColumn column in dataGridView1.Columns)
+                column.SortMode = DataGridViewColumnSortMode.Automatic;
+
             //re-enable buttons
             buttonGo.Enabled = true;
             buttonExit.Enabled = true;
@@ -762,19 +799,21 @@ namespace Comic_Book_Maker
 
                 //get tempPath (folder)
                 string tempPath = Path.Combine(Path.GetTempPath(), "CBM - " + Path.GetFileNameWithoutExtension(inPath));
-                //if tempPath exists, try to delete
-                if (Directory.Exists(tempPath))
-                {
-                    try
-                    {
-                        makeFolderReadable(tempPath);
-                        Directory.Delete(tempPath, true);
-                    }
-                    catch (Exception e)
-                    {
-                        stepWarning("Exception deleting temporal path before decompression: " + e.Message);
-                    }
-                }
+
+                ////if tempPath exists, try to delete
+                //if (Directory.Exists(tempPath))
+                //{
+                //    try
+                //    {
+                //        makeFolderReadable(tempPath);
+                //        Directory.Delete(tempPath, true);
+                //    }
+                //    catch (Exception e)
+                //    {
+                //        stepWarning("Exception deleting temporal path before decompression: " + e.Message);
+                //    }
+                //}
+
                 //if still exist, try other names
                 if (Directory.Exists(tempPath))
                 {
