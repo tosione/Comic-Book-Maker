@@ -8,9 +8,8 @@ using System.Windows.Forms;
 
 
 //TODO: revise tab order
-//TODO: watch for files with same output name
+
 //TODO: implement command line arguments:
-//
 // -s     start automatically
 // -up     use previous settings      
 // -e      exit after completition
@@ -148,22 +147,22 @@ namespace Comic_Book_Maker
         }
         private void checkBoxCreateFromFolder_CheckedChanged(object sender, EventArgs e)
         {
-            updateOutputNames();
+            createOutputNames();
             updateSelectedRows();
         }
         private void checkBoxCreateFromArchive_CheckedChanged(object sender, EventArgs e)
         {
-            updateOutputNames();
+            createOutputNames();
             updateSelectedRows();
         }
         private void checkBoxCreateFromComic_CheckedChanged(object sender, EventArgs e)
         {
-            updateOutputNames();
+            createOutputNames();
             updateSelectedRows();
         }
         private void checkBoxOutPath_CheckedChanged(object sender, EventArgs e)
         {
-            updateOutputNames();
+            createOutputNames();
 
             textBoxOutPath.Enabled = checkBoxUseOutPath.Checked;
             buttonOutputPath.Enabled = checkBoxUseOutPath.Checked;
@@ -177,7 +176,7 @@ namespace Comic_Book_Maker
             labelRarPath.Enabled = isRar;
             buttonRarPath.Enabled = isRar;
 
-            updateOutputNames();
+            createOutputNames();
         }
         private void buttonGo_Click(object sender, EventArgs e)
         {
@@ -189,7 +188,7 @@ namespace Comic_Book_Maker
         }
         private void buttonRefresh_Click(object sender, EventArgs e)
         {
-            updateOutputNames();
+            createOutputNames();
         }
         private void checkBoxExcludeFiles_CheckedChanged(object sender, EventArgs e)
         {
@@ -199,11 +198,7 @@ namespace Comic_Book_Maker
         private void comboBoxFileExistAction_SelectedValueChanged(object sender, EventArgs e)
         {
             fileExistAction = (fEA)comboBoxFileExistAction.SelectedIndex;
-
-            textBoxRenameSuffix.Visible = (fileExistAction == fEA.Rename);
-            labelSuffix.Visible = (fileExistAction == fEA.Rename);
-
-            updateOutputNames();
+            createOutputNames();
         }
         private void buttonOutputPath_Click(object sender, EventArgs e)
         {
@@ -235,7 +230,7 @@ namespace Comic_Book_Maker
                 showStatus("Output directory does not exist, will be created");
             else
                 showStatus("");
-            updateOutputNames();
+            createOutputNames();
         }
         private void textBoxRarPath_Changed(object sender, EventArgs e)
         {
@@ -254,7 +249,7 @@ namespace Comic_Book_Maker
             else
                 errorProvider1.SetError(textBoxRenameSuffix, "");
             buttonGo.Enabled = !Error7zipPath && !ErrorRarPath && !ErrorRenameSuffix;
-            updateOutputNames();
+            createOutputNames();
         }
         private void dataGridView1_KeyDown(object sender, KeyEventArgs e)
         {
@@ -274,7 +269,7 @@ namespace Comic_Book_Maker
         {
 
             if (e.KeyData == Keys.F5)
-                updateOutputNames();
+                createOutputNames();
             else if (e.KeyData == Keys.Escape)  //CancelButton Property from formMain is not working correctly: it exits form when pressing Esc while editing DataGridView Cell
                 Close();
             else if (e.KeyData == Keys.Enter)  //EnterButton Property from formMain is not working correctly: not working while DataGridView is focused
@@ -508,7 +503,7 @@ namespace Comic_Book_Maker
             }
 
             //update output names and selected rows
-            updateOutputNames();
+            createOutputNames();
             updateSelectedRows();
 
             //sort rows
@@ -527,7 +522,7 @@ namespace Comic_Book_Maker
             }
 
         }
-        private void updateOutputNames()
+        private void createOutputNames()
         {
             string inType, inPath, outPath;
 
@@ -555,46 +550,69 @@ namespace Comic_Book_Maker
             }
 
             //revise output renaming
-            updateOutputRenaming();
+            renameOutputNames();
 
             dataGridView1.Refresh();
         }
-        private void updateOutputRenaming()
+        private void renameOutputNames()
         {
-            string outPath;
+            //test if rename pattern contains \n, and if not, use default pattern (not saved to textBox)
+            string pattern;
+            if (textBoxRenameSuffix.Text.Contains("\\n"))
+                pattern = textBoxRenameSuffix.Text;
+            else
+                pattern = "_\\n";
 
-            foreach (DataGridViewRow row in dataGridView1.Rows)
+            string outPath_i, outPath_i0, outPath_j;
+            int j, i;
+            int suffix;
+            int nrows = dataGridView1.Rows.Count;
+
+            //compare each output path against all other output paths,
+            //if both are equal, or if first file exist when Rename option is enabled: increase suffix and start over again
+            //suffix is limited to 1000
+
+            for (i = 0; i < nrows; i++)
             {
-                outPath = (string)row.Cells[3].Value;
+                outPath_i0 = (string)dataGridView1.Rows[i].Cells[3].Value;
+                outPath_i = outPath_i0;
 
-                //if output file already exists and rename option is selected
-                if (File.Exists(outPath) && (fileExistAction == fEA.Rename))
+                suffix = 0;
+                j = 0;
+                while (j < nrows && suffix < 1000)
                 {
-                    //test if rename pattern contains \n, and if not, use default pattern (not saved to textBox)
-                    string pattern;
-                    if (textBoxRenameSuffix.Text.Contains("\\n"))
-                        pattern = textBoxRenameSuffix.Text;
-                    else
-                        pattern = "_\\n";
+                    outPath_i = renameWithPattern(outPath_i0, pattern, suffix);
+                    outPath_j = (string)dataGridView1.Rows[j].Cells[3].Value;
 
-                    //try pattern with numbers 1-100
-                    string outPath0 = outPath;  //backup original name
-                    int j = 1;
-                    while (File.Exists(outPath) && j <= 1000)
-                    {
-                        outPath = Path.Combine(Path.GetDirectoryName(outPath0), Path.GetFileNameWithoutExtension(outPath0) + pattern.Replace("\\n", j.ToString()) + Path.GetExtension(outPath0));
+                    if (i == j)
                         j++;
-                    }
-                    //if none found show warning and use original name
-                    if (j > 1000)
+                    else if ((outPath_i == outPath_j) || (File.Exists(outPath_i) && (fileExistAction == fEA.Rename)))
                     {
-                        row.Cells[5].Value = "Error: No renaming name found";
-                        outPath = outPath0;
+                        suffix++;
+                        j = 0;
                     }
-                    //set name on DataGridView
-                    row.Cells[3].Value = outPath;
+                    else
+                        j++;
                 }
+
+                //if none found show warning and use original name
+                if (suffix >= 1000)
+                {
+                    dataGridView1.Rows[i].Cells[5].Value = "Error: No renaming name found";
+                    dataGridView1.Rows[i].Cells[3].Value = outPath_i0;
+                }
+                else
+                    dataGridView1.Rows[i].Cells[3].Value = outPath_i;
             }
+
+        }
+        private string renameWithPattern(string path, string suffix_pattern, int number)
+        {
+            //gets renamed path adding suffix_pattern where \n is substituted by number
+            if (number == 0)
+                return path;
+            else
+                return Path.Combine(Path.GetDirectoryName(path), Path.GetFileNameWithoutExtension(path) + suffix_pattern.Replace("\\n", number.ToString()) + Path.GetExtension(path));
         }
         private void updateSelectedRows()
         {
@@ -642,7 +660,7 @@ namespace Comic_Book_Maker
                 }
 
                 //Test Output renaming again
-                updateOutputRenaming();
+                renameOutputNames();
 
                 //get parameters for Cleaning
                 char[] separators = { '|' };
@@ -761,16 +779,16 @@ namespace Comic_Book_Maker
                 if (step > 1)
                     BeginInvoke((Action)delegate { toolStripProgressBar1.Value++; });
             }
-            //only add warning messages
-            void stepWarning(string warningMessage)
+            //only show warning messages
+            void stepShowMessage(string warningMessage)
             {
-                row.Cells[5].Value += "Warning: " + warningMessage + " ";
+                row.Cells[5].Value += warningMessage + " ";
             }
             //exit current step, show error, and compensate for remaining steps (return must be called after this!)
-            void stepExitError(string errorMessage)
+            void stepExit(string errorMessage)
             {
                 row.Cells[4].Value = "Skipped";
-                row.Cells[5].Value += "Error: " + errorMessage + " ";
+                row.Cells[5].Value += errorMessage + " ";
                 BeginInvoke((Action)delegate { toolStripProgressBar1.Value += (totalSteps - step + 1); });  //compensate for remaining steps
             }
             //skip all steps from beginning (before first stepIncrease)
@@ -793,7 +811,7 @@ namespace Comic_Book_Maker
                 //if input file or folder dont exist show error
                 if ((inType == FolderStr && !Directory.Exists(inPath)) || ((inType == ArchiveStr || inType == ComicStr) && !File.Exists(inPath)))
                 {
-                    stepExitError("Input file or folder doesn't exist");
+                    stepExit("Error - Input file or folder doesn't exist");
                     return;
                 }
 
@@ -828,7 +846,7 @@ namespace Comic_Book_Maker
                 //if still exist, show error and exit
                 if (Directory.Exists(tempPath))
                 {
-                    stepExitError("Couldn't find an available temp folder name");
+                    stepExit("Error - Couldn't find an available temp folder name");
                     return;
                 }
 
@@ -839,7 +857,7 @@ namespace Comic_Book_Maker
                 }
                 catch (Exception e)
                 {
-                    stepExitError("Exception creating temp folder: " + e.Message);
+                    stepExit("Error - Exception creating folder in temp path: " + e.Message);
                     return;
                 }
 
@@ -871,7 +889,7 @@ namespace Comic_Book_Maker
                     }
                     catch (Exception e)
                     {
-                        stepExitError("Exception extracting files: " + e.Message);
+                        stepExit("Error - Exception extracting files: " + e.Message);
                         return;
                     }
                 }
@@ -896,7 +914,7 @@ namespace Comic_Book_Maker
                     if (filesToDelete.Count > nCleanLimit)
                     {
                         //if to much found, show warning
-                        stepWarning("Excessive files to clean: none cleaned");
+                        stepShowMessage("Warning - Excessive files to clean: none cleaned");
                     }
                     else
                     {
@@ -909,7 +927,7 @@ namespace Comic_Book_Maker
                             }
                             catch (Exception e)
                             {
-                                stepWarning("Exception deleting clean file: " + e.Message);
+                                stepShowMessage("Warning - Exception deleting file for clean: " + e.Message);
                             }
                         }
                     }
@@ -927,9 +945,9 @@ namespace Comic_Book_Maker
 
                     //search for duplicate filenames
                     int n = tempFileNames.Length;
-                    if (n >= 2)
+                    bool dupeFound = false;
+                    if (n > 1)
                     {
-                        bool dupeFound = false;
                         int i = 0, j;
                         while (i <= n - 2 && !dupeFound)
                         {
@@ -943,46 +961,50 @@ namespace Comic_Book_Maker
                         }
                         if (dupeFound)
                         {
-                            //if found, show error and exit
-                            stepExitError("Folder structure cannot be removed because duplicate files exist");
-                            return;
-                        }
+                            //if found, show warning
+                            stepShowMessage("Warning - Flattening cannot be done because duplicate files exist");
+                       }
                     }
 
-                    //if not, move files to root folder (tempPath)
-                    foreach (string srcFilePath in tempFilePaths)
+                    //if no duplicates, move files to root folder
+                    if(!dupeFound)
                     {
-                        string destFilePath = Path.Combine(tempPath, Path.GetFileName(srcFilePath));
-                        if (srcFilePath != destFilePath)    //avoid moving if already in root folder
+                        foreach (string srcFilePath in tempFilePaths)
                         {
-                            try
+                            string destFilePath = Path.Combine(tempPath, Path.GetFileName(srcFilePath));
+                            if (srcFilePath != destFilePath)    //avoid moving if already in root folder
                             {
-                                File.Move(srcFilePath, destFilePath);
-                            }
-                            catch (Exception e)
-                            {
-                                stepExitError("Exception moving files to root folder: " + e.Message);
-                                return;
+                                try
+                                {
+                                    File.Move(srcFilePath, destFilePath);
+                                }
+                                catch (Exception e)
+                                {
+                                    stepExit("Error - Exception moving files to root folder for flattening: " + e.Message);
+                                    return;
+                                }
                             }
                         }
-                    }
 
-                    //remove remaining folders
-                    string[] dirs = Directory.GetDirectories(tempPath);
-                    foreach (string dir in dirs)
-                    {
-                        if (Directory.GetFiles(dir).Length == 0)
+                        //remove remaining folders
+                        string[] dirs = Directory.GetDirectories(tempPath);
+                        foreach (string dir in dirs)
                         {
-                            try
+                            if (Directory.GetFiles(dir).Length == 0)
                             {
-                                Directory.Delete(dir, true);
-                            }
-                            catch (Exception e)
-                            {
-                                stepWarning("Exception deleting empty folders after flattening: " + e.Message);
+                                try
+                                {
+                                    Directory.Delete(dir, true);
+                                }
+                                catch (Exception e)
+                                {
+                                    stepExit("Error - Exception deleting empty folders after flattening: " + e.Message);
+                                    return;
+                                }
                             }
                         }
                     }
+                    
                 }
 
                 //remove folder structure smart option
@@ -1022,14 +1044,14 @@ namespace Comic_Book_Maker
                         }
                         catch (Exception e)
                         {
-                            stepExitError("Exception deleting existing output file: " + e.Message);
+                            stepExit("Error - Exception deleting existing output file: " + e.Message);
                             return;
                         }
                     }
                     //if skip option, show warning
                     else if (fileExistAction == fEA.Skip)
                     {
-                        stepExitError("Output file exists");
+                        stepExit("Warning - Output file exist and skip option enabled");
                         return;
                     }
                     //if rename option enabled, show error and exit                   
@@ -1038,7 +1060,7 @@ namespace Comic_Book_Maker
                         //as output name is checked with updateOutputRenaming() at beginning of processAllRows()                    
                         //this case should only exits if updateOutputRenaming() got an error
 
-                        stepExitError("Renamed output file exist");
+                        stepExit("Error - Renamed output file exist");
                         return;
                     }
                 }
@@ -1084,7 +1106,7 @@ namespace Comic_Book_Maker
                 }
                 catch (Exception e)
                 {
-                    stepExitError("Exception compressing files: " + e.Message);
+                    stepExit("Error - Exception compressing files: " + e.Message);
                     return;
                 }
 
@@ -1130,7 +1152,7 @@ namespace Comic_Book_Maker
                         }
                         catch (Exception e)
                         {
-                            stepWarning("Exception deleting input folder: " + e.Message);
+                            stepShowMessage("Warning - Exception deleting input folder: " + e.Message);
                         }
                     }
                     else if (File.Exists(inPath))
@@ -1142,7 +1164,7 @@ namespace Comic_Book_Maker
                         }
                         catch (Exception e)
                         {
-                            stepWarning("Exception deleting input file: " + e.Message);
+                            stepShowMessage("Warning - Exception deleting input file: " + e.Message);
                         }
                     }
 
@@ -1162,7 +1184,7 @@ namespace Comic_Book_Maker
                     }
                     catch (Exception e)
                     {
-                        stepWarning("Exception deleting temporal path: " + e.Message);
+                        stepShowMessage("Warning - Exception deleting folder in temp path: " + e.Message);
                     }
                 }
 
@@ -1181,5 +1203,3 @@ namespace Comic_Book_Maker
 
     }   //formMain
 }   //Comic_Book_Maker
-
-
