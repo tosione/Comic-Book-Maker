@@ -120,15 +120,19 @@
   <metadata name="toolTip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>329, 4</value>
   </metadata>
-  <metadata name="toolTip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>329, 4</value>
-  </metadata>
   <data name="comboBoxRemoveFolder.ToolTip" xml:space="preserve">
     <value>-No: folder structure will be maintained as it is.
 -Yes: all files will be placed in the root folder and 
 directories will be deleted.
--Smart: remove top level folders until two or more 
-folders/files are on the same level.</value>
+-Smart: remove top level single folders recursively 
+until file or mulitiple directories are found.</value>
+  </data>
+  <data name="label3.ToolTip" xml:space="preserve">
+    <value>-No: folder structure will be maintained as it is.
+-Yes: all files will be placed in the root folder and 
+directories will be deleted.
+-Smart: remove top level single folders recursively 
+until file or mulitiple directories are found.</value>
   </data>
   <data name="buttonGo.ToolTip" xml:space="preserve">
     <value>Process checked rows (Enter).
@@ -153,15 +157,11 @@ opening, and viewing of comic files at nearly no size benefit.
 
 RAR4 compression will be used for CBR, instead of less compatible RAR5.</value>
   </data>
-  <data name="buttonSendtoShortcut.ToolTip" xml:space="preserve">
-    <value>Adds/removes Comic Book Maker to the SendTo 
-context menu of windows explorer.
-This allows easy opening of multiple files from 
-windows explorer.
-
-The shortcut that is created, links to the program at  
-its current location. If program is moved to another 
-folder, the shorcut must be deleted and created again.</value>
+  <data name="textBoxRenameSuffix.ToolTip" xml:space="preserve">
+    <value>Pattern used for renaming exiting output files if Rename is selected.
+Also used when various input files would generate same output file.
+Needs to include \n which will be substituted by numerical value, if
+not default pattern will be used.</value>
   </data>
   <data name="checkBoxStartAfterFileAdd.ToolTip" xml:space="preserve">
     <value>If this option is enabled, when starting the program 
@@ -172,24 +172,12 @@ the files will automatically converted.
 Used in combination with the "Close after succesfull 
 completition" option allows a fully automatic behaviour.</value>
   </data>
-  <metadata name="ColumnSelect.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>True</value>
-  </metadata>
-  <metadata name="ColumnInput.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>True</value>
-  </metadata>
-  <metadata name="ColumnType.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>True</value>
-  </metadata>
-  <metadata name="ColumnOutput.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>True</value>
-  </metadata>
-  <metadata name="ColumnState.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>True</value>
-  </metadata>
-  <metadata name="ColumnErrorWarning.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>True</value>
-  </metadata>
+  <data name="labelSuffix.ToolTip" xml:space="preserve">
+    <value>Pattern used for renaming exiting output files if Rename is selected.
+Also used when various input files would generate same output file.
+Needs to include \n which will be substituted by numerical value, if
+not default pattern will be used.</value>
+  </data>
   <metadata name="ColumnSelect.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
   </metadata>

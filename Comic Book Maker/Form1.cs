@@ -9,27 +9,6 @@ using System.Windows.Forms;
 
 //TODO: revise tab order
 
-//TODO: implement command line arguments:
-// -s     start automatically
-// -up     use previous settings      
-// -e      exit after completition
-// -es     exit after successfull completition
-// -a      add files/folders
-// -otz    output file type cbz
-// -ot7    output file type cb7
-// -otr    output file type cbr
-// -op     output path
-// -oeo    output file exists overwrite    
-// -oes    output file exists skip
-// -oer<pat>   output file exists rename with <pat> pattern
-// -m      use multicore
-// -di     delete input files
-// -c<pat> clean files 
-// -c<pat><n>  clean files limiting
-// -r      remove folder structure
-// -rs     remove folder structure smart
-
-
 namespace Comic_Book_Maker
 {
     public partial class formMain : Form
@@ -74,7 +53,6 @@ namespace Comic_Book_Maker
 
             //configure initial sorting of dataGridView1;
             dataGridView1.Sort(dataGridView1.Columns[1], System.ComponentModel.ListSortDirection.Ascending);
-            updateSendtoShortcutButtonText();
 
             labelAbout.Text = Application.ProductName + " v" + System.Reflection.Assembly.GetEntryAssembly().GetName().Version.ToString(2);
 
@@ -85,6 +63,9 @@ namespace Comic_Book_Maker
                 showWarning("Missing 7z.exe or 7z.dll in program folder");
                 buttonGo.Enabled = !Error7zipPath && !ErrorRarPath && !ErrorRenameSuffix;
             }
+
+            //if SendTo shortcut exists
+            checkBox_SendTo.Checked = File.Exists(shortcutPath);
 
             //if command line arguments are given
             if (args1.Length > 0)
@@ -288,13 +269,30 @@ namespace Comic_Book_Maker
                     dataGridView1.SelectAll();
             }
         }
-        private void buttonSendtoShortcut_Click(object sender, EventArgs e)
+        private void checkBox_SendTo_CheckedChanged(object sender, EventArgs e)
         {
-            if (File.Exists(shortcutPath))
-                File.Delete(shortcutPath);
+            if (checkBox_SendTo.Checked)
+            {
+                try
+                {
+                    createShortcut(shortcutPath, Application.ExecutablePath);
+                }
+                catch (Exception ex)
+                {
+                    showError("Exception creating shortcut in SendTo folder: " + ex.ToString());
+                }
+            }
             else
-                createShortcut(shortcutPath, Application.ExecutablePath);
-            updateSendtoShortcutButtonText();
+            {
+                try
+                {
+                    File.Delete(shortcutPath);
+                }
+                catch (Exception ex)
+                {
+                    showError("Exception removing shortcut from SendTo folder" + ex.ToString());
+                }
+            }
         }
         private void buttonCancelClosing_Click(object sender, EventArgs e)
         {
@@ -362,6 +360,12 @@ namespace Comic_Book_Maker
             toolStripStatusLabel1.Text = text + ": " + time.ToString("F2") + " s";
             statusStrip1.Refresh();
         }
+        private void showError(string text)
+        {
+            toolStripStatusLabel1.ForeColor = System.Drawing.Color.Red;
+            toolStripStatusLabel1.Text = text;
+            statusStrip1.Refresh();
+        }
         private void showError(string text, double t)
         {
             toolStripStatusLabel1.ForeColor = System.Drawing.Color.Red;
@@ -380,13 +384,6 @@ namespace Comic_Book_Maker
             //shortcut.IconLocation = @"c:\myicon.ico";           // The icon of the shortcut
             shortcut.TargetPath = targetFileLocation;           // The path of the file that will launch when the shortcut is run
             shortcut.Save();                                    // Save the shortcut
-        }
-        private void updateSendtoShortcutButtonText()
-        {
-            if (File.Exists(shortcutPath))
-                buttonSendtoShortcut.Text = "Remove";
-            else
-                buttonSendtoShortcut.Text = "Add";
         }
         [Conditional("DEBUG")]
         private void showThread(string s)
@@ -408,44 +405,42 @@ namespace Comic_Book_Maker
         }
         private void makeFolderReadable(string folder)
         {
-            //remove readonly attribute from directory
-            DirectoryInfo di = new DirectoryInfo(folder);
-            di.Attributes &= ~FileAttributes.ReadOnly;
-
-            //remove readonly attribute from all sub-directories
-            foreach (string subDirName in Directory.GetDirectories(folder))
+            try
             {
-                DirectoryInfo sdi = new DirectoryInfo(subDirName);
-                sdi.Attributes &= ~FileAttributes.ReadOnly;
+                //remove readonly attribute from directory
+                DirectoryInfo di = new DirectoryInfo(folder);
+                di.Attributes &= ~FileAttributes.ReadOnly;
+
+                //remove readonly attribute from all sub-directories
+                foreach (string subDirName in Directory.GetDirectories(folder))
+                {
+                    DirectoryInfo sdi = new DirectoryInfo(subDirName);
+                    sdi.Attributes &= ~FileAttributes.ReadOnly;
+                }
+
+                //remove readonly attribute from all files (including files from sub-directories)
+                foreach (string fileName in Directory.GetFiles(folder, "*", SearchOption.AllDirectories))
+                {
+                    FileInfo fileInfo = new FileInfo(fileName);
+                    fileInfo.Attributes &= ~FileAttributes.ReadOnly;
+                }
             }
-
-            //remove readonly attribute from all files (including files from sub-directories)
-            foreach (string fileName in Directory.GetFiles(folder, "*", SearchOption.AllDirectories))
+            catch
             {
-                FileInfo fileInfo = new FileInfo(fileName);
-                fileInfo.Attributes &= ~FileAttributes.ReadOnly;
+                //TODO: unhandled exeception
             }
         }
         private void makeFileReadable(string file)
         {
-            //remove readonly attribute from file
-            FileInfo fileInfo = new FileInfo(file);
-            fileInfo.Attributes &= ~FileAttributes.ReadOnly;
-        }
-        private void cleanTempDir()
-        {
-            //delete folders matching "CBM - *" in temp directory
-            string[] CBM_dirs = Directory.GetDirectories(Path.GetTempPath(), "CBM - *");
-            foreach (string dir in CBM_dirs)
+            try
             {
-                try
-                {
-                    makeFolderReadable(dir);
-                    Directory.Delete(dir, true);
-                }
-                catch
-                {
-                }
+                //remove readonly attribute from file
+                FileInfo fileInfo = new FileInfo(file);
+                fileInfo.Attributes &= ~FileAttributes.ReadOnly;
+            }
+            catch
+            {
+                //TODO: unhandled exeception
             }
         }
 
@@ -629,9 +624,38 @@ namespace Comic_Book_Maker
         }
         private void processAllRows()
         {
-            cleanTempDir();
+            bool preProcessError = false;
 
-            if (dataGridView1.Rows.Count > 0)
+            //delete folders matching "CBM - *" in temp directory
+            string[] CBM_dirs = Directory.GetDirectories(Path.GetTempPath(), "CBM - *");
+            foreach (string dir in CBM_dirs)
+            {
+                try
+                {
+                    makeFolderReadable(dir);
+                    Directory.Delete(dir, true);
+                }
+                catch (Exception ex)
+                {
+                    showWarning("Exception removing old CBM files from : " + ex.Message);
+                }
+            }
+
+            //create output directory if it does not exist
+            if (checkBoxUseOutPath.Checked && !Directory.Exists(textBoxOutPath.Text))
+            {
+                try
+                {
+                    Directory.CreateDirectory(textBoxOutPath.Text);
+                }
+                catch (Exception ex)
+                {
+                    showError("Exception creating output folder: " + ex.Message);
+                    preProcessError = true;
+                }
+            }
+
+            if (dataGridView1.Rows.Count > 0 && !preProcessError)
             {
                 showStatus("Working");
 
@@ -647,10 +671,6 @@ namespace Comic_Book_Maker
                 //disable sorting
                 foreach (DataGridViewColumn column in dataGridView1.Columns)
                     column.SortMode = DataGridViewColumnSortMode.NotSortable;
-
-                //create output directory if it does not exist
-                if (!Directory.Exists(textBoxOutPath.Text))
-                    Directory.CreateDirectory(textBoxOutPath.Text);
 
                 //reset status & errors/warnings for all rows
                 foreach (DataGridViewRow Row in dataGridView1.Rows)
@@ -855,9 +875,9 @@ namespace Comic_Book_Maker
                 {
                     Directory.CreateDirectory(tempPath);
                 }
-                catch (Exception e)
+                catch (Exception ex)
                 {
-                    stepExit("Error - Exception creating folder in temp path: " + e.Message);
+                    stepExit("Error - Exception creating folder in temp path: " + ex.Message);
                     return;
                 }
 
@@ -865,7 +885,15 @@ namespace Comic_Book_Maker
                 if (inType == FolderStr)
                 {
                     //copy folder to tempPath (using VisualBasic function)
-                    Microsoft.VisualBasic.FileIO.FileSystem.CopyDirectory(inPath, tempPath, true);
+                    try
+                    {
+                        Microsoft.VisualBasic.FileIO.FileSystem.CopyDirectory(inPath, tempPath, true);
+                    }
+                    catch (Exception ex)
+                    {
+                        stepExit("Error - Exception copying input folder to temp path: " + ex.Message);
+                        return;
+                    }
                 }
                 else
                 {
@@ -887,9 +915,9 @@ namespace Comic_Book_Maker
                         pr7z.Start();
                         pr7z.WaitForExit();
                     }
-                    catch (Exception e)
+                    catch (Exception ex)
                     {
-                        stepExit("Error - Exception extracting files: " + e.Message);
+                        stepExit("Error - Exception extracting files: " + ex.Message);
                         return;
                     }
                 }
@@ -925,9 +953,9 @@ namespace Comic_Book_Maker
                             {
                                 File.Delete(file);
                             }
-                            catch (Exception e)
+                            catch (Exception ex)
                             {
-                                stepShowMessage("Warning - Exception deleting file for clean: " + e.Message);
+                                stepShowMessage("Warning - Exception deleting file for clean: " + ex.Message);
                             }
                         }
                     }
@@ -963,11 +991,11 @@ namespace Comic_Book_Maker
                         {
                             //if found, show warning
                             stepShowMessage("Warning - Flattening cannot be done because duplicate files exist");
-                       }
+                        }
                     }
 
                     //if no duplicates, move files to root folder
-                    if(!dupeFound)
+                    if (!dupeFound)
                     {
                         foreach (string srcFilePath in tempFilePaths)
                         {
@@ -978,9 +1006,9 @@ namespace Comic_Book_Maker
                                 {
                                     File.Move(srcFilePath, destFilePath);
                                 }
-                                catch (Exception e)
+                                catch (Exception ex)
                                 {
-                                    stepExit("Error - Exception moving files to root folder for flattening: " + e.Message);
+                                    stepExit("Error - Exception moving files to root folder for flattening: " + ex.Message);
                                     return;
                                 }
                             }
@@ -996,15 +1024,15 @@ namespace Comic_Book_Maker
                                 {
                                     Directory.Delete(dir, true);
                                 }
-                                catch (Exception e)
+                                catch (Exception ex)
                                 {
-                                    stepExit("Error - Exception deleting empty folders after flattening: " + e.Message);
+                                    stepExit("Error - Exception deleting empty folders after flattening: " + ex.Message);
                                     return;
                                 }
                             }
                         }
                     }
-                    
+
                 }
 
                 //remove folder structure smart option
@@ -1042,9 +1070,9 @@ namespace Comic_Book_Maker
                             makeFileReadable(outPath);
                             File.Delete(outPath);
                         }
-                        catch (Exception e)
+                        catch (Exception ex)
                         {
-                            stepExit("Error - Exception deleting existing output file: " + e.Message);
+                            stepExit("Error - Exception deleting existing output file: " + ex.Message);
                             return;
                         }
                     }
@@ -1104,9 +1132,9 @@ namespace Comic_Book_Maker
                         prRar.WaitForExit();
                     }
                 }
-                catch (Exception e)
+                catch (Exception ex)
                 {
-                    stepExit("Error - Exception compressing files: " + e.Message);
+                    stepExit("Error - Exception compressing files: " + ex.Message);
                     return;
                 }
 
@@ -1150,9 +1178,9 @@ namespace Comic_Book_Maker
                             makeFolderReadable(inPath);
                             Microsoft.VisualBasic.FileIO.FileSystem.DeleteDirectory(inPath, Microsoft.VisualBasic.FileIO.UIOption.OnlyErrorDialogs, Microsoft.VisualBasic.FileIO.RecycleOption.SendToRecycleBin);
                         }
-                        catch (Exception e)
+                        catch (Exception ex)
                         {
-                            stepShowMessage("Warning - Exception deleting input folder: " + e.Message);
+                            stepShowMessage("Warning - Exception deleting input folder: " + ex.Message);
                         }
                     }
                     else if (File.Exists(inPath))
@@ -1162,9 +1190,9 @@ namespace Comic_Book_Maker
                             makeFileReadable(inPath);
                             Microsoft.VisualBasic.FileIO.FileSystem.DeleteFile(inPath, Microsoft.VisualBasic.FileIO.UIOption.OnlyErrorDialogs, Microsoft.VisualBasic.FileIO.RecycleOption.SendToRecycleBin);
                         }
-                        catch (Exception e)
+                        catch (Exception ex)
                         {
-                            stepShowMessage("Warning - Exception deleting input file: " + e.Message);
+                            stepShowMessage("Warning - Exception deleting input file: " + ex.Message);
                         }
                     }
 
@@ -1182,9 +1210,9 @@ namespace Comic_Book_Maker
                     {
                         Directory.Delete(tempPath, true);
                     }
-                    catch (Exception e)
+                    catch (Exception ex)
                     {
-                        stepShowMessage("Warning - Exception deleting folder in temp path: " + e.Message);
+                        stepShowMessage("Warning - Exception deleting folder in temp path: " + ex.Message);
                     }
                 }
 
