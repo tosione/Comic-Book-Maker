@@ -6,9 +6,6 @@ using System.Threading;         //for multithreading
 using System.Threading.Tasks;   //for multithreading
 using System.Windows.Forms;
 
-
-//TODO: revise tab order
-
 namespace Comic_Book_Maker
 {
     public partial class formMain : Form
@@ -46,7 +43,7 @@ namespace Comic_Book_Maker
             comboBoxOutputType.SelectedIndex = Properties.Settings.Default.output_type_selection;
             comboBoxFileExistAction.SelectedIndex = Properties.Settings.Default.file_exist_selection;
             comboBoxRemoveFolder.SelectedIndex = Properties.Settings.Default.remove_folder_structure_selection;
-            if (Properties.Settings.Default.windows_maximized)
+            if (Properties.Settings.Default.window_maximized)
                 WindowState = FormWindowState.Maximized;
             else
                 this.Size = Properties.Settings.Default.form_size;
@@ -84,9 +81,12 @@ namespace Comic_Book_Maker
             Properties.Settings.Default.output_type_selection = comboBoxOutputType.SelectedIndex;
             Properties.Settings.Default.remove_folder_structure_selection = comboBoxRemoveFolder.SelectedIndex;
             if (WindowState == FormWindowState.Maximized)
-                Properties.Settings.Default.windows_maximized = true;
+                Properties.Settings.Default.window_maximized = true;
             else
+            {
+                Properties.Settings.Default.window_maximized = false;
                 Properties.Settings.Default.form_size = this.Size;
+            }
 
             //settings that are not saved for any reason, but applied
             Properties.Settings.Default.column_width_input = ColumnInput.Width;
@@ -405,43 +405,33 @@ namespace Comic_Book_Maker
         }
         private void makeFolderReadable(string folder)
         {
-            try
-            {
-                //remove readonly attribute from directory
-                DirectoryInfo di = new DirectoryInfo(folder);
-                di.Attributes &= ~FileAttributes.ReadOnly;
 
-                //remove readonly attribute from all sub-directories
-                foreach (string subDirName in Directory.GetDirectories(folder))
-                {
-                    DirectoryInfo sdi = new DirectoryInfo(subDirName);
-                    sdi.Attributes &= ~FileAttributes.ReadOnly;
-                }
+            //remove readonly attribute from directory
+            DirectoryInfo di = new DirectoryInfo(folder);
+            di.Attributes &= ~FileAttributes.ReadOnly;
 
-                //remove readonly attribute from all files (including files from sub-directories)
-                foreach (string fileName in Directory.GetFiles(folder, "*", SearchOption.AllDirectories))
-                {
-                    FileInfo fileInfo = new FileInfo(fileName);
-                    fileInfo.Attributes &= ~FileAttributes.ReadOnly;
-                }
-            }
-            catch
+            //remove readonly attribute from all sub-directories
+            foreach (string subDirName in Directory.GetDirectories(folder))
             {
-                //TODO: unhandled exeception
+                DirectoryInfo sdi = new DirectoryInfo(subDirName);
+                sdi.Attributes &= ~FileAttributes.ReadOnly;
             }
+
+            //remove readonly attribute from all files (including files from sub-directories)
+            foreach (string fileName in Directory.GetFiles(folder, "*", SearchOption.AllDirectories))
+            {
+                FileInfo fileInfo = new FileInfo(fileName);
+                fileInfo.Attributes &= ~FileAttributes.ReadOnly;
+            }
+
         }
         private void makeFileReadable(string file)
         {
-            try
-            {
-                //remove readonly attribute from file
-                FileInfo fileInfo = new FileInfo(file);
-                fileInfo.Attributes &= ~FileAttributes.ReadOnly;
-            }
-            catch
-            {
-                //TODO: unhandled exeception
-            }
+
+            //remove readonly attribute from file
+            FileInfo fileInfo = new FileInfo(file);
+            fileInfo.Attributes &= ~FileAttributes.ReadOnly;
+
         }
 
         /// Main functions
@@ -684,9 +674,9 @@ namespace Comic_Book_Maker
 
                 //get parameters for Cleaning
                 char[] separators = { '|' };
-                string[] cleanStr = checkBoxExcludeFiles.Checked ? textBoxExludeFiles.Text.Split(separators, StringSplitOptions.RemoveEmptyEntries) : null;
-                for (int i = 0; i <= cleanStr.GetUpperBound(0); i++)
-                    cleanStr[i] = cleanStr[i].Trim();
+                string[] cleanPatterns = checkBoxExcludeFiles.Checked ? textBoxExludeFiles.Text.Split(separators, StringSplitOptions.RemoveEmptyEntries) : null;
+                for (int i = 0; i <= cleanPatterns.GetUpperBound(0); i++)
+                    cleanPatterns[i] = cleanPatterns[i].Trim();
                 int nCleanLimit = (int)numericUpDownCleanLimit.Value;
                 removeFolderStruct = (rFS)comboBoxRemoveFolder.SelectedIndex;
 
@@ -701,7 +691,7 @@ namespace Comic_Book_Maker
                     Task task1 = Task.Run(() =>
                     {
                         showThread("Parallel start");
-                        Parallel.ForEach(dataGridView1.Rows.Cast<DataGridViewRow>(), row => { processRow(row, cleanStr, nCleanLimit, removeFolderStruct); });
+                        Parallel.ForEach(dataGridView1.Rows.Cast<DataGridViewRow>(), row => { processRow(row, cleanPatterns, nCleanLimit, removeFolderStruct); });
                     });
                     task1.ContinueWith((antecedent) =>
                     {
@@ -716,7 +706,7 @@ namespace Comic_Book_Maker
                     Task task1 = Task.Run(() =>
                     {
                         showThread("Sequential start");
-                        foreach (DataGridViewRow row in dataGridView1.Rows) processRow(row, cleanStr, nCleanLimit, removeFolderStruct);
+                        foreach (DataGridViewRow row in dataGridView1.Rows) processRow(row, cleanPatterns, nCleanLimit, removeFolderStruct);
                     });
                     task1.ContinueWith((antecedent) =>
                     {
@@ -838,20 +828,6 @@ namespace Comic_Book_Maker
                 //get tempPath (folder)
                 string tempPath = Path.Combine(Path.GetTempPath(), "CBM - " + Path.GetFileNameWithoutExtension(inPath));
 
-                ////if tempPath exists, try to delete
-                //if (Directory.Exists(tempPath))
-                //{
-                //    try
-                //    {
-                //        makeFolderReadable(tempPath);
-                //        Directory.Delete(tempPath, true);
-                //    }
-                //    catch (Exception e)
-                //    {
-                //        stepWarning("Exception deleting temporal path before decompression: " + e.Message);
-                //    }
-                //}
-
                 //if still exist, try other names
                 if (Directory.Exists(tempPath))
                 {
@@ -929,7 +905,15 @@ namespace Comic_Book_Maker
                 stepIncrease("Cleaning");
 
                 //remove all ReadOnly attributes
-                makeFolderReadable(tempPath);
+                try
+                {
+                    makeFolderReadable(tempPath);
+                }
+                catch (Exception ex)
+                {
+                    stepShowMessage("Warning - Exception making readonly in temp folder: " + ex.Message);
+                }
+
 
                 //if provided cleanPatterns array is not empty
                 if (cleanPatterns != null)

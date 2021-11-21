@@ -74,7 +74,7 @@
     <Setting Name="column_width_error_warning" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">200</Value>
     </Setting>
-    <Setting Name="windows_maximized" Type="System.Boolean" Scope="User">
+    <Setting Name="window_maximized" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
   </Settings>

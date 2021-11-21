@@ -39,7 +39,6 @@ namespace Comic_Book_Maker
             this.tableLayoutPanel6 = new System.Windows.Forms.TableLayoutPanel();
             this.numericUpDownCleanLimit = new System.Windows.Forms.NumericUpDown();
             this.label1 = new System.Windows.Forms.Label();
-            this.label6 = new System.Windows.Forms.Label();
             this.tableLayoutPanel8 = new System.Windows.Forms.TableLayoutPanel();
             this.comboBoxRemoveFolder = new System.Windows.Forms.ComboBox();
             this.label3 = new System.Windows.Forms.Label();
@@ -116,10 +115,10 @@ namespace Comic_Book_Maker
             this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox2.AutoSize = true;
             this.groupBox2.Controls.Add(this.tableLayoutPanel3);
-            this.groupBox2.Location = new System.Drawing.Point(923, 272);
+            this.groupBox2.Location = new System.Drawing.Point(923, 256);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(325, 114);
-            this.groupBox2.TabIndex = 1;
+            this.groupBox2.TabIndex = 4;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Cleaning";
             // 
@@ -139,7 +138,7 @@ namespace Comic_Book_Maker
             this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel3.Size = new System.Drawing.Size(287, 79);
+            this.tableLayoutPanel3.Size = new System.Drawing.Size(300, 79);
             this.tableLayoutPanel3.TabIndex = 10;
             // 
             // tableLayoutPanel5
@@ -156,8 +155,8 @@ namespace Comic_Book_Maker
             this.tableLayoutPanel5.Name = "tableLayoutPanel5";
             this.tableLayoutPanel5.RowCount = 1;
             this.tableLayoutPanel5.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel5.Size = new System.Drawing.Size(287, 26);
-            this.tableLayoutPanel5.TabIndex = 12;
+            this.tableLayoutPanel5.Size = new System.Drawing.Size(300, 26);
+            this.tableLayoutPanel5.TabIndex = 0;
             // 
             // checkBoxExcludeFiles
             // 
@@ -182,8 +181,8 @@ namespace Comic_Book_Maker
             this.textBoxExludeFiles.DataBindings.Add(new System.Windows.Forms.Binding("Text", global::Comic_Book_Maker.Properties.Settings.Default, "clean_files_string", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.textBoxExludeFiles.Location = new System.Drawing.Point(97, 3);
             this.textBoxExludeFiles.Name = "textBoxExludeFiles";
-            this.textBoxExludeFiles.Size = new System.Drawing.Size(187, 20);
-            this.textBoxExludeFiles.TabIndex = 0;
+            this.textBoxExludeFiles.Size = new System.Drawing.Size(200, 20);
+            this.textBoxExludeFiles.TabIndex = 1;
             this.textBoxExludeFiles.Text = global::Comic_Book_Maker.Properties.Settings.Default.clean_files_string;
             this.toolTip1.SetToolTip(this.textBoxExludeFiles, "Exclude files that match this \r\npatterns from output file.\r\n\r\nUse | to separate m" +
         "ultiple files. \r\nWillcards ? and * are allowed.");
@@ -192,26 +191,25 @@ namespace Comic_Book_Maker
             // 
             this.tableLayoutPanel6.AutoSize = true;
             this.tableLayoutPanel6.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.tableLayoutPanel6.ColumnCount = 3;
+            this.tableLayoutPanel6.ColumnCount = 2;
             this.tableLayoutPanel6.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tableLayoutPanel6.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tableLayoutPanel6.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tableLayoutPanel6.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tableLayoutPanel6.Controls.Add(this.numericUpDownCleanLimit, 1, 0);
             this.tableLayoutPanel6.Controls.Add(this.label1, 0, 0);
-            this.tableLayoutPanel6.Controls.Add(this.label6, 2, 0);
             this.tableLayoutPanel6.Location = new System.Drawing.Point(0, 26);
             this.tableLayoutPanel6.Margin = new System.Windows.Forms.Padding(0);
             this.tableLayoutPanel6.Name = "tableLayoutPanel6";
             this.tableLayoutPanel6.RowCount = 1;
             this.tableLayoutPanel6.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel6.Size = new System.Drawing.Size(284, 26);
-            this.tableLayoutPanel6.TabIndex = 12;
+            this.tableLayoutPanel6.Size = new System.Drawing.Size(252, 26);
+            this.tableLayoutPanel6.TabIndex = 1;
             // 
             // numericUpDownCleanLimit
             // 
             this.numericUpDownCleanLimit.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.numericUpDownCleanLimit.DataBindings.Add(new System.Windows.Forms.Binding("Value", global::Comic_Book_Maker.Properties.Settings.Default, "clean_files_limit_n", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.numericUpDownCleanLimit.Location = new System.Drawing.Point(130, 3);
+            this.numericUpDownCleanLimit.Location = new System.Drawing.Point(207, 3);
             this.numericUpDownCleanLimit.Maximum = new decimal(new int[] {
             99,
             0,
@@ -224,7 +222,7 @@ namespace Comic_Book_Maker
             0});
             this.numericUpDownCleanLimit.Name = "numericUpDownCleanLimit";
             this.numericUpDownCleanLimit.Size = new System.Drawing.Size(42, 20);
-            this.numericUpDownCleanLimit.TabIndex = 4;
+            this.numericUpDownCleanLimit.TabIndex = 1;
             this.toolTip1.SetToolTip(this.numericUpDownCleanLimit, "If more files than this limit are found to \r\nbe excluded, no exclusion will be do" +
         "ne.");
             this.numericUpDownCleanLimit.Value = global::Comic_Book_Maker.Properties.Settings.Default.clean_files_limit_n;
@@ -235,22 +233,10 @@ namespace Comic_Book_Maker
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(3, 6);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(121, 13);
-            this.label1.TabIndex = 3;
-            this.label1.Text = "Avoid clean if more than";
+            this.label1.Size = new System.Drawing.Size(198, 13);
+            this.label1.TabIndex = 0;
+            this.label1.Text = "Maximum number of files to be excluded:";
             this.toolTip1.SetToolTip(this.label1, "If more files than this limit are found to \r\nbe excluded, no exclusion will be do" +
-        "ne.");
-            // 
-            // label6
-            // 
-            this.label6.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(178, 6);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(103, 13);
-            this.label6.TabIndex = 3;
-            this.label6.Text = "files will be excluded";
-            this.toolTip1.SetToolTip(this.label6, "If more files than this limit are found to \r\nbe excluded, no exclusion will be do" +
         "ne.");
             // 
             // tableLayoutPanel8
@@ -269,7 +255,7 @@ namespace Comic_Book_Maker
             this.tableLayoutPanel8.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel8.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 27F));
             this.tableLayoutPanel8.Size = new System.Drawing.Size(193, 27);
-            this.tableLayoutPanel8.TabIndex = 11;
+            this.tableLayoutPanel8.TabIndex = 2;
             // 
             // comboBoxRemoveFolder
             // 
@@ -283,7 +269,7 @@ namespace Comic_Book_Maker
             this.comboBoxRemoveFolder.Location = new System.Drawing.Point(132, 3);
             this.comboBoxRemoveFolder.Name = "comboBoxRemoveFolder";
             this.comboBoxRemoveFolder.Size = new System.Drawing.Size(58, 21);
-            this.comboBoxRemoveFolder.TabIndex = 10;
+            this.comboBoxRemoveFolder.TabIndex = 1;
             this.toolTip1.SetToolTip(this.comboBoxRemoveFolder, resources.GetString("comboBoxRemoveFolder.ToolTip"));
             // 
             // label3
@@ -293,7 +279,7 @@ namespace Comic_Book_Maker
             this.label3.Location = new System.Drawing.Point(3, 7);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(123, 13);
-            this.label3.TabIndex = 3;
+            this.label3.TabIndex = 0;
             this.label3.Text = "Remove folder structure:";
             this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.toolTip1.SetToolTip(this.label3, resources.GetString("label3.ToolTip"));
@@ -305,7 +291,7 @@ namespace Comic_Book_Maker
             this.labelRarPath.Location = new System.Drawing.Point(3, 6);
             this.labelRarPath.Name = "labelRarPath";
             this.labelRarPath.Size = new System.Drawing.Size(71, 13);
-            this.labelRarPath.TabIndex = 3;
+            this.labelRarPath.TabIndex = 0;
             this.labelRarPath.Text = "Rar.exe path:";
             this.toolTip1.SetToolTip(this.labelRarPath, "Only used for CBR output filetype. \r\nIncluded in comercial program Winrar.");
             // 
@@ -315,7 +301,7 @@ namespace Comic_Book_Maker
             this.buttonRarPath.Location = new System.Drawing.Point(286, 3);
             this.buttonRarPath.Name = "buttonRarPath";
             this.buttonRarPath.Size = new System.Drawing.Size(24, 20);
-            this.buttonRarPath.TabIndex = 6;
+            this.buttonRarPath.TabIndex = 2;
             this.buttonRarPath.Text = "...";
             this.buttonRarPath.Click += new System.EventHandler(this.buttonRarPath_Click);
             // 
@@ -326,7 +312,7 @@ namespace Comic_Book_Maker
             this.label2.Location = new System.Drawing.Point(3, 7);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(94, 13);
-            this.label2.TabIndex = 3;
+            this.label2.TabIndex = 0;
             this.label2.Text = "If output file exists:";
             // 
             // buttonGo
@@ -336,7 +322,7 @@ namespace Comic_Book_Maker
             this.buttonGo.Location = new System.Drawing.Point(929, 12);
             this.buttonGo.Name = "buttonGo";
             this.buttonGo.Size = new System.Drawing.Size(144, 40);
-            this.buttonGo.TabIndex = 4;
+            this.buttonGo.TabIndex = 0;
             this.buttonGo.Text = "Go";
             this.toolTip1.SetToolTip(this.buttonGo, resources.GetString("buttonGo.ToolTip"));
             this.buttonGo.UseVisualStyleBackColor = false;
@@ -365,7 +351,7 @@ namespace Comic_Book_Maker
             this.label4.Location = new System.Drawing.Point(3, 7);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(78, 13);
-            this.label4.TabIndex = 0;
+            this.label4.TabIndex = 1;
             this.label4.Text = "Output filetype:";
             this.label4.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
@@ -376,7 +362,7 @@ namespace Comic_Book_Maker
             this.textBoxRenameSuffix.Location = new System.Drawing.Point(122, 3);
             this.textBoxRenameSuffix.Name = "textBoxRenameSuffix";
             this.textBoxRenameSuffix.Size = new System.Drawing.Size(47, 20);
-            this.textBoxRenameSuffix.TabIndex = 0;
+            this.textBoxRenameSuffix.TabIndex = 1;
             this.textBoxRenameSuffix.Text = global::Comic_Book_Maker.Properties.Settings.Default.file_exist_suffix;
             this.toolTip1.SetToolTip(this.textBoxRenameSuffix, resources.GetString("textBoxRenameSuffix.ToolTip"));
             this.textBoxRenameSuffix.EnabledChanged += new System.EventHandler(this.textBoxtextBoxRenameSuffix_TextChanged);
@@ -393,7 +379,7 @@ namespace Comic_Book_Maker
             this.checkBoxUseOutPath.Location = new System.Drawing.Point(3, 99);
             this.checkBoxUseOutPath.Name = "checkBoxUseOutPath";
             this.checkBoxUseOutPath.Size = new System.Drawing.Size(105, 17);
-            this.checkBoxUseOutPath.TabIndex = 3;
+            this.checkBoxUseOutPath.TabIndex = 4;
             this.checkBoxUseOutPath.Text = "Use output path:";
             this.toolTip1.SetToolTip(this.checkBoxUseOutPath, "If disabled, files wil be saved in same folder as input.");
             this.checkBoxUseOutPath.UseVisualStyleBackColor = true;
@@ -407,7 +393,7 @@ namespace Comic_Book_Maker
             this.buttonExit.Location = new System.Drawing.Point(1079, 12);
             this.buttonExit.Name = "buttonExit";
             this.buttonExit.Size = new System.Drawing.Size(80, 40);
-            this.buttonExit.TabIndex = 5;
+            this.buttonExit.TabIndex = 1;
             this.buttonExit.Text = "Exit";
             this.toolTip1.SetToolTip(this.buttonExit, "Exit program (Esc).\r\n\r\nAll settings will be saved at \r\nexit and restored at start" +
         "up.");
@@ -422,7 +408,7 @@ namespace Comic_Book_Maker
             this.buttonRefresh.Location = new System.Drawing.Point(1165, 12);
             this.buttonRefresh.Name = "buttonRefresh";
             this.buttonRefresh.Size = new System.Drawing.Size(80, 40);
-            this.buttonRefresh.TabIndex = 6;
+            this.buttonRefresh.TabIndex = 2;
             this.buttonRefresh.Text = "Refresh files";
             this.toolTip1.SetToolTip(this.buttonRefresh, "Check input files and update output names (F5).");
             this.buttonRefresh.UseVisualStyleBackColor = false;
@@ -514,7 +500,7 @@ namespace Comic_Book_Maker
             this.checkBoxCloseAtComplete.Location = new System.Drawing.Point(3, 49);
             this.checkBoxCloseAtComplete.Name = "checkBoxCloseAtComplete";
             this.checkBoxCloseAtComplete.Size = new System.Drawing.Size(183, 17);
-            this.checkBoxCloseAtComplete.TabIndex = 0;
+            this.checkBoxCloseAtComplete.TabIndex = 2;
             this.checkBoxCloseAtComplete.Text = "Close after successful completion";
             this.toolTip1.SetToolTip(this.checkBoxCloseAtComplete, "If enabled, will close the program after succesfuly\r\nconverting all files.\r\nA 5 s" +
         "ecconds countdown will be shown, allowing \r\nto cancel the closing.");
@@ -529,7 +515,7 @@ namespace Comic_Book_Maker
             this.checkBoxStartAfterFileAdd.Location = new System.Drawing.Point(3, 26);
             this.checkBoxStartAfterFileAdd.Name = "checkBoxStartAfterFileAdd";
             this.checkBoxStartAfterFileAdd.Size = new System.Drawing.Size(192, 17);
-            this.checkBoxStartAfterFileAdd.TabIndex = 0;
+            this.checkBoxStartAfterFileAdd.TabIndex = 1;
             this.checkBoxStartAfterFileAdd.Text = "Start automatically after adding files";
             this.toolTip1.SetToolTip(this.checkBoxStartAfterFileAdd, resources.GetString("checkBoxStartAfterFileAdd.ToolTip"));
             this.checkBoxStartAfterFileAdd.UseVisualStyleBackColor = true;
@@ -553,7 +539,7 @@ namespace Comic_Book_Maker
             this.labelSuffix.Location = new System.Drawing.Point(3, 6);
             this.labelSuffix.Name = "labelSuffix";
             this.labelSuffix.Size = new System.Drawing.Size(113, 13);
-            this.labelSuffix.TabIndex = 3;
+            this.labelSuffix.TabIndex = 0;
             this.labelSuffix.Text = "Rename suffix pattern:";
             this.toolTip1.SetToolTip(this.labelSuffix, resources.GetString("labelSuffix.ToolTip"));
             // 
@@ -563,7 +549,7 @@ namespace Comic_Book_Maker
             this.checkBox_SendTo.Location = new System.Drawing.Point(3, 121);
             this.checkBox_SendTo.Name = "checkBox_SendTo";
             this.checkBox_SendTo.Size = new System.Drawing.Size(247, 17);
-            this.checkBox_SendTo.TabIndex = 15;
+            this.checkBox_SendTo.TabIndex = 5;
             this.checkBox_SendTo.Text = "Comic Book Maker from SendTo context menu";
             this.toolTip1.SetToolTip(this.checkBox_SendTo, "Adds/removes Comic Book Maker to the SendTo ");
             this.checkBox_SendTo.UseVisualStyleBackColor = true;
@@ -596,7 +582,7 @@ namespace Comic_Book_Maker
             this.dataGridView1.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
             this.dataGridView1.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dataGridView1.Size = new System.Drawing.Size(905, 584);
-            this.dataGridView1.TabIndex = 3;
+            this.dataGridView1.TabIndex = 8;
             this.dataGridView1.CellMouseEnter += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellMouseEnter);
             this.dataGridView1.ColumnHeaderMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dataGridView1_ColumnHeaderMouseClick);
             this.dataGridView1.DragDrop += new System.Windows.Forms.DragEventHandler(this.dataGridView1_DragDrop);
@@ -656,7 +642,7 @@ namespace Comic_Book_Maker
             this.statusStrip1.Location = new System.Drawing.Point(0, 599);
             this.statusStrip1.Name = "statusStrip1";
             this.statusStrip1.Size = new System.Drawing.Size(1260, 22);
-            this.statusStrip1.TabIndex = 6;
+            this.statusStrip1.TabIndex = 9;
             this.statusStrip1.Text = "statusStrip1";
             // 
             // toolStripProgressBar1
@@ -685,7 +671,7 @@ namespace Comic_Book_Maker
             this.tableLayoutPanel1.Controls.Add(this.checkBoxCreateFromComic, 0, 2);
             this.tableLayoutPanel1.Controls.Add(this.checkBoxCreateFromArchive, 0, 1);
             this.tableLayoutPanel1.Controls.Add(this.tableLayoutPanel10, 0, 7);
-            this.tableLayoutPanel1.Location = new System.Drawing.Point(929, 71);
+            this.tableLayoutPanel1.Location = new System.Drawing.Point(929, 55);
             this.tableLayoutPanel1.Margin = new System.Windows.Forms.Padding(0);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 8;
@@ -698,7 +684,7 @@ namespace Comic_Book_Maker
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.Size = new System.Drawing.Size(298, 198);
-            this.tableLayoutPanel1.TabIndex = 0;
+            this.tableLayoutPanel1.TabIndex = 3;
             // 
             // tableLayoutPanel12
             // 
@@ -715,7 +701,7 @@ namespace Comic_Book_Maker
             this.tableLayoutPanel12.RowCount = 1;
             this.tableLayoutPanel12.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel12.Size = new System.Drawing.Size(175, 27);
-            this.tableLayoutPanel12.TabIndex = 15;
+            this.tableLayoutPanel12.TabIndex = 6;
             // 
             // comboBoxFileExistAction
             // 
@@ -729,7 +715,7 @@ namespace Comic_Book_Maker
             this.comboBoxFileExistAction.Location = new System.Drawing.Point(103, 3);
             this.comboBoxFileExistAction.Name = "comboBoxFileExistAction";
             this.comboBoxFileExistAction.Size = new System.Drawing.Size(69, 21);
-            this.comboBoxFileExistAction.TabIndex = 0;
+            this.comboBoxFileExistAction.TabIndex = 1;
             this.comboBoxFileExistAction.SelectedValueChanged += new System.EventHandler(this.comboBoxFileExistAction_SelectedValueChanged);
             // 
             // tableLayoutPanel7
@@ -747,7 +733,7 @@ namespace Comic_Book_Maker
             this.tableLayoutPanel7.RowCount = 1;
             this.tableLayoutPanel7.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel7.Size = new System.Drawing.Size(298, 26);
-            this.tableLayoutPanel7.TabIndex = 13;
+            this.tableLayoutPanel7.TabIndex = 5;
             // 
             // buttonOutputPath
             // 
@@ -755,7 +741,7 @@ namespace Comic_Book_Maker
             this.buttonOutputPath.Location = new System.Drawing.Point(271, 3);
             this.buttonOutputPath.Name = "buttonOutputPath";
             this.buttonOutputPath.Size = new System.Drawing.Size(24, 20);
-            this.buttonOutputPath.TabIndex = 6;
+            this.buttonOutputPath.TabIndex = 1;
             this.buttonOutputPath.Text = "...";
             this.buttonOutputPath.Click += new System.EventHandler(this.buttonOutputPath_Click);
             // 
@@ -791,7 +777,7 @@ namespace Comic_Book_Maker
             this.tableLayoutPanel10.RowCount = 1;
             this.tableLayoutPanel10.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel10.Size = new System.Drawing.Size(219, 26);
-            this.tableLayoutPanel10.TabIndex = 14;
+            this.tableLayoutPanel10.TabIndex = 7;
             // 
             // buttonCancelClosing
             // 
@@ -800,7 +786,7 @@ namespace Comic_Book_Maker
             this.buttonCancelClosing.Location = new System.Drawing.Point(539, 600);
             this.buttonCancelClosing.Name = "buttonCancelClosing";
             this.buttonCancelClosing.Size = new System.Drawing.Size(100, 21);
-            this.buttonCancelClosing.TabIndex = 7;
+            this.buttonCancelClosing.TabIndex = 10;
             this.buttonCancelClosing.Text = "Cancel closing";
             this.buttonCancelClosing.UseVisualStyleBackColor = false;
             this.buttonCancelClosing.Visible = false;
@@ -829,7 +815,7 @@ namespace Comic_Book_Maker
             this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel4.Size = new System.Drawing.Size(313, 141);
-            this.tableLayoutPanel4.TabIndex = 11;
+            this.tableLayoutPanel4.TabIndex = 0;
             // 
             // tableLayoutPanel9
             // 
@@ -848,7 +834,7 @@ namespace Comic_Book_Maker
             this.tableLayoutPanel9.RowCount = 1;
             this.tableLayoutPanel9.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel9.Size = new System.Drawing.Size(313, 26);
-            this.tableLayoutPanel9.TabIndex = 14;
+            this.tableLayoutPanel9.TabIndex = 4;
             // 
             // checkBoxDeleteInputFiles
             // 
@@ -859,7 +845,7 @@ namespace Comic_Book_Maker
             this.checkBoxDeleteInputFiles.Location = new System.Drawing.Point(3, 72);
             this.checkBoxDeleteInputFiles.Name = "checkBoxDeleteInputFiles";
             this.checkBoxDeleteInputFiles.Size = new System.Drawing.Size(294, 17);
-            this.checkBoxDeleteInputFiles.TabIndex = 0;
+            this.checkBoxDeleteInputFiles.TabIndex = 3;
             this.checkBoxDeleteInputFiles.Text = "Delete input files at successful completition (Recycle Bin)";
             this.checkBoxDeleteInputFiles.UseVisualStyleBackColor = true;
             // 
@@ -869,10 +855,10 @@ namespace Comic_Book_Maker
             this.groupBox3.AutoSize = true;
             this.groupBox3.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.groupBox3.Controls.Add(this.tableLayoutPanel4);
-            this.groupBox3.Location = new System.Drawing.Point(923, 392);
+            this.groupBox3.Location = new System.Drawing.Point(923, 376);
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.Size = new System.Drawing.Size(325, 176);
-            this.groupBox3.TabIndex = 2;
+            this.groupBox3.TabIndex = 5;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Options";
             // 
@@ -894,9 +880,9 @@ namespace Comic_Book_Maker
             this.labelAbout.AutoSize = true;
             this.labelAbout.Location = new System.Drawing.Point(923, 577);
             this.labelAbout.Name = "labelAbout";
-            this.labelAbout.Size = new System.Drawing.Size(120, 13);
-            this.labelAbout.TabIndex = 4;
-            this.labelAbout.Text = "Comic Book Maker v1.x";
+            this.labelAbout.Size = new System.Drawing.Size(123, 13);
+            this.labelAbout.TabIndex = 6;
+            this.labelAbout.Text = "Comic Book Maker v#.#";
             // 
             // linkLabel1
             // 
@@ -905,7 +891,7 @@ namespace Comic_Book_Maker
             this.linkLabel1.Location = new System.Drawing.Point(1055, 577);
             this.linkLabel1.Name = "linkLabel1";
             this.linkLabel1.Size = new System.Drawing.Size(193, 13);
-            this.linkLabel1.TabIndex = 5;
+            this.linkLabel1.TabIndex = 7;
             this.linkLabel1.TabStop = true;
             this.linkLabel1.Text = "github.com/tosione/Comic-Book-Maker";
             this.linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel1_LinkClicked);
@@ -1021,7 +1007,6 @@ namespace Comic_Book_Maker
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel8;
         private System.Windows.Forms.ComboBox comboBoxRemoveFolder;
         private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Button buttonCancelClosing;
         private System.Windows.Forms.Timer timerClose;
         private System.Windows.Forms.LinkLabel linkLabel1;

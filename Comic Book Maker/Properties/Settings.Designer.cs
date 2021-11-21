@@ -314,12 +314,12 @@ namespace Comic_Book_Maker.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool windows_maximized {
+        public bool window_maximized {
             get {
-                return ((bool)(this["windows_maximized"]));
+                return ((bool)(this["window_maximized"]));
             }
             set {
-                this["windows_maximized"] = value;
+                this["window_maximized"] = value;
             }
         }
     }
