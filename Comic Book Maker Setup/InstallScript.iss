@@ -1,6 +1,6 @@
 ; Defines
 #define MyAppName "Comic Book Maker"
-#define MyAppVersion "1.2"
+#define MyAppVersion "1.3"
 #define MyAppPublisher ""
 #define MyAppURL "https://github.com/tosione/Comic-Book-Maker"
 #define MyAppExeName "Comic Book Maker.exe"
