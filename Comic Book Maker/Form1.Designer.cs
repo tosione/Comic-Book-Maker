@@ -528,7 +528,7 @@ namespace Comic_Book_Maker
             this.textBoxOutPath.DataBindings.Add(new System.Windows.Forms.Binding("Text", global::Comic_Book_Maker.Properties.Settings.Default, "output_path", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.textBoxOutPath.Location = new System.Drawing.Point(3, 3);
             this.textBoxOutPath.Name = "textBoxOutPath";
-            this.textBoxOutPath.Size = new System.Drawing.Size(262, 20);
+            this.textBoxOutPath.Size = new System.Drawing.Size(280, 20);
             this.textBoxOutPath.TabIndex = 0;
             this.textBoxOutPath.Text = global::Comic_Book_Maker.Properties.Settings.Default.output_path;
             this.toolTip1.SetToolTip(this.textBoxOutPath, "If folder doesn\'t exists, it will be created.");
@@ -684,7 +684,7 @@ namespace Comic_Book_Maker
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(298, 198);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(316, 198);
             this.tableLayoutPanel1.TabIndex = 3;
             // 
             // tableLayoutPanel12
@@ -733,13 +733,13 @@ namespace Comic_Book_Maker
             this.tableLayoutPanel7.Name = "tableLayoutPanel7";
             this.tableLayoutPanel7.RowCount = 1;
             this.tableLayoutPanel7.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel7.Size = new System.Drawing.Size(298, 26);
+            this.tableLayoutPanel7.Size = new System.Drawing.Size(316, 26);
             this.tableLayoutPanel7.TabIndex = 5;
             // 
             // buttonOutputPath
             // 
             this.buttonOutputPath.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.buttonOutputPath.Location = new System.Drawing.Point(271, 3);
+            this.buttonOutputPath.Location = new System.Drawing.Point(289, 3);
             this.buttonOutputPath.Name = "buttonOutputPath";
             this.buttonOutputPath.Size = new System.Drawing.Size(24, 20);
             this.buttonOutputPath.TabIndex = 1;

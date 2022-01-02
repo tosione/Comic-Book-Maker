@@ -330,8 +330,8 @@ namespace Comic_Book_Maker
         }
         private void dataGridView1_CellMouseEnter(object sender, DataGridViewCellEventArgs e)
         {
-            //show tooltip for each cell
-            if (e.ColumnIndex >= 0 & e.RowIndex >= 0)
+            //show tooltip for each cell (except first row, as they are boolean)
+            if (e.ColumnIndex >= 1 & e.RowIndex >= 0)
                 dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex].ToolTipText = (string)dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex].Value;
         }
 
@@ -448,19 +448,19 @@ namespace Comic_Book_Maker
             for (i = 0; i <= files.GetUpperBound(0); i++)
             {
                 inPath = files[i];
-                bool existing = false;
+                bool existsInDataGridView = false;
 
                 //search if inPath is already in dataGridView
                 foreach (DataGridViewRow row in dataGridView1.Rows)
                 {
                     if ((string)row.Cells[1].Value == inPath)
-                        existing = true;
+                        existsInDataGridView = true;
                 }
 
                 //if not, add a new row to dataGridView1 depending on type
                 //  each row has 6 columns:
                 //  (0) selected, (1) inPath, (2) inType, (3) OutPath, (4) state, (5) error/warning message
-                if (!existing)
+                if (!existsInDataGridView)
                 {
                     //as directory
                     if (Directory.Exists(inPath))
@@ -528,9 +528,18 @@ namespace Comic_Book_Maker
 
                 //construct outputPath
                 if (checkBoxUseOutPath.Checked)
-                    outPath = Path.Combine(textBoxOutPath.Text, Path.ChangeExtension(Path.GetFileName(inPath), outType));
+                    if (inType == FolderStr)
+                        outPath = Path.Combine(textBoxOutPath.Text, Path.GetFileName(inPath) + "." + outType);  //GetFileName gets the folder name, which could including dots
+                    else
+                        outPath = Path.Combine(textBoxOutPath.Text, Path.ChangeExtension(Path.GetFileName(inPath), outType));
                 else
-                    outPath = Path.ChangeExtension(inPath, outType);
+                {
+                    if (inType == FolderStr)
+                        outPath = inPath + "." + outType;
+                    else
+                        outPath = Path.ChangeExtension(inPath, outType);
+                }
+                    
                 row.Cells[3].Value = outPath;
             }
 
