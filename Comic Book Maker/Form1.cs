@@ -684,8 +684,11 @@ namespace Comic_Book_Maker
                 //get parameters for Cleaning
                 char[] separators = { '|' };
                 string[] cleanPatterns = checkBoxExcludeFiles.Checked ? textBoxExludeFiles.Text.Split(separators, StringSplitOptions.RemoveEmptyEntries) : null;
-                for (int i = 0; i <= cleanPatterns.GetUpperBound(0); i++)
-                    cleanPatterns[i] = cleanPatterns[i].Trim();
+                if (cleanPatterns != null)
+                {
+                    for (int i = 0; i <= cleanPatterns.GetUpperBound(0); i++)
+                        cleanPatterns[i] = cleanPatterns[i].Trim();
+                }
                 int nCleanLimit = (int)numericUpDownCleanLimit.Value;
                 removeFolderStruct = (rFS)comboBoxRemoveFolder.SelectedIndex;
 
