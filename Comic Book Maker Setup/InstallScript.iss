@@ -1,10 +1,18 @@
 ; Defines
 #define MyAppName "Comic Book Maker"
-#define MyAppVersion "1.3"
 #define MyAppPublisher ""
 #define MyAppURL "https://github.com/tosione/Comic-Book-Maker"
 #define MyAppExeName "Comic Book Maker.exe"
 #define MySolutionFolder "C:\Users\Gabriel\source\repos\Comic Book Maker"
+#define Major
+#define Minor
+#define Rev
+#define Build
+#define ExePath MySolutionFolder + "\Comic Book Maker\bin\Release\" + MyAppExeName
+#expr GetVersionComponents(ExePath, Major, Minor, Rev, Build)
+#define MyAppVersion str(Major) + "." + str(Minor)
+#define InstallerVer DecodeVer(Ver)
+
 
 [Setup]
   ; NOTE: The value of AppId uniquely identifies this application. Do not use the same AppId value in installers for other applications.
@@ -30,20 +38,20 @@ WizardImageFile={#MySolutionFolder}\Images\cbm inno setup.bmp
 Name: "english"; MessagesFile: "compiler:Default.isl"
 
 [Tasks]
-Name: desktopicon; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
-Name: sendto; Description: "{cm:CreateSendToIcon}"; GroupDescription: "{cm:AdditionalIcons}"
+Name: desktopicon;  Description: "{cm:CreateDesktopIcon}";  GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
+Name: sendto;       Description: "{cm:CreateSendToIcon}";   GroupDescription: "{cm:AdditionalIcons}"
 
 [Files]
-Source: "{#MySolutionFolder}\Comic Book Maker\bin\Release\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#MySolutionFolder}\Comic Book Maker\bin\Release\{#MyAppExeName}";             DestDir: "{app}"; Flags: ignoreversion
 Source: "{#MySolutionFolder}\Comic Book Maker\bin\Release\Comic Book Maker.exe.config"; DestDir: "{app}"; Flags: ignoreversion
-Source: "{#MySolutionFolder}\7-zip\7z.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "{#MySolutionFolder}\7-zip\7z.exe"; DestDir: "{app}"; Flags: ignoreversion
-Source: "{#MySolutionFolder}\README.md"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#MySolutionFolder}\7-zip\7z.dll";                                             DestDir: "{app}"; Flags: ignoreversion
+Source: "{#MySolutionFolder}\7-zip\7z.exe";                                             DestDir: "{app}"; Flags: ignoreversion
+Source: "{#MySolutionFolder}\README.md";                                                DestDir: "{app}"; Flags: ignoreversion
 
 [Icons]
-Name: "{autoprograms}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"
-Name: "{autodesktop}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; Tasks: desktopicon
-Name: "{usersendto}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}";  Tasks: sendto
+Name: "{autoprograms}\{#MyAppName}";  Filename: "{app}\{#MyAppExeName}"
+Name: "{autodesktop}\{#MyAppName}";   Filename: "{app}\{#MyAppExeName}";  Tasks: desktopicon
+Name: "{usersendto}\{#MyAppName}";    Filename: "{app}\{#MyAppExeName}";  Tasks: sendto
 
 [Run]
 Filename: "{app}\{#MyAppExeName}"; Description: "{cm:LaunchProgram,{#StringChange(MyAppName, '&', '&&')}}"; Flags: nowait postinstall skipifsilent
@@ -52,4 +60,4 @@ Filename: "{app}\{#MyAppExeName}"; Description: "{cm:LaunchProgram,{#StringChang
 CreateSendToIcon=Create a shortcut in the SendTo menu (Can be done from inside the program later)
 
 [Messages]
-BeveledLabel=Installer created with Inno Setup 6.2.0 (jrsoftware.org)
+BeveledLabel="Installer created with Inno Setup {#InstallerVer} (jrsoftware.org)" 
