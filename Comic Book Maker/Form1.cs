@@ -30,6 +30,7 @@ namespace Comic_Book_Maker
         private bool ErrorRenameSuffix = false; //Suffix pattern doesnt constaint \n when Rename Output is selected
         private bool cancelClosing = false;     //cancel auto-closing when finished
         private int closingCounter;             //counter (0.1 s) for autoclosing
+        private string[] arguments;               //arguments passed by command line
 
 
         /// Initialization and Closing
@@ -64,15 +65,18 @@ namespace Comic_Book_Maker
             //if SendTo shortcut exists
             checkBox_SendTo.Checked = File.Exists(shortcutPath);
 
-            //if command line arguments are given
-            if (args1.Length > 0)
-                populateGrid(args1, true);
+            //save arguments for use once the form is completly shown
+            arguments = args1;
         }
         private void formMain_Shown(object sender, EventArgs e)
         {
             //When main windows hasn't at least 100 pix on scrreen, reposition it at 100 pix (upper-right)
             if (!isOnScreen(this, 100))
                 Location = new System.Drawing.Point(100, 100);
+
+            //if command line arguments are given
+            if (arguments.Length > 0)
+                populateGrid(arguments, true);
         }
         private void form1_FormClosed(object sender, FormClosedEventArgs e)
         {

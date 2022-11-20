@@ -513,6 +513,7 @@ namespace Comic_Book_Maker
             this.checkBoxStartAfterFileAdd.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.checkBoxStartAfterFileAdd.AutoSize = true;
             this.checkBoxStartAfterFileAdd.Checked = global::Comic_Book_Maker.Properties.Settings.Default.go_after_file_add;
+            this.checkBoxStartAfterFileAdd.CheckState = System.Windows.Forms.CheckState.Checked;
             this.checkBoxStartAfterFileAdd.DataBindings.Add(new System.Windows.Forms.Binding("Checked", global::Comic_Book_Maker.Properties.Settings.Default, "go_after_file_add", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.checkBoxStartAfterFileAdd.Location = new System.Drawing.Point(3, 26);
             this.checkBoxStartAfterFileAdd.Name = "checkBoxStartAfterFileAdd";

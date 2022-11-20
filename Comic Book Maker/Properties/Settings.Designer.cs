@@ -289,7 +289,7 @@ namespace Comic_Book_Maker.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
         public bool go_after_file_add {
             get {
                 return ((bool)(this["go_after_file_add"]));
